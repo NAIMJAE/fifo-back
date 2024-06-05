@@ -1,0 +1,56 @@
+spring:
+    application:
+        name: fifo-back
+
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://3.39.72.175:5432/fifo
+        username: ppoppi
+        password: Abcd1234!
+
+    devtools:
+        livereload:
+            enabled: true
+        restart:
+            enabled: false
+
+    # JPA 설정
+    jpa:
+        database: postgresql
+        hibernate:
+            ddl-auto: none
+            naming:
+                physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+        properties:
+            hibernate:
+                format_sql: true
+                show_sql: true
+    servlet:
+        multipart:
+            location: uploads/
+            max-file-size: 10MB
+logging:
+    file:
+        name: logs/fifo-back.log
+    level:
+        jdbc:
+            connection: info
+            resultsettable: info
+            sqlonly: info
+            sqltiming: info
+        root: info
+
+
+server:
+    port: 8080
+    servlet:
+        context-path: /fifo-back
+
+# 파일 업로드 설정
+file:
+    upload:
+        path: uploads/
+
+# 프론트 주소
+front:
+    url: 'http://localhost:3000'
