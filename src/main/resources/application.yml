@@ -5,7 +5,7 @@ spring:
     datasource:
         driver-class-name: org.postgresql.Driver
         url: jdbc:postgresql://3.39.72.175:5432/fifo
-        username: ppoppi
+        username: ppippo
         password: Abcd1234!
 
     devtools:
@@ -39,7 +39,6 @@ logging:
             sqlonly: info
             sqltiming: info
         root: info
-
 
 server:
     port: 8080
