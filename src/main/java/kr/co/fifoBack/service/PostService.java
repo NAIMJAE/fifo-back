@@ -43,7 +43,7 @@ public class PostService {
             // tags 저장
             Tags tags = new Tags();
             tags.setTag(tag);
-            Tags savedTags = tagsRepository.save(tags); // 태그 중복 저장 오류 해결해야함
+            Tags savedTags = tagsRepository.save(tags); // 태그 중복 저장 오류 해결해야함 
             
             // PostTag 저장
             PostTag postTag = new PostTag();
