@@ -53,3 +53,7 @@ file:
 # 프론트 주소
 front:
     url: 'http://localhost:3000'
+
+jwt:
+    issuer: kkj80911@gmail.com
+    secret: i9IRfpZMBT0Wvcs1p35alIvMbCFJQH7S
