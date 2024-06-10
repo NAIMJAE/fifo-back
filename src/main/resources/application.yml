@@ -17,10 +17,12 @@ spring:
     # JPA 설정
     jpa:
         database: postgresql
+        generate-ddl: false
         hibernate:
             ddl-auto: none
             naming:
                 physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+                implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
         properties:
             hibernate:
                 format_sql: true
