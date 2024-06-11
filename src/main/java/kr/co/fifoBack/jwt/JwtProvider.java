@@ -43,7 +43,7 @@ public class JwtProvider {
 
         // 클레임 생성
         Claims claims = Jwts.claims();
-        claims.put("username", user.getEmail());
+        claims.put("userEmail", user.getEmail());
         claims.put("role", user.getRole());
 
         // 토큰 생성
@@ -72,7 +72,8 @@ public class JwtProvider {
 
         // 클레임에서 사용자, 권한 가져오기
         Claims claims = getClaims(token);
-        String email  = (String) claims.get("username");
+        int userNo = (Integer) claims.get("userNo");
+        String email  = (String) claims.get("userEmail");
         String role = (String) claims.get("role");
 
         // 권한목록 생성
@@ -81,6 +82,7 @@ public class JwtProvider {
 
         // 사용자 인증객체 생성
         User principal = User.builder()
+                .userNo(userNo)
                 .email(email)
                 .role(role)
                 .build();
