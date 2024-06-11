@@ -62,10 +62,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     log.info("doFilterInternal...6");
                     Claims claims = jwtProvider.getClaims(token);
-                    String email  = (String) claims.get("username");
+                    int userNo = (Integer) claims.get("userNo");
+                    String email  = (String) claims.get("userEmail");
                     String role = (String) claims.get("role");
 
                     User user = User.builder()
+                            .userNo(userNo)
                             .email(email)
                             .role(role)
                             .build();
