@@ -1,4 +1,4 @@
-package kr.co.fifoBack.dto;
+package kr.co.fifoBack.dto.post;
 
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +17,7 @@ public class PostDTO {
     private String title;
     private String content;
     private int userNo;
+    private String nick;
     private int cateNo;
     private int good;
     private int hit;

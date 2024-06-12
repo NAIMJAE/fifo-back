@@ -1,4 +1,4 @@
-package kr.co.fifoBack.entity;
+package kr.co.fifoBack.entity.post;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QPostTag extends EntityPathBase<PostTag> {
 
-    private static final long serialVersionUID = 1382634639L;
+    private static final long serialVersionUID = 771724983L;
 
     public static final QPostTag postTag = new QPostTag("postTag");
 

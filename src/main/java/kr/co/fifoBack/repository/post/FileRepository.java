@@ -1,6 +1,6 @@
-package kr.co.fifoBack.repository;
+package kr.co.fifoBack.repository.post;
 
-import kr.co.fifoBack.entity.File;
+import kr.co.fifoBack.entity.post.File;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

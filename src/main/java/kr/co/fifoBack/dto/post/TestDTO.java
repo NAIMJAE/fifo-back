@@ -1,4 +1,4 @@
-package kr.co.fifoBack.dto;
+package kr.co.fifoBack.dto.post;
 
 import lombok.*;
 @Getter

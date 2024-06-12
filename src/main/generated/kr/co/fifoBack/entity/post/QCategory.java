@@ -1,4 +1,4 @@
-package kr.co.fifoBack.entity;
+package kr.co.fifoBack.entity.post;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QCategory extends EntityPathBase<Category> {
 
-    private static final long serialVersionUID = -794490391L;
+    private static final long serialVersionUID = 1742146753L;
 
     public static final QCategory category = new QCategory("category");
 

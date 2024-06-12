@@ -1,2 +1,4 @@
-package kr.co.fifoBack.controller;public class UserController {
+package kr.co.fifoBack.controller;
+
+public class UserController {
 }

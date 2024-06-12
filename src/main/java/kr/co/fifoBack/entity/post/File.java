@@ -1,4 +1,4 @@
-package kr.co.fifoBack.entity;
+package kr.co.fifoBack.entity.post;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,4 +1,4 @@
-package kr.co.fifoBack.entity;
+package kr.co.fifoBack.entity.post;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,10 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "tags")
-public class Tags {
+@Table(name = "category")
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int tno;
-    private String tag;
+    private int cateNo;
+    private String cateName;
 }

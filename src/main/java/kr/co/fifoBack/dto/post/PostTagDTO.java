@@ -1,4 +1,4 @@
-package kr.co.fifoBack.dto;
+package kr.co.fifoBack.dto.post;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TagsDTO {
+public class PostTagDTO {
+    private int pno;
     private int tno;
-    private String tag;
 }
