@@ -1,7 +1,7 @@
 package kr.co.fifoBack.service;
 
-import kr.co.fifoBack.dto.TestDTO;
-import kr.co.fifoBack.entity.Test;
+import kr.co.fifoBack.dto.post.TestDTO;
+import kr.co.fifoBack.entity.post.Test;
 import kr.co.fifoBack.repository.TestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

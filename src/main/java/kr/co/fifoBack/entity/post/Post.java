@@ -1,4 +1,4 @@
-package kr.co.fifoBack.entity;
+package kr.co.fifoBack.entity.post;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,6 +20,7 @@ public class Post {
     private String title;
     private String content;
     private int userNo;
+    private String nick;
     @Column(name = "cateNo")
     private int cateNo;
     private int good;

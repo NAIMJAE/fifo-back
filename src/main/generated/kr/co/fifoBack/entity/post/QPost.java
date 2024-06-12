@@ -1,4 +1,4 @@
-package kr.co.fifoBack.entity;
+package kr.co.fifoBack.entity.post;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QPost extends EntityPathBase<Post> {
 
-    private static final long serialVersionUID = 239080203L;
+    private static final long serialVersionUID = -472563229L;
 
     public static final QPost post = new QPost("post");
 
@@ -30,6 +30,8 @@ public class QPost extends EntityPathBase<Post> {
     public final NumberPath<Integer> hit = createNumber("hit", Integer.class);
 
     public final DateTimePath<java.time.LocalDateTime> modiDate = createDateTime("modiDate", java.time.LocalDateTime.class);
+
+    public final StringPath nick = createString("nick");
 
     public final NumberPath<Integer> pno = createNumber("pno", Integer.class);
 

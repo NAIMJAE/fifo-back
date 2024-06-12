@@ -1,4 +1,4 @@
-package kr.co.fifoBack.entity;
+package kr.co.fifoBack.entity.post;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QFile extends EntityPathBase<File> {
 
-    private static final long serialVersionUID = 238776295L;
+    private static final long serialVersionUID = -472867137L;
 
     public static final QFile file = new QFile("file");
 
