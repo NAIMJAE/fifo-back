@@ -18,7 +18,7 @@ public class GatheringController {
     // 모임 글 목록
     @GetMapping("/gatherings")
     public ResponseEntity<?> selectGatherings(){
-        // pg랑 검색 키워드들 (java Lv5, Spring Lv3 [gathlanguage] , online [gathmode]...) GET 어떻게 받아오지? POST 써야지 뭐 -> RESTful 맞나이게
+        // pg랑 검색 키워드들 (java Lv5, Spring Lv3 [gathlanguage] , online [gathmode]...) GET 어떻게 받아오지? POST 써야지 뭐
         return null;
     }
     // 모임 글 보기
