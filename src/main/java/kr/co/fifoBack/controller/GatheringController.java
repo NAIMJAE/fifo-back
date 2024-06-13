@@ -29,7 +29,7 @@ public class GatheringController {
     // 모임 글 작성
     @PostMapping("/gathering")
     public ResponseEntity<?> insertGathering(@RequestBody GatheringDTO gatheringDTO){
-        return null;
+        return gatheringService.insertGathering(gatheringDTO);
     }
     // 모임 글 수정
     @PutMapping("/gathering")

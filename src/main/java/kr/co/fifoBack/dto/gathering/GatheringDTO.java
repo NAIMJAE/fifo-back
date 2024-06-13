@@ -1,8 +1,10 @@
 package kr.co.fifoBack.dto.gathering;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,4 +30,6 @@ public class GatheringDTO {
     private LocalDateTime projectstart;
     private LocalDateTime projectend;
     private String gathstate;
+
+    private List<MultipartFile> images;
 }
