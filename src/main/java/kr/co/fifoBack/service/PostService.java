@@ -1,6 +1,8 @@
 package kr.co.fifoBack.service;
 
+import com.querydsl.core.Tuple;
 import kr.co.fifoBack.dto.PageRequestDTO;
+import kr.co.fifoBack.dto.PageResponseDTO;
 import kr.co.fifoBack.dto.post.PostDTO;
 import kr.co.fifoBack.entity.post.File;
 import kr.co.fifoBack.entity.post.Post;
@@ -13,11 +15,13 @@ import kr.co.fifoBack.repository.post.TagsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -73,8 +77,38 @@ public class PostService {
     public ResponseEntity<?> selectPostByKeyword(PageRequestDTO pageRequestDTO){
 
         Pageable pageable = pageRequestDTO.getPageable("pno");
-        postRepository.selectPostByKeyword(pageRequestDTO, pageable);
-        return null;
+        Page<Tuple> pageTuple = postRepository.selectPostByKeyword(pageRequestDTO, pageable);
+
+        List<PostDTO> postDTOList = pageTuple.getContent().stream()
+                .map(tuple -> {
+                    Post post = tuple.get(0, Post.class);
+                    String name = tuple.get(1, String.class);
+                    String thumb = tuple.get(1, String.class);
+                    PostDTO postDTO = modelMapper.map(post, PostDTO.class);
+                    postDTO.setName(name);
+                    postDTO.setThumb(thumb);
+                    return postDTO;
+                }).toList();
+        log.info("postDTOList : " + postDTOList);
+
+        int total = (int) pageTuple.getTotalElements();
+
+        List<PostDTO> resultPostList = new ArrayList<>();
+        for (PostDTO each : postDTOList) {
+            each.setTagName(postRepository.selectTagForPno(each.getPno()));
+            resultPostList.add(each);
+        }
+        log.info("resultPostList : " + resultPostList);
+
+        PageResponseDTO pagePostDTO = PageResponseDTO.builder()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(resultPostList)
+                .total(total)
+                .build();
+
+        log.info("pagePostDTO : " + pagePostDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(pagePostDTO);
     }
 
 
