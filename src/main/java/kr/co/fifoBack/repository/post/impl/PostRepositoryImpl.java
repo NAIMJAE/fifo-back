@@ -9,11 +9,18 @@ import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.entity.QUser;
 import kr.co.fifoBack.entity.post.Post;
 import kr.co.fifoBack.entity.post.QPost;
+import kr.co.fifoBack.entity.post.QPostTag;
+import kr.co.fifoBack.entity.post.QTags;
 import kr.co.fifoBack.repository.post.custom.PostRepositoryCustom;
+import kr.co.fifoBack.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -23,25 +30,29 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
     private final QPost qPost = QPost.post;
     private final QUser qUser = QUser.user;
+    private final QPostTag qPostTag = QPostTag.postTag;
+    private final QTags qTags = QTags.tags;
 
     // 게시글 조회 + 검색
-    public void selectPostByKeyword(PageRequestDTO pageRequestDTO, Pageable pageable) {
+    public Page<Tuple> selectPostByKeyword(PageRequestDTO pageRequestDTO, Pageable pageable) {
 
         BooleanExpression expression = qPost.cateNo.eq(pageRequestDTO.getCateNo());
         OrderSpecifier<?> orderSpecifier = null;
 
-        // 기본값
+        // 카테고리
         if (pageRequestDTO.getCateNo() > 1) {
             expression = expression.and(qPost.cateNo.eq(pageRequestDTO.getCateNo()));
         }
 
-        // 카테고리
-        if (pageRequestDTO.getType().equals("title")) {
-            expression = expression.and(qPost.title.contains(pageRequestDTO.getKeyword()));
-        } else if (pageRequestDTO.getType().equals("content")) {
-            expression = expression.and(qPost.content.contains(pageRequestDTO.getKeyword()));
-        } else if (pageRequestDTO.getType().equals("writer")) {
-            expression = expression.and(qUser.nick.contains(pageRequestDTO.getKeyword()));
+        // 검색
+        if (pageRequestDTO.getType() != null) {
+            if (pageRequestDTO.getType().equals("title")) {
+                expression = expression.and(qPost.title.contains(pageRequestDTO.getKeyword()));
+            } else if (pageRequestDTO.getType().equals("content")) {
+                expression = expression.and(qPost.content.contains(pageRequestDTO.getKeyword()));
+            } else if (pageRequestDTO.getType().equals("writer")) {
+                expression = expression.and(qUser.nick.contains(pageRequestDTO.getKeyword()));
+            }
         }
 
         // 정렬
@@ -55,8 +66,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             orderSpecifier = qPost.createDate.desc();
         }
 
-        QueryResults<Post> result = jpaQueryFactory
-                .selectFrom(qPost)
+        QueryResults<Tuple> result = jpaQueryFactory
+                .select(qPost, qUser.name, qUser.thumb)
+                .from(qPost)
+                .join(qUser)
+                .on(qPost.userNo.eq(qUser.userNo))
                 .where(expression)
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
@@ -65,6 +79,22 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
         log.info("result : " + result);
 
+        List<Tuple> postList = result.getResults();
+        int total = (int) result.getTotal();
+
+        return new PageImpl<>(postList, pageable, total);
     }
 
+    // 게시글 태그 조회
+    public List<String> selectTagForPno(int pno) {
+        List<String> tagName = jpaQueryFactory
+                .select(qTags.tag)
+                .from(qPostTag)
+                .join(qTags)
+                .on(qPostTag.tno.eq(qTags.tno))
+                .where(qPostTag.pno.eq(pno))
+                .fetch();
+        log.info("tagName : " + tagName);
+        return tagName;
+    }
 }

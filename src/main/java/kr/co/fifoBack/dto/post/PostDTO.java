@@ -28,4 +28,8 @@ public class PostDTO {
     private String tag;
     private List<MultipartFile> files;
     private List<MultipartFile> images;
+
+    private String name;
+    private String thumb;
+    private List<String> tagName;
 }

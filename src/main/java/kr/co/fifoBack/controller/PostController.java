@@ -17,7 +17,7 @@ public class PostController {
     private final PostService postService;
     
     // 게시글 작성
-    @PostMapping("/post/write")
+    @PostMapping("/post")
     public ResponseEntity<?> postWrite(PostDTO postDTO) {
         log.info("postDTO : " + postDTO);
 
