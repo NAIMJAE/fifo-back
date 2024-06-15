@@ -1,4 +1,4 @@
-package kr.co.fifoBack.repository;
+package kr.co.fifoBack.repository.gathering;
 
 import kr.co.fifoBack.entity.gathering.Gathering;
 import org.springframework.data.jpa.repository.JpaRepository;
