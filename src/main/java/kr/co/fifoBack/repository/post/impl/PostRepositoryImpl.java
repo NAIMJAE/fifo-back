@@ -67,7 +67,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         }
 
         QueryResults<Tuple> result = jpaQueryFactory
-                .select(qPost, qUser.name, qUser.thumb)
+                .select(qPost, qUser.thumb)
                 .from(qPost)
                 .join(qUser)
                 .on(qPost.userNo.eq(qUser.userNo))

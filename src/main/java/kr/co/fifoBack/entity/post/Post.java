@@ -25,6 +25,8 @@ public class Post {
     private int cateNo;
     private int good;
     private int hit;
+    private int comNum;
+    private int heartNum;
     @CreationTimestamp
     private LocalDateTime createDate;
     private LocalDateTime modiDate;

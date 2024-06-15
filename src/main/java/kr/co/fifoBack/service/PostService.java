@@ -82,10 +82,8 @@ public class PostService {
         List<PostDTO> postDTOList = pageTuple.getContent().stream()
                 .map(tuple -> {
                     Post post = tuple.get(0, Post.class);
-                    String name = tuple.get(1, String.class);
                     String thumb = tuple.get(1, String.class);
                     PostDTO postDTO = modelMapper.map(post, PostDTO.class);
-                    postDTO.setName(name);
                     postDTO.setThumb(thumb);
                     return postDTO;
                 }).toList();
