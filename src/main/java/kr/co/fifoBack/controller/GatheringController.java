@@ -1,5 +1,6 @@
 package kr.co.fifoBack.controller;
 
+import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.gathering.GatheringDTO;
 import kr.co.fifoBack.service.GatheringService;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,12 @@ public class GatheringController {
     private final GatheringService gatheringService;
 
     // 모임 글 목록
-    @GetMapping("/gatherings")
-    public ResponseEntity<?> selectGatherings(){
-        // pg랑 검색 키워드들 (java Lv5, Spring Lv3 [gathlanguage] , online [gathmode]...) GET 어떻게 받아오지? POST 써야지 뭐
+    @PostMapping("/gatherings")
+    public ResponseEntity<?> selectGatherings(PageRequestDTO pageRequestDTO){
+        // pg랑 검색 키워드들 (java Lv5, Spring Lv3 [gathlanguage] , online [gathmode]...)
+
+
+
         return null;
     }
     // 모임 글 보기

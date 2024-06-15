@@ -1,15 +1,16 @@
 package kr.co.fifoBack.service;
 
+import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.gathering.GatheringDTO;
 import kr.co.fifoBack.entity.gathering.Gathering;
-import kr.co.fifoBack.repository.GathCommentRepository;
-import kr.co.fifoBack.repository.GatheringRepository;
+import kr.co.fifoBack.repository.gathering.GathCommentRepository;
+import kr.co.fifoBack.repository.gathering.GatheringRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,8 +24,8 @@ public class GatheringService {
     private final ModelMapper modelMapper;
 
     // 모임 글 목록
-    public ResponseEntity<?> selectGatherings(){
-
+    public ResponseEntity<?> selectGatherings(PageRequestDTO pageRequestDTO){
+        Pageable pageable = pageRequestDTO.getPageable("pno");
         return null;
     }
     // 모임 글 보기
