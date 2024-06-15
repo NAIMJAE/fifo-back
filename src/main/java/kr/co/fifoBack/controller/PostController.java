@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,12 +26,20 @@ public class PostController {
         return postService.insertPost(postDTO);
     }
 
-    // 게시글 조회 + 검색
+    // 게시글 목록 조회 + 검색
     @PostMapping("/post/list")
     public ResponseEntity<?> postList(PageRequestDTO pageRequestDTO) {
         log.info("pageRequestDTO : " + pageRequestDTO);
 
         return postService.selectPostByKeyword(pageRequestDTO);
+    }
+
+    // 게시글 조회
+    @GetMapping("/post")
+    public ResponseEntity<?> postList(@RequestParam("pno") int pno) {
+        log.info("pno : " + pno);
+
+        return null;
     }
 
 }

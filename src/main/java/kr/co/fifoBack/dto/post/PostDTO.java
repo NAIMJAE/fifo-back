@@ -21,6 +21,8 @@ public class PostDTO {
     private int cateNo;
     private int good;
     private int hit;
+    private int comNum;
+    private int heartNum;
     private LocalDateTime createDate;
     private LocalDateTime modiDate;
 
@@ -29,7 +31,6 @@ public class PostDTO {
     private List<MultipartFile> files;
     private List<MultipartFile> images;
 
-    private String name;
     private String thumb;
     private List<String> tagName;
 }
