@@ -78,7 +78,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 .select(qGathering, qUser.nick, qUser.thumb)
                 .from(qGathering)
                 .join(qUser)
-                .on(qGathering.userno.eq(qUser.userNo))
+                .on(qGathering.userno.eq(qUser.userno))
                 .where(qGathering.gathno.eq(gathno))
                 .fetchOne();
     }
