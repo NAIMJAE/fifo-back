@@ -1,4 +1,4 @@
-package security;
+package kr.co.fifoBack.security;
 
 
 import kr.co.fifoBack.jwt.JwtAuthenticationFilter;

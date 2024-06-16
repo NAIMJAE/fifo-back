@@ -2,11 +2,10 @@ package kr.co.fifoBack.repository.gathering.impl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.fifoBack.dto.PageRequestDTO;
-import kr.co.fifoBack.entity.QUser;
+import kr.co.fifoBack.entity.QUsers;
 import kr.co.fifoBack.entity.gathering.QGathering;
 import kr.co.fifoBack.repository.gathering.custom.GatheringRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     private final QGathering qGathering = QGathering.gathering;
-    private final QUser qUser = QUser.user;
+    private final QUsers qUser = QUsers.users;
 
     // 모임글 목록 전체 조회
     @Override
@@ -36,7 +35,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 .select(qGathering, qUser.name, qUser.thumb)
                 .from(qGathering)
                 .join(qUser)
-                .on(qGathering.userno.eq(qUser.userNo))
+                .on(qGathering.userno.eq(qUser.userno))
                 .orderBy(qGathering.gathno.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -59,7 +58,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 .select(qGathering, qUser.name, qUser.thumb)
                 .from(qGathering)
                 .join(qUser)
-                .on(qGathering.userno.eq(qUser.userNo))
+                .on(qGathering.userno.eq(qUser.userno))
                 //.where(expression)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

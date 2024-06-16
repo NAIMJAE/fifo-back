@@ -1,8 +1,8 @@
-package security;
+package kr.co.fifoBack.security;
 
 
 
-import kr.co.fifoBack.entity.User;
+import kr.co.fifoBack.entity.Users;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,24 +19,24 @@ import java.util.List;
 public class MyUserDetails implements UserDetails {
 
 
-    private User user;
+    private Users users;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // 계정이 갖는 권한 목록
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRole()));
+        authorities.add(new SimpleGrantedAuthority(users.getRole()));
         return authorities;
     }
 
     @Override
     public String getPassword() {
-        return user.getPass();
+        return users.getPass();
     }
 
     @Override
     public String getUsername() {
-        return user.getName();
+        return users.getName();
     }
 
     @Override

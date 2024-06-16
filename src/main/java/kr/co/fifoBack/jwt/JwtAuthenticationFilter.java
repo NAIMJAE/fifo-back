@@ -5,7 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import kr.co.fifoBack.entity.User;
+import kr.co.fifoBack.entity.Users;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -66,15 +66,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     String email  = (String) claims.get("userEmail");
                     String role = (String) claims.get("role");
 
-                    User user = User.builder()
-                            .userNo(userNo)
+                    Users users = Users.builder()
+                            .userno(userNo)
                             .email(email)
                             .role(role)
                             .build();
 
-                    log.info("doFilterInternal...7 : " + user.toString());
+                    log.info("doFilterInternal...7 : " + users.toString());
 
-                    String accessToken = jwtProvider.createToken(user, 1);
+                    String accessToken = jwtProvider.createToken(users, 1);
 
                     log.info("doFilterInternal...8 : " + accessToken);
 

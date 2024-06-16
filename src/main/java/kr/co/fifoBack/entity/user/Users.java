@@ -1,8 +1,6 @@
 package kr.co.fifoBack.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -14,10 +12,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="user")
-public class User {
+@Table(name="users")
+public class Users {
     @Id
-    private int userNo;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userno")
+    private int userno;
     private String email;
     private String pass;
     private String name;

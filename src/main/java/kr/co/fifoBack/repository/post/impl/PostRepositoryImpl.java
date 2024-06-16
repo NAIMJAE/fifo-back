@@ -6,13 +6,11 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.fifoBack.dto.PageRequestDTO;
-import kr.co.fifoBack.entity.QUser;
-import kr.co.fifoBack.entity.post.Post;
+import kr.co.fifoBack.entity.QUsers;
 import kr.co.fifoBack.entity.post.QPost;
 import kr.co.fifoBack.entity.post.QPostTag;
 import kr.co.fifoBack.entity.post.QTags;
 import kr.co.fifoBack.repository.post.custom.PostRepositoryCustom;
-import kr.co.fifoBack.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,7 +27,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
     private final QPost qPost = QPost.post;
-    private final QUser qUser = QUser.user;
+    private final QUsers qUser = QUsers.users;
     private final QPostTag qPostTag = QPostTag.postTag;
     private final QTags qTags = QTags.tags;
 
@@ -70,7 +68,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .select(qPost, qUser.thumb)
                 .from(qPost)
                 .join(qUser)
-                .on(qPost.userNo.eq(qUser.userNo))
+                .on(qPost.userNo.eq(qUser.userno))
                 .where(expression)
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())

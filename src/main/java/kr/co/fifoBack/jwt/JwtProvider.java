@@ -3,7 +3,7 @@ package kr.co.fifoBack.jwt;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import kr.co.fifoBack.entity.User;
+import kr.co.fifoBack.entity.Users;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +33,7 @@ public class JwtProvider {
     }
 
 
-    public String createToken(User user, int days){
+    public String createToken(Users users, int days){
 
         // 발급일, 만료일 생성
         Date issuedDate = new Date();
@@ -43,8 +43,8 @@ public class JwtProvider {
 
         // 클레임 생성
         Claims claims = Jwts.claims();
-        claims.put("userEmail", user.getEmail());
-        claims.put("role", user.getRole());
+        claims.put("userEmail", users.getEmail());
+        claims.put("role", users.getRole());
 
         // 토큰 생성
         String token = Jwts.builder()
@@ -81,8 +81,8 @@ public class JwtProvider {
         authorities.add(new SimpleGrantedAuthority(role));
 
         // 사용자 인증객체 생성
-        User principal = User.builder()
-                .userNo(userNo)
+        Users principal = Users.builder()
+                .userno(userNo)
                 .email(email)
                 .role(role)
                 .build();
