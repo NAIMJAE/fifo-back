@@ -20,6 +20,7 @@ public class GatheringDTO {
     private String gathtitle;
     private String gathdetail;
     private String gathmode;
+    private String thumb;
     private int gathnowmember;
     private int gathtotalmember;
     private String gathsupport;
@@ -31,5 +32,11 @@ public class GatheringDTO {
     private LocalDateTime projectend;
     private String gathstate;
 
+    // 저장용 변수
+    private MultipartFile thumbnail;
     private List<MultipartFile> images;
+
+    // JOIN 변수
+    private String usernick;
+    private String userthumb;
 }

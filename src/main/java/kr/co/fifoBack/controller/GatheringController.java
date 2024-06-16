@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,7 +29,7 @@ public class GatheringController {
     // 모임 글 보기
     @GetMapping("/gathering")
     public ResponseEntity<?> selectGathering(@RequestParam("gathno") int gathno){
-        return null;
+        return gatheringService.selectGathering(gathno);
     }
     // 모임 글 작성
     @PostMapping("/gathering")
