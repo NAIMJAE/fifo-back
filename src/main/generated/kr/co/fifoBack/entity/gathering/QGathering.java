@@ -49,6 +49,8 @@ public class QGathering extends EntityPathBase<Gathering> {
 
     public final DateTimePath<java.time.LocalDateTime> recruitstart = createDateTime("recruitstart", java.time.LocalDateTime.class);
 
+    public final StringPath thumb = createString("thumb");
+
     public final NumberPath<Integer> userno = createNumber("userno", Integer.class);
 
     public QGathering(String variable) {

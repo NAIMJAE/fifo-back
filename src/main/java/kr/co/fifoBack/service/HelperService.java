@@ -29,6 +29,7 @@ public class HelperService {
     */
     @Value("${file.upload.path}")
     private String fileUploadPath;
+
     public List<String> uploadFiles(List<MultipartFile> files, String location, boolean name) {
 
         String path = new File(fileUploadPath).getAbsolutePath() + "/" + location;

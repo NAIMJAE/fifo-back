@@ -55,7 +55,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
         BooleanExpression expression = null;
 
         QueryResults<Tuple> result = jpaQueryFactory
-                .select(qGathering, qUser.name, qUser.thumb)
+                .select(qGathering, qUser.nick, qUser.thumb)
                 .from(qGathering)
                 .join(qUser)
                 .on(qGathering.userno.eq(qUser.userno))
@@ -70,5 +70,16 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
         int total = (int) result.getTotal();
 
         return new PageImpl<>(gathList, pageable, total);
+    }
+    // 모임 글 보기
+    @Override
+    public Tuple selectGathering(int gathno){
+        return jpaQueryFactory
+                .select(qGathering, qUser.nick, qUser.thumb)
+                .from(qGathering)
+                .join(qUser)
+                .on(qGathering.userno.eq(qUser.userNo))
+                .where(qGathering.gathno.eq(gathno))
+                .fetchOne();
     }
 }
