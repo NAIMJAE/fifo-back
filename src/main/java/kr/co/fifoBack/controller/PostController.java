@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
@@ -28,7 +29,7 @@ public class PostController {
 
     // 게시글 목록 조회 + 검색
     @PostMapping("/post/list")
-    public ResponseEntity<?> postList(PageRequestDTO pageRequestDTO) {
+    public ResponseEntity<?> postList(@RequestBody PageRequestDTO pageRequestDTO) {
         log.info("pageRequestDTO : " + pageRequestDTO);
 
         return postService.selectPostByKeyword(pageRequestDTO);

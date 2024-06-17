@@ -34,7 +34,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     // 게시글 조회 + 검색
     public Page<Tuple> selectPostByKeyword(PageRequestDTO pageRequestDTO, Pageable pageable) {
 
-        BooleanExpression expression = qPost.cateNo.eq(pageRequestDTO.getCateNo());
+        BooleanExpression expression = qPost.cateNo.eq(1);
         OrderSpecifier<?> orderSpecifier = null;
 
         // 카테고리
@@ -54,16 +54,18 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         }
 
         // 정렬
-        if (pageRequestDTO.getSort().equals("new")) {
+        if (pageRequestDTO.getSort() == null){
+            orderSpecifier = qPost.createDate.desc();
+        }else if (pageRequestDTO.getSort().equals("new")) {
             orderSpecifier = qPost.createDate.desc();
         }else if (pageRequestDTO.getSort().equals("hit")) {
             orderSpecifier = qPost.hit.desc();
         }else if (pageRequestDTO.getSort().equals("good")) {
             orderSpecifier = qPost.good.desc();
-        }else if (pageRequestDTO.getSort().isEmpty()){
-            orderSpecifier = qPost.createDate.desc();
         }
 
+        // 태그 검색 구현 해야함
+        
         QueryResults<Tuple> result = jpaQueryFactory
                 .select(qPost, qUser.thumb)
                 .from(qPost)
@@ -75,7 +77,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetchResults();
 
-        log.info("result : " + result);
+        log.info("result : " + result.toString());
 
         List<Tuple> postList = result.getResults();
         int total = (int) result.getTotal();
