@@ -4,7 +4,8 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.fifoBack.dto.PageRequestDTO;
+import kr.co.fifoBack.dto.gathering.GatheringDTO;
+import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
 import kr.co.fifoBack.entity.QUsers;
 import kr.co.fifoBack.entity.gathering.QGathering;
 import kr.co.fifoBack.repository.gathering.custom.GatheringRepositoryCustom;
@@ -29,8 +30,8 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
 
     // 모임글 목록 전체 조회
     @Override
-    public Page<Tuple> selectGatherings(PageRequestDTO pageRequestDTO, Pageable pageable) {
-
+    public Page<Tuple> selectGatherings(GathPageRequestDTO pageRequestDTO, Pageable pageable) {
+        log.info("전체 조회");
         QueryResults<Tuple> result = jpaQueryFactory
                 .select(qGathering, qUser.name, qUser.thumb)
                 .from(qGathering)
@@ -50,16 +51,36 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
     }
     // 모임글 목록 검색 조회
     @Override
-    public Page<Tuple> selectGatheringsByKeyword(PageRequestDTO pageRequestDTO, Pageable pageable) {
-
+    public Page<Tuple> selectGatheringsByKeyword(GathPageRequestDTO pageRequestDTO, Pageable pageable) {
+        log.info("검색 조회");
+        GatheringDTO gatheringDTO = pageRequestDTO.getGatheringDTO();
         BooleanExpression expression = null;
+
+        if (gatheringDTO != null) {
+            if (gatheringDTO.getGathcate() != null) {
+                expression = qGathering.gathcate.eq(gatheringDTO.getGathcate());
+            }
+            if (gatheringDTO.getGathmode() != null) {
+                expression = expression != null ? expression.and(qGathering.gathmode.eq(gatheringDTO.getGathmode())) : qGathering.gathmode.eq(gatheringDTO.getGathmode());
+            }
+            if (gatheringDTO.getGathtotalmember() > 0) {
+                expression = expression != null ? expression.and(qGathering.gathtotalmember.eq(gatheringDTO.getGathtotalmember())) : qGathering.gathtotalmember.eq(gatheringDTO.getGathtotalmember());
+            }
+            if (gatheringDTO.getGathrecruitfield() != null) {
+                expression = expression != null ? expression.and(qGathering.gathrecruitfield.eq(gatheringDTO.getGathrecruitfield())) : qGathering.gathrecruitfield.eq(gatheringDTO.getGathrecruitfield());
+            }
+            if (gatheringDTO.getGathlanguage() != null) {
+                expression = expression != null ? expression.and(qGathering.gathlanguage.eq(gatheringDTO.getGathlanguage())) : qGathering.gathlanguage.eq(gatheringDTO.getGathlanguage());
+            }
+        }
 
         QueryResults<Tuple> result = jpaQueryFactory
                 .select(qGathering, qUser.nick, qUser.thumb)
                 .from(qGathering)
                 .join(qUser)
                 .on(qGathering.userno.eq(qUser.userno))
-                //.where(expression)
+                .where(expression)
+                .orderBy(qGathering.gathno.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
