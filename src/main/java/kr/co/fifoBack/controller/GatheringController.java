@@ -2,6 +2,7 @@ package kr.co.fifoBack.controller;
 
 import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.gathering.GatheringDTO;
+import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
 import kr.co.fifoBack.service.GatheringService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +20,10 @@ public class GatheringController {
 
     // 모임 글 목록
     @PostMapping("/gatherings")
-    public ResponseEntity<?> selectGatherings(PageRequestDTO pageRequestDTO){
-        // pg랑 검색 키워드들 (java Lv5, Spring Lv3 [gathlanguage] , online [gathmode]...)
+    public ResponseEntity<?> selectGatherings(@RequestBody GathPageRequestDTO pageRequestDTO) {
+        log.info(pageRequestDTO.toString());
 
-
-
-        return null;
+        return gatheringService.selectGatherings(pageRequestDTO);
     }
     // 모임 글 보기
     @GetMapping("/gathering")
