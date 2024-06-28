@@ -3,6 +3,7 @@ package kr.co.fifoBack.entity.gathering;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -29,9 +30,9 @@ public class Gathering {
     private String gathrecruitfield;    // 모집 분야 (프론트/백엔드/디자인) - 구분자로 무식하게 박아넣기
     private String gathlanguage;        // 모집 언어 + lv (Java lv5, React lv1...)
     private String thumb;
-    private LocalDateTime recruitstart;
-    private LocalDateTime recruitend;
-    private LocalDateTime projectstart;
-    private LocalDateTime projectend;
+    private LocalDate recruitstart;
+    private LocalDate recruitend;
+    private LocalDate projectstart;
+    private LocalDate projectend;
     private String gathstate;   // 모집상태 (모집중, 모집완료)
 }
