@@ -41,13 +41,13 @@ public class QGathering extends EntityPathBase<Gathering> {
 
     public final NumberPath<Integer> gathtotalmember = createNumber("gathtotalmember", Integer.class);
 
-    public final DateTimePath<java.time.LocalDateTime> projectend = createDateTime("projectend", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> projectend = createDate("projectend", java.time.LocalDate.class);
 
-    public final DateTimePath<java.time.LocalDateTime> projectstart = createDateTime("projectstart", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> projectstart = createDate("projectstart", java.time.LocalDate.class);
 
-    public final DateTimePath<java.time.LocalDateTime> recruitend = createDateTime("recruitend", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> recruitend = createDate("recruitend", java.time.LocalDate.class);
 
-    public final DateTimePath<java.time.LocalDateTime> recruitstart = createDateTime("recruitstart", java.time.LocalDateTime.class);
+    public final DatePath<java.time.LocalDate> recruitstart = createDate("recruitstart", java.time.LocalDate.class);
 
     public final StringPath thumb = createString("thumb");
 

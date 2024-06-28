@@ -1,8 +1,10 @@
 package kr.co.fifoBack.dto.gathering;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,10 +28,17 @@ public class GatheringDTO {
     private String gathsupport;
     private String gathrecruitfield;
     private String gathlanguage;
-    private LocalDateTime recruitstart;
-    private LocalDateTime recruitend;
-    private LocalDateTime projectstart;
-    private LocalDateTime projectend;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate recruitstart;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate recruitend;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate projectstart;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate projectend;
     private String gathstate;
 
     // 저장용 변수
