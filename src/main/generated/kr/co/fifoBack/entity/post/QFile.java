@@ -23,6 +23,8 @@ public class QFile extends EntityPathBase<File> {
 
     public final NumberPath<Integer> fno = createNumber("fno", Integer.class);
 
+    public final StringPath oName = createString("oName");
+
     public final NumberPath<Integer> pno = createNumber("pno", Integer.class);
 
     public final StringPath sName = createString("sName");
