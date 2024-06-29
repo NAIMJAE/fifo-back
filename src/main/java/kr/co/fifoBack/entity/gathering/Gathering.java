@@ -34,5 +34,5 @@ public class Gathering {
     private LocalDate recruitend;
     private LocalDate projectstart;
     private LocalDate projectend;
-    private String gathstate;   // 모집상태 (모집중, 모집완료)
+    private String gathstate;  // 모집상태 (모집중, 모집완료)
 }

@@ -49,14 +49,13 @@ public class GatheringService {
                 .map(tuple -> {
                     GatheringDTO gatheringDTO = modelMapper.map(tuple.get(0, Gathering.class), GatheringDTO.class);
                     gatheringDTO.setUsernick(tuple.get(1, String.class));
-                    gatheringDTO.setThumb(tuple.get(2, String.class));
-
+                    gatheringDTO.setUserthumb(tuple.get(2, String.class));
                     return gatheringDTO;
                 })
                 .toList();
 
 
-        return null;
+        return ResponseEntity.ok().body(dtoList);
     }
     // 모임 글 보기
     public ResponseEntity<?> selectGathering(int gathno){
@@ -79,6 +78,7 @@ public class GatheringService {
         }
 
         // DB 저장
+        gatheringDTO.setGathstate("모집중");
         Gathering gathering = gatheringRepository.save(modelMapper.map(gatheringDTO, Gathering.class));
 
         // 이미지 저장 (DB 저장 필요 없음)
