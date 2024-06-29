@@ -3,12 +3,11 @@ package kr.co.fifoBack.service;
 import com.querydsl.core.Tuple;
 import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.PageResponseDTO;
+import kr.co.fifoBack.dto.post.CommentDTO;
+import kr.co.fifoBack.dto.post.HeartDTO;
 import kr.co.fifoBack.dto.post.PostDTO;
 import kr.co.fifoBack.entity.Users;
-import kr.co.fifoBack.entity.post.File;
-import kr.co.fifoBack.entity.post.Post;
-import kr.co.fifoBack.entity.post.PostTag;
-import kr.co.fifoBack.entity.post.Tags;
+import kr.co.fifoBack.entity.post.*;
 import kr.co.fifoBack.repository.post.*;
 import kr.co.fifoBack.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,10 @@ public class PostService {
     private final PostTagRepository postTagRepository;
     private final TagsRepository tagsRepository;
     private final FileRepository fileRepository;
+    private final CommentRepository commentRepository;
+    private final HeartRepository heartRepository;
     private final UserRepository userRepository;
+
     private final HelperService helperService;
     private final ModelMapper modelMapper;
 
@@ -133,6 +137,82 @@ public class PostService {
 
 
         return ResponseEntity.status(HttpStatus.OK).body(postDTO);
+    }
+
+    // 게시글 좋아요
+    @Transactional
+    public ResponseEntity<?> insertPostHeart(HeartDTO heartDTO) {
+        Optional<Heart> alreadyHeart = heartRepository.findByUserNoAndPno(heartDTO.getUserNo(), heartDTO.getPno());
+
+        if (alreadyHeart.isPresent()){
+            // 좋아요 취소
+            heartRepository.deleteById(alreadyHeart.get().getHNo());
+            Optional<Post> optPost = postRepository.findById(heartDTO.getPno());
+            optPost.get().setHeartNum(optPost.get().getHeartNum()-1);
+            postRepository.save(optPost.get());
+            return ResponseEntity.status(HttpStatus.OK).body(0);
+        }else {
+            // 좋아요 추가
+            heartRepository.save(modelMapper.map(heartDTO, Heart.class));
+            Optional<Post> optPost = postRepository.findById(heartDTO.getPno());
+            optPost.get().setHeartNum(optPost.get().getHeartNum()+1);
+            postRepository.save(optPost.get());
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        }
+    }
+
+    // 댓글 작성
+    @Transactional
+    public ResponseEntity<?> insertComment(CommentDTO commentDTO) {
+        commentDTO.setCreateDate(LocalDateTime.now());
+        Comment comment = commentRepository.save(modelMapper.map(commentDTO, Comment.class));
+        if (comment.getCno() != 0) {
+            Optional<Post> optPost = postRepository.findById(comment.getPno());
+            optPost.get().setComNum(optPost.get().getComNum() + 1);
+            postRepository.save(optPost.get());
+
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
+        }
+    }
+
+    // 댓글 불러오기
+    @Transactional
+    public ResponseEntity<?> selectComment(int pno) {
+        List<Tuple> commentTuple = commentRepository.selectCommentByPno(pno);
+
+        List<CommentDTO> commentDTOList = commentTuple.stream().map(
+                tuple -> {
+                    Comment comment = tuple.get(0, Comment.class);
+                    String thumb = tuple.get(1, String.class);
+                    String nick = tuple.get(2, String.class);
+                    CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
+                    commentDTO.setThumb(thumb);
+                    commentDTO.setNick(nick);
+                    return commentDTO;
+                }).toList();
+
+        if (commentDTOList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
+        }else {
+            return ResponseEntity.status(HttpStatus.OK).body(commentDTOList);
+        }
+    }
+
+    // 댓글 수정
+    @Transactional
+    public ResponseEntity<?> modifyComment(CommentDTO commentDTO) {
+        Optional<Comment> optComment = commentRepository.findById(commentDTO.getCno());
+
+        if (optComment.isPresent()) {
+            optComment.get().setContent(commentDTO.getContent());
+            optComment.get().setUpdateDate(LocalDateTime.now());
+            commentRepository.save(optComment.get());
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
+        }
     }
 
 

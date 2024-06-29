@@ -1,10 +1,10 @@
-package kr.co.fifoBack.dto.post;
+package kr.co.fifoBack.entity.post;
 
+import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -12,7 +12,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CommentDTO {
+@Entity
+@Table(name = "comment")
+public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int cno;
     private String content;
     private int userNo;
@@ -20,8 +24,4 @@ public class CommentDTO {
     private int parentCno;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
-
-    // 추가필드
-    private String thumb;
-    private String nick;
 }
