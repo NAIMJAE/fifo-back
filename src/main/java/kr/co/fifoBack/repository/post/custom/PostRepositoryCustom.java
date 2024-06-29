@@ -15,4 +15,6 @@ public interface PostRepositoryCustom {
     public Page<Tuple> selectPostByKeyword(PageRequestDTO pageRequestDTO, Pageable pageable);
     // 게시글 태그 조회
     public List<String> selectTagForPno(int pno);
+    // 게시글 보기
+    public Tuple selectPost(int pno);
 }

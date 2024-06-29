@@ -19,6 +19,7 @@ public class File {
     private int fno;
     private int pno;
     private String sName;
+    private String oName;
     @CreationTimestamp
     private LocalDateTime cDate;
 }
