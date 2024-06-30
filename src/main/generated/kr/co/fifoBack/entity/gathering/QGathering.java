@@ -19,7 +19,7 @@ public class QGathering extends EntityPathBase<Gathering> {
 
     public static final QGathering gathering = new QGathering("gathering");
 
-    public final StringPath gathcate = createString("gathcate");
+    public final NumberPath<Integer> gathcate = createNumber("gathcate", Integer.class);
 
     public final NumberPath<Integer> gathcomment = createNumber("gathcomment", Integer.class);
 

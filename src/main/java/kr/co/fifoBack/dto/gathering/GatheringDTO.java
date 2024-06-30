@@ -17,7 +17,7 @@ import java.util.List;
 public class GatheringDTO {
 
     private int gathno;
-    private String gathcate;
+    private int gathcate;
     private int userno;
     private String gathtitle;
     private String gathdetail;

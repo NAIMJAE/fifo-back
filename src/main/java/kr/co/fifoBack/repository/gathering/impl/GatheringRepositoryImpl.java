@@ -57,7 +57,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
         BooleanExpression expression = null;
 
         if (gatheringDTO != null) {
-            if (gatheringDTO.getGathcate() != null) {
+            if (gatheringDTO.getGathcate() != 0) {
                 expression = qGathering.gathcate.eq(gatheringDTO.getGathcate());
             }
             if (gatheringDTO.getGathmode() != null) {

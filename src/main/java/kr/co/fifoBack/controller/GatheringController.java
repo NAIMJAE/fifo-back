@@ -48,6 +48,12 @@ public class GatheringController {
     public ResponseEntity<?> deleteGathering(@RequestParam("gathno") int gathno){
         return null;
     }
+    // 내 모임 목록 조회
+    @PostMapping("/my/gatherings")
+    public ResponseEntity<?> selectMyGatherings(@RequestBody GathPageRequestDTO pageRequestDTO){
+        log.info(pageRequestDTO.toString()); // no=1, pg=1, size=12, sort=null, gatheringDTO=null, userno=1, gathcate=1, type=, keyword=
+        return gatheringService.selectGatherings(pageRequestDTO);
+    }
     // 댓글 작성
     @PostMapping("/gathcomment")
     public ResponseEntity<?> commentWrite(@RequestBody GathCommentDTO commentDTO) {

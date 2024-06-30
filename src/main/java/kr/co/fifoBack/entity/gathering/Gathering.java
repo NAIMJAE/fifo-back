@@ -19,7 +19,7 @@ public class Gathering {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int gathno;
-    private String gathcate;    // 모집 유형 (프로젝트, 스터디, 모임)
+    private int gathcate;    // 모집 유형 (1:프로젝트, 2:스터디, 3:모임)
     private int userno;         // 모임 호스트 (게시글 작성자)
     private String gathtitle;   // 게시글 제목
     private String gathdetail;  // 게시글 내용 (content)

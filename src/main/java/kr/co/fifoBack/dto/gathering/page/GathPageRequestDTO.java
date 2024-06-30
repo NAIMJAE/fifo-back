@@ -22,10 +22,17 @@ public class GathPageRequestDTO {
     private int pg = 1;
 
     @Builder.Default
-    private int size = 16;
+    private int size = 12;
 
+    // 전체 조회
     private String sort;
     private GatheringDTO gatheringDTO;
+
+    // 내 모임 조회
+    private int userno;
+    private int gathcate;
+    private String type;
+    private String keyword;
 
     public Pageable getPageable(String sort){
         return PageRequest.of(this.pg - 1, this.size, Sort.by(sort).descending());
