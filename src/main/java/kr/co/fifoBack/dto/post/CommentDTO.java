@@ -24,4 +24,6 @@ public class CommentDTO {
     // 추가필드
     private String thumb;
     private String nick;
+    // 답글
+    private List<CommentDTO> replyList;
 }
