@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class GathCommentDTO {
 
     private int commentno;
-    private String gathno;
+    private int gathno;
     private int userno;
     private String content;
     private LocalDateTime rdate;

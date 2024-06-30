@@ -1,8 +1,10 @@
 package kr.co.fifoBack.controller;
 
 import kr.co.fifoBack.dto.PageRequestDTO;
+import kr.co.fifoBack.dto.gathering.GathCommentDTO;
 import kr.co.fifoBack.dto.gathering.GatheringDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
+import kr.co.fifoBack.dto.post.CommentDTO;
 import kr.co.fifoBack.service.GatheringService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +28,9 @@ public class GatheringController {
         return gatheringService.selectGatherings(pageRequestDTO);
     }
     // 모임 글 보기
-    @GetMapping("/gathering")
-    public ResponseEntity<?> selectGathering(@RequestParam("gathno") int gathno){
+    @GetMapping("/gathering/{gathno}")
+    public ResponseEntity<?> selectGathering(@PathVariable("gathno")  int gathno){
+        log.info("gathno : " + gathno);
         return gatheringService.selectGathering(gathno);
     }
     // 모임 글 작성
@@ -44,5 +47,18 @@ public class GatheringController {
     @DeleteMapping("/gathering")
     public ResponseEntity<?> deleteGathering(@RequestParam("gathno") int gathno){
         return null;
+    }
+    // 댓글 작성
+    @PostMapping("/gathcomment")
+    public ResponseEntity<?> commentWrite(@RequestBody GathCommentDTO commentDTO) {
+        log.info("commentDTO : " + commentDTO);
+        return gatheringService.insertComment(commentDTO);
+    }
+
+    // 댓글 불러오기
+    @GetMapping("/gathcomment/{pno}")
+    public ResponseEntity<?> commentView(@PathVariable("gathno") int gathno) {
+        log.info("gathno : " + gathno);
+        return gatheringService.selectComment(gathno);
     }
 }
