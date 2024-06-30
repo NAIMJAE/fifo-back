@@ -60,3 +60,6 @@ front:
 jwt:
     issuer: kkj80911@gmail.com
     secret: i9IRfpZMBT0Wvcs1p35alIvMbCFJQH7S
+
+mybatis:
+    mapper-locations: classpath:mappers/**/*.xml

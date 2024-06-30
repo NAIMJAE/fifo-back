@@ -21,6 +21,8 @@ public class QGathering extends EntityPathBase<Gathering> {
 
     public final StringPath gathcate = createString("gathcate");
 
+    public final NumberPath<Integer> gathcomment = createNumber("gathcomment", Integer.class);
+
     public final StringPath gathdetail = createString("gathdetail");
 
     public final StringPath gathlanguage = createString("gathlanguage");
@@ -40,6 +42,8 @@ public class QGathering extends EntityPathBase<Gathering> {
     public final StringPath gathtitle = createString("gathtitle");
 
     public final NumberPath<Integer> gathtotalmember = createNumber("gathtotalmember", Integer.class);
+
+    public final NumberPath<Integer> hit = createNumber("hit", Integer.class);
 
     public final DatePath<java.time.LocalDate> projectend = createDate("projectend", java.time.LocalDate.class);
 

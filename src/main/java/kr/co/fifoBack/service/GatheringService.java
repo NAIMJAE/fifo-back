@@ -1,9 +1,12 @@
 package kr.co.fifoBack.service;
 
 import com.querydsl.core.Tuple;
+import kr.co.fifoBack.dto.gathering.GathCommentDTO;
 import kr.co.fifoBack.dto.gathering.GatheringDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
+import kr.co.fifoBack.entity.gathering.GathComment;
 import kr.co.fifoBack.entity.gathering.Gathering;
+import kr.co.fifoBack.mapper.GatheringMapper;
 import kr.co.fifoBack.repository.gathering.GathCommentRepository;
 import kr.co.fifoBack.repository.gathering.GatheringRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ public class GatheringService {
     private final GatheringRepository gatheringRepository;
     private final GathCommentRepository gathCommentRepository;
 
+    private final GatheringMapper gatheringMapper;
     private final HelperService helperService;
     private final ModelMapper modelMapper;
 
@@ -58,11 +62,20 @@ public class GatheringService {
         return ResponseEntity.ok().body(dtoList);
     }
     // 모임 글 보기
+    @Transactional
     public ResponseEntity<?> selectGathering(int gathno){
+
+        // 글 조회
         Tuple result = gatheringRepository.selectGathering(gathno);
-        GatheringDTO gatheringDTO = modelMapper.map(result.get(0, Gathering.class), GatheringDTO.class);
+        Gathering gathering = result.get(0, Gathering.class);
+        GatheringDTO gatheringDTO = modelMapper.map(gathering, GatheringDTO.class);
         gatheringDTO.setUsernick(result.get(1, String.class));
         gatheringDTO.setUserthumb(result.get(2, String.class));
+
+        // 조회수 ++
+        gathering.setHit(gathering.getHit() + 1);
+        gatheringRepository.save(gathering);
+
         return ResponseEntity.ok().body(gatheringDTO);
     }
     // 모임 글 작성
@@ -96,6 +109,24 @@ public class GatheringService {
         return null;
     }
 
+    // 댓글 작성
+    @Transactional
+    public ResponseEntity<?> insertComment(GathCommentDTO commentDTO) {
+        // 댓글 저장
+        GathComment gathComment = gathCommentRepository.save(modelMapper.map(commentDTO, GathComment.class));
+
+        // 모임글 댓글 수 ++
+        gatheringMapper.updateGatheringCommentCount(commentDTO.getGathno());
+
+        return ResponseEntity.ok().body(gathComment);
+    }
+
+    // 댓글 불러오기
+    public ResponseEntity<?> selectComment(int gathno) {
+
+        return ResponseEntity.ok().body("");
+    }
+
     // GatheringDTO가 기본값인지 확인하는 메서드
     private boolean isDefaultGatheringDTO(GatheringDTO gatheringDTO) {
         if (gatheringDTO == null) {
@@ -108,4 +139,5 @@ public class GatheringService {
                 && gatheringDTO.getGathrecruitfield() == null
                 && gatheringDTO.getGathlanguage() == null;
     }
+
 }
