@@ -78,6 +78,9 @@ public class UserController {
             Map<String, Object> userMap = new HashMap<>();
 
             userMap.put("email", users.getEmail());
+            userMap.put("userno", users.getUserno());
+            userMap.put("nick", users.getNick());
+            userMap.put("thumb", users.getThumb());
             userMap.put("role", users.getRole());
             userMap.put("accessToken", accessToken);
             userMap.put("refreshToken", refreshToken);
