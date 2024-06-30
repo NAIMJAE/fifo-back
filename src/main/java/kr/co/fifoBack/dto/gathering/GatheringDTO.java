@@ -41,6 +41,9 @@ public class GatheringDTO {
     private LocalDate projectend;
     private String gathstate;
 
+    private int hit;
+    private int gathcomment;    // 댓글 개수
+
     // 저장용 변수
     private MultipartFile thumbnail;
     private List<MultipartFile> images;

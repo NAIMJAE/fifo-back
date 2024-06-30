@@ -23,7 +23,7 @@ public class QGathComment extends EntityPathBase<GathComment> {
 
     public final StringPath content = createString("content");
 
-    public final StringPath gathno = createString("gathno");
+    public final NumberPath<Integer> gathno = createNumber("gathno", Integer.class);
 
     public final DateTimePath<java.time.LocalDateTime> rdate = createDateTime("rdate", java.time.LocalDateTime.class);
 

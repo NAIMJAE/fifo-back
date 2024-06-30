@@ -2,6 +2,7 @@ package kr.co.fifoBack.entity.gathering;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -18,8 +19,9 @@ public class GathComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int commentno;
-    private String gathno;
+    private int gathno;
     private int userno;
     private String content;
+    @CreationTimestamp
     private LocalDateTime rdate;
 }
