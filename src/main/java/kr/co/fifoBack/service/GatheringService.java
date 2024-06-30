@@ -109,6 +109,13 @@ public class GatheringService {
         return null;
     }
 
+    // 내 모임 목록 조회
+    public ResponseEntity<?> selectGatheringsByUser(GathPageRequestDTO gathPageRequestDTO){
+
+        // 내 모임 글?조회???인가 프로젝트 테이블 조회인가
+        // 채팅이랑 프로젝트에 포함된 게시판(노션 페이지같은거)도 같이 조회
+        return ResponseEntity.ok().body("");
+    }
     // 댓글 작성
     @Transactional
     public ResponseEntity<?> insertComment(GathCommentDTO commentDTO) {
@@ -133,7 +140,7 @@ public class GatheringService {
             return true;
         }
         // GatheringDTO의 필드들이 기본값인지 확인 : 기본값이면 true
-        return gatheringDTO.getGathcate() == null
+        return gatheringDTO.getGathcate() == 0
                 && gatheringDTO.getGathmode() == null
                 && gatheringDTO.getGathtotalmember() == 0
                 && gatheringDTO.getGathrecruitfield() == null
