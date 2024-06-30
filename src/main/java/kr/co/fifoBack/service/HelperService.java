@@ -34,6 +34,12 @@ public class HelperService {
 
         String path = new File(fileUploadPath).getAbsolutePath() + "/" + location;
 
+        // 파일 폴더 자동 생성
+        File checkPath = new File(path);
+        if (!checkPath.exists()) {
+            checkPath.mkdirs();  // mkdir() 대신 mkdirs() 사용해서 중간 경로도 생성
+        }
+
         List<String> savedSName = new ArrayList<>();
         for (MultipartFile file : files) {
             String sName = null;

@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.entity.QUsers;
+import kr.co.fifoBack.entity.post.QCategory;
 import kr.co.fifoBack.entity.post.QPost;
 import kr.co.fifoBack.entity.post.QPostTag;
 import kr.co.fifoBack.entity.post.QTags;
@@ -30,6 +31,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private final QUsers qUser = QUsers.users;
     private final QPostTag qPostTag = QPostTag.postTag;
     private final QTags qTags = QTags.tags;
+    private final QCategory qCategory = QCategory.category;
 
     // 게시글 조회 + 검색
     public Page<Tuple> selectPostByKeyword(PageRequestDTO pageRequestDTO, Pageable pageable) {
@@ -94,7 +96,19 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .on(qPostTag.tno.eq(qTags.tno))
                 .where(qPostTag.pno.eq(pno))
                 .fetch();
-        log.info("tagName : " + tagName);
         return tagName;
+    }
+
+    // 게시글 보기
+    public Tuple selectPost(int pno) {
+        return jpaQueryFactory
+                .select(qPost, qUser.thumb, qCategory.cateName)
+                .from(qPost)
+                .join(qUser)
+                .on(qPost.userNo.eq(qUser.userno))
+                .join(qCategory)
+                .on(qPost.cateNo.eq(qCategory.cateNo))
+                .where(qPost.pno.eq(pno))
+                .fetchOne();
     }
 }

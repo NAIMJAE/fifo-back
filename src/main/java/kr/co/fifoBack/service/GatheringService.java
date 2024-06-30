@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -48,14 +49,13 @@ public class GatheringService {
                 .map(tuple -> {
                     GatheringDTO gatheringDTO = modelMapper.map(tuple.get(0, Gathering.class), GatheringDTO.class);
                     gatheringDTO.setUsernick(tuple.get(1, String.class));
-                    gatheringDTO.setThumb(tuple.get(2, String.class));
-
+                    gatheringDTO.setUserthumb(tuple.get(2, String.class));
                     return gatheringDTO;
                 })
                 .toList();
 
 
-        return null;
+        return ResponseEntity.ok().body(dtoList);
     }
     // 모임 글 보기
     public ResponseEntity<?> selectGathering(int gathno){
@@ -66,22 +66,25 @@ public class GatheringService {
         return ResponseEntity.ok().body(gatheringDTO);
     }
     // 모임 글 작성
+    @Transactional
     public ResponseEntity<?> insertGathering(GatheringDTO gatheringDTO){
 
         // 썸네일 저장
         MultipartFile thumbnail = gatheringDTO.getThumbnail();
         String thumb = null;
         if (thumbnail != null && !thumbnail.isEmpty()) {
-            thumb = helperService.uploadFiles(List.of(thumbnail), "gathering/thumb/", true).get(0);
+            thumb = helperService.uploadFiles(List.of(thumbnail), "gathering/thumb/", false).get(0);
             gatheringDTO.setThumb(thumb);
         }
 
         // DB 저장
+        gatheringDTO.setGathstate("모집중");
         Gathering gathering = gatheringRepository.save(modelMapper.map(gatheringDTO, Gathering.class));
 
         // 이미지 저장 (DB 저장 필요 없음)
-        helperService.uploadFiles(gatheringDTO.getImages(), "gathering/images/", true);
-
+        if (gatheringDTO.getImages() != null && !gatheringDTO.getImages().isEmpty()) {
+            helperService.uploadFiles(gatheringDTO.getImages(), "gathering/images/", true);
+        }
         return ResponseEntity.ok().body(gathering.getGathno());
     }
     // 모임 글 수정

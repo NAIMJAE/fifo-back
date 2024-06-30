@@ -33,4 +33,7 @@ public class PostDTO {
 
     private String thumb;
     private List<String> tagName;
+
+    private List<String> fileName;
+    private String cateName;
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @ToString
@@ -12,14 +13,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "file")
-public class File {
+@Table(name = "comment")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int fno;
+    private int cno;
+    private String content;
+    private int userNo;
     private int pno;
-    private String sName;
-    private String oName;
-    @CreationTimestamp
-    private LocalDateTime cDate;
+    private int parentCno;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 }

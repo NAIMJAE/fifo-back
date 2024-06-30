@@ -76,18 +76,13 @@ public class UserController {
             String refreshToken = jwtProvider.createToken(users, 7);
 
             Map<String, Object> userMap = new HashMap<>();
-            log.info("login...4" + userMap);
 
             userMap.put("email", users.getEmail());
-            userMap.put("name", users.getName());
-            userMap.put("nick", users.getNick());
-            userMap.put("hp", users.getHp());
-            userMap.put("region", users.getRegion());
-            userMap.put("age", users.getAge());
-            userMap.put("rdate", users.getRdate());
             userMap.put("role", users.getRole());
             userMap.put("accessToken", accessToken);
             userMap.put("refreshToken", refreshToken);
+
+            log.info("login...4" + userMap);
 
             return ResponseEntity.ok().body(userMap);
         }catch (Exception e){
