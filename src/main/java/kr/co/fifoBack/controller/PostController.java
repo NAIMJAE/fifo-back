@@ -56,10 +56,13 @@ public class PostController {
     }
 
     // 댓글 불러오기
-    @GetMapping("/comment/{pno}")
-    public ResponseEntity<?> commentView(@PathVariable("pno") int pno) {
-        log.info("pno : " + pno);
-        return postService.selectComment(pno);
+    @GetMapping("/comment")
+    public ResponseEntity<?> commentView(@RequestParam("pg") int pg, @RequestParam("pno") int pno) {
+        PageRequestDTO pageRequestDTO = new PageRequestDTO();
+        pageRequestDTO.setPg(pg);
+        pageRequestDTO.setPno(pno);
+        log.info("pageRequestDTO : " + pageRequestDTO);
+        return postService.selectComment(pageRequestDTO);
     }
 
     // 댓글 수정
@@ -67,5 +70,12 @@ public class PostController {
     public ResponseEntity<?> commentModify(@RequestBody CommentDTO commentDTO) {
         log.info("commentDTO : " + commentDTO);
         return postService.modifyComment(commentDTO);
+    }
+
+    // 답글 작성
+    @PostMapping("/reply")
+    public ResponseEntity<?> replyWrite(@RequestBody CommentDTO commentDTO) {
+        log.info("commentDTO : " + commentDTO);
+        return postService.insertComment(commentDTO);
     }
 }

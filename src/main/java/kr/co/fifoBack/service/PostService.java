@@ -179,24 +179,33 @@ public class PostService {
 
     // 댓글 불러오기
     @Transactional
-    public ResponseEntity<?> selectComment(int pno) {
-        List<Tuple> commentTuple = commentRepository.selectCommentByPno(pno);
+    public ResponseEntity<?> selectComment(PageRequestDTO pageRequestDTO) {
+        Pageable pageable = pageRequestDTO.getPageable("no");
+        Page<Tuple> commentTuple = commentRepository.selectCommentByPno(pageRequestDTO, pageable);
 
-        List<CommentDTO> commentDTOList = commentTuple.stream().map(
-                tuple -> {
-                    Comment comment = tuple.get(0, Comment.class);
-                    String thumb = tuple.get(1, String.class);
-                    String nick = tuple.get(2, String.class);
-                    CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
-                    commentDTO.setThumb(thumb);
-                    commentDTO.setNick(nick);
-                    return commentDTO;
-                }).toList();
-
-        if (commentDTOList.isEmpty()) {
+        if (commentTuple.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
         }else {
-            return ResponseEntity.status(HttpStatus.OK).body(commentDTOList);
+            List<CommentDTO> commentDTOList = commentTuple.getContent().stream().map(
+                    tuple -> {
+                        Comment comment = tuple.get(0, Comment.class);
+                        String thumb = tuple.get(1, String.class);
+                        String nick = tuple.get(2, String.class);
+                        List<CommentDTO> reply = commentRepository.selectReply(comment.getPno(), comment.getCno());
+                        CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
+                        commentDTO.setThumb(thumb);
+                        commentDTO.setNick(nick);
+                        commentDTO.setReplyList(reply);
+                        return commentDTO;
+                    }).toList();
+            int total = (int) commentTuple.getTotalElements();
+            PageResponseDTO pageResponseDTO = PageResponseDTO.builder()
+                    .pageRequestDTO(pageRequestDTO)
+                    .dtoList(commentDTOList)
+                    .total(total)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.OK).body(pageResponseDTO);
         }
     }
 
