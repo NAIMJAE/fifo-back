@@ -13,17 +13,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "comment")
-public class Comment {
+@Table(name = "commentheart")
+public class CommentHeart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int cno;
-    private String content;
+    private int cheartno;
     private int userNo;
-    private int pno;
-    private int parentCno;
-    private LocalDateTime createDate;
-    private LocalDateTime updateDate;
-    private int state;
-    private int heart;
+    private int cno;
 }
