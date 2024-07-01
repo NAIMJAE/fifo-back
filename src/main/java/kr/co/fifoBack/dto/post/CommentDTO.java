@@ -20,6 +20,8 @@ public class CommentDTO {
     private int parentCno;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
+    private int state;
+    private int heart;
 
     // 추가필드
     private String thumb;

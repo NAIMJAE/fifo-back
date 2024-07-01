@@ -4,6 +4,7 @@ import com.querydsl.core.Tuple;
 import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.PageResponseDTO;
 import kr.co.fifoBack.dto.post.CommentDTO;
+import kr.co.fifoBack.dto.post.CommentHeartDTO;
 import kr.co.fifoBack.dto.post.HeartDTO;
 import kr.co.fifoBack.dto.post.PostDTO;
 import kr.co.fifoBack.entity.Users;
@@ -37,6 +38,7 @@ public class PostService {
     private final FileRepository fileRepository;
     private final CommentRepository commentRepository;
     private final HeartRepository heartRepository;
+    private final CommentHeartRepository commentHeartRepository;
     private final UserRepository userRepository;
 
     private final HelperService helperService;
@@ -221,6 +223,41 @@ public class PostService {
             return ResponseEntity.status(HttpStatus.OK).body(1);
         }else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
+        }
+    }
+
+    // 댓글 삭제
+    public ResponseEntity<?> deleteComment(int cno) {
+        Optional<Comment> optComment = commentRepository.findById(cno);
+        if (optComment.isPresent()) {
+            optComment.get().setUpdateDate(LocalDateTime.now());
+            optComment.get().setContent("삭제되었습니다.");
+            optComment.get().setState(1);
+            commentRepository.save(optComment.get());
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        }else {
+            return ResponseEntity.status(HttpStatus.OK).body(0);
+        }
+    }
+
+    // 댓글 좋아요
+    public ResponseEntity<?> commentHeart(CommentHeartDTO commentHeartDTO) {
+        Optional<CommentHeart> alreadyHeart = commentHeartRepository.findByUserNoAndCno(commentHeartDTO.getUserNo(), commentHeartDTO.getCno());
+
+        if (alreadyHeart.isPresent()){
+            // 좋아요 취소
+            commentHeartRepository.deleteById(alreadyHeart.get().getCheartno());
+            Optional<Comment> optComment = commentRepository.findById(commentHeartDTO.getCno());
+            optComment.get().setHeart(optComment.get().getHeart()-1);
+            commentRepository.save(optComment.get());
+            return ResponseEntity.status(HttpStatus.OK).body(0);
+        }else {
+            // 좋아요 추가
+            commentHeartRepository.save(modelMapper.map(commentHeartDTO, CommentHeart.class));
+            Optional<Comment> optComment = commentRepository.findById(commentHeartDTO.getCno());
+            optComment.get().setHeart(optComment.get().getHeart()+1);
+            commentRepository.save(optComment.get());
+            return ResponseEntity.status(HttpStatus.OK).body(1);
         }
     }
 

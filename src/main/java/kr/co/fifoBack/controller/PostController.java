@@ -2,6 +2,7 @@ package kr.co.fifoBack.controller;
 
 import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.post.CommentDTO;
+import kr.co.fifoBack.dto.post.CommentHeartDTO;
 import kr.co.fifoBack.dto.post.HeartDTO;
 import kr.co.fifoBack.dto.post.PostDTO;
 import kr.co.fifoBack.service.PostService;
@@ -70,6 +71,20 @@ public class PostController {
     public ResponseEntity<?> commentModify(@RequestBody CommentDTO commentDTO) {
         log.info("commentDTO : " + commentDTO);
         return postService.modifyComment(commentDTO);
+    }
+
+    // 댓글 삭제
+    @DeleteMapping("/comment/{cno}")
+    public ResponseEntity<?> commentDelete(@PathVariable int cno) {
+        log.info("cno : " + cno);
+        return postService.deleteComment(cno);
+    }
+
+    // 댓글 좋아요
+    @PostMapping("/comment/heart")
+    public ResponseEntity<?> commentHeart(@RequestBody CommentHeartDTO commentHeartDTO){
+        log.info("commentHeartDTO : " + commentHeartDTO);
+        return postService.commentHeart(commentHeartDTO);
     }
 
     // 답글 작성

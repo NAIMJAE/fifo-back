@@ -25,9 +25,13 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
+    public final NumberPath<Integer> heart = createNumber("heart", Integer.class);
+
     public final NumberPath<Integer> parentCno = createNumber("parentCno", Integer.class);
 
     public final NumberPath<Integer> pno = createNumber("pno", Integer.class);
+
+    public final NumberPath<Integer> state = createNumber("state", Integer.class);
 
     public final DateTimePath<java.time.LocalDateTime> updateDate = createDateTime("updateDate", java.time.LocalDateTime.class);
 
