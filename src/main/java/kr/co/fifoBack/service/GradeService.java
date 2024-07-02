@@ -7,19 +7,20 @@ import kr.co.fifoBack.repository.grade.LanguageRepository;
 import kr.co.fifoBack.repository.grade.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class GradeService {
+
+
+    private final ModelMapper modelMapper;
 
     private final LanguageRepository languageRepository;
     private final QuestionRepository questionRepository;
@@ -43,6 +44,18 @@ public class GradeService {
         List<Question> questions = questionRepository.findAllByLanguagename(language);
 
         return ResponseEntity.ok().body(questions);
+    }
+
+    public ResponseEntity<?> selectQuestionByQuestionNo(int questionNo){
+
+        Optional questionOptional = questionRepository.findById(questionNo);
+
+        if (questionOptional.isPresent()){
+            Question question = modelMapper.map(questionOptional.get(),Question.class);
+            return ResponseEntity.ok().body(question);
+        }
+
+        return ResponseEntity.status(100).body("없음");
     }
 
 }

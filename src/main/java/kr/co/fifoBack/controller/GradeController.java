@@ -27,4 +27,10 @@ public class GradeController {
         return gradeService.selectAllQuestionsByLanguage(language);
     }
 
+    @GetMapping("question/{questionNo}")
+    public ResponseEntity<?> questionView(@PathVariable("questionNo") int questionNo){
+        log.info("여기");
+        return gradeService.selectQuestionByQuestionNo(questionNo);
+    }
+
 }
