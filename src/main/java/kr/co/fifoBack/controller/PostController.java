@@ -49,6 +49,13 @@ public class PostController {
         return postService.insertPostHeart(heartDTO);
     }
 
+    // 게시글 수정
+    @PutMapping("/post")
+    public ResponseEntity<?> commentModify(PostDTO postDTO) {
+        log.info("postDTO : " + postDTO);
+        return postService.modifyPost(postDTO);
+    }
+
     // 댓글 작성
     @PostMapping("/comment")
     public ResponseEntity<?> commentWrite(@RequestBody CommentDTO commentDTO) {
