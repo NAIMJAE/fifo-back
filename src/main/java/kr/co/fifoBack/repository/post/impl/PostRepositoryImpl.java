@@ -36,12 +36,16 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     // 게시글 조회 + 검색
     public Page<Tuple> selectPostByKeyword(PageRequestDTO pageRequestDTO, Pageable pageable) {
 
-        BooleanExpression expression = qPost.cateNo.eq(1);
+        log.info("pageRequestDTO : " + pageRequestDTO);
+
+        BooleanExpression expression = null;
         OrderSpecifier<?> orderSpecifier = null;
 
         // 카테고리
         if (pageRequestDTO.getCateNo() > 1) {
-            expression = expression.and(qPost.cateNo.eq(pageRequestDTO.getCateNo()));
+            expression = (qPost.cateNo.eq(pageRequestDTO.getCateNo()));
+        } else {
+            expression = (qPost.cateNo.eq(1));
         }
 
         // 검색
@@ -69,7 +73,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         // 태그 검색 구현 해야함
         
         QueryResults<Tuple> result = jpaQueryFactory
-                .select(qPost, qUser.thumb)
+                .select(qPost, qUser.thumb, qUser.nick)
                 .from(qPost)
                 .join(qUser)
                 .on(qPost.userNo.eq(qUser.userno))
@@ -102,7 +106,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     // 게시글 보기
     public Tuple selectPost(int pno) {
         return jpaQueryFactory
-                .select(qPost, qUser.thumb, qCategory.cateName)
+                .select(qPost, qUser.thumb, qUser.nick, qCategory.cateName)
                 .from(qPost)
                 .join(qUser)
                 .on(qPost.userNo.eq(qUser.userno))

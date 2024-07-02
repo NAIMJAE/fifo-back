@@ -17,7 +17,6 @@ public class PostDTO {
     private String title;
     private String content;
     private int userNo;
-    private String nick;
     private int cateNo;
     private int good;
     private int hit;
@@ -32,6 +31,7 @@ public class PostDTO {
     private List<MultipartFile> images;
 
     private String thumb;
+    private String nick;
     private List<String> tagName;
 
     private List<String> fileName;

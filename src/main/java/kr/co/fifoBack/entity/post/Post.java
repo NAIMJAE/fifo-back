@@ -20,7 +20,6 @@ public class Post {
     private String title;
     private String content;
     private int userNo;
-    private String nick;
     @Column(name = "cateNo")
     private int cateNo;
     private int good;

@@ -35,8 +35,6 @@ public class QPost extends EntityPathBase<Post> {
 
     public final DateTimePath<java.time.LocalDateTime> modiDate = createDateTime("modiDate", java.time.LocalDateTime.class);
 
-    public final StringPath nick = createString("nick");
-
     public final NumberPath<Integer> pno = createNumber("pno", Integer.class);
 
     public final StringPath title = createString("title");
