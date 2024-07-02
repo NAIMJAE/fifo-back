@@ -31,6 +31,6 @@ public class Users {
 
     @CreationTimestamp
     private LocalDateTime rdate;
-    @CreationTimestamp
+
     private LocalDateTime leaveDate;
 }
