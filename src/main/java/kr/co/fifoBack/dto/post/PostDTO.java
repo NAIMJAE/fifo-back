@@ -4,7 +4,9 @@ import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -18,7 +20,6 @@ public class PostDTO {
     private String content;
     private int userNo;
     private int cateNo;
-    private int good;
     private int hit;
     private int comNum;
     private int heartNum;
@@ -28,12 +29,13 @@ public class PostDTO {
     // 추가 필드
     private String tag;
     private List<MultipartFile> files;
+    private int[] deleteFile;
     private List<MultipartFile> images;
 
     private String thumb;
     private String nick;
     private List<String> tagName;
 
-    private List<String> fileName;
+    private List<LinkedHashMap<Integer, String>> fileName;
     private String cateName;
 }

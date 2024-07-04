@@ -3,6 +3,8 @@ package kr.co.fifoBack.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,6 +62,57 @@ public class HelperService {
             }
         }
         return savedSName;
+    }
+
+    /*
+        파일 삭제
+        - location : 삭제할 파일이 저장되어 있는 주소
+        - fileSavedName : 저장된 파일의 이름
+    */
+    public boolean deleteFiles(String location, String fileSavedName) {
+        String filePath = fileUploadPath + "/" + location;
+
+        File file = new File(filePath + File.separator + fileSavedName);
+        if (file.exists()) {
+            // 파일 삭제 시도
+            if (file.delete()) {
+                log.info("파일 삭제 성공: " + fileSavedName);
+                return true;
+            } else {
+                log.info("파일 삭제 실패: " + fileSavedName);
+                return false;
+            }
+        } else {
+            log.info("파일이 존재하지 않음: " + fileSavedName);
+            return false;
+        }
+    }
+    
+    /*
+        파일 디렉토리 삭제
+        - location : 삭제할 디렉토리 주소
+        uploads에 저장된 파일을 디렉토리 단위로 삭제하는 매서드
+     */
+    public boolean deleteFileDirectory(String location) {
+        File folder = new File(fileUploadPath + File.separator + location);
+
+        try {
+            while(folder.exists()) {
+                File[] fileList = folder.listFiles(); //파일리스트 얻어오기
+
+                for (int i = 0; i < fileList.length; i++) {
+                    fileList[i].delete(); //파일 삭제
+                }
+
+                if(fileList.length == 0 && folder.isDirectory()){
+                    folder.delete(); //대상폴더 삭제
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.getStackTrace();
+            return false;
+        }
     }
 
 }

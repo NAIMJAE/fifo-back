@@ -4,6 +4,8 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.entity.QUsers;
@@ -66,8 +68,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
             orderSpecifier = qPost.createDate.desc();
         }else if (pageRequestDTO.getSort().equals("hit")) {
             orderSpecifier = qPost.hit.desc();
-        }else if (pageRequestDTO.getSort().equals("good")) {
-            orderSpecifier = qPost.good.desc();
+        }else if (pageRequestDTO.getSort().equals("heart")) {
+            orderSpecifier = qPost.heartNum.desc();
         }
 
         // 태그 검색 구현 해야함
@@ -77,6 +79,51 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .from(qPost)
                 .join(qUser)
                 .on(qPost.userNo.eq(qUser.userno))
+                .where(expression)
+                .orderBy(orderSpecifier)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        log.info("result : " + result.toString());
+
+        List<Tuple> postList = result.getResults();
+        int total = (int) result.getTotal();
+
+        return new PageImpl<>(postList, pageable, total);
+    }
+
+    // 게시글 태그로 검색
+    public Page<Tuple> selectPostByTag(PageRequestDTO pageRequestDTO, Pageable pageable) {
+
+        BooleanExpression expression = null;
+        OrderSpecifier<?> orderSpecifier = null;
+
+        // 카테고리
+        if (pageRequestDTO.getCateNo() > 1) {
+            expression = (qPost.cateNo.eq(pageRequestDTO.getCateNo()));
+        } else {
+            expression = (qPost.cateNo.eq(1));
+        }
+
+        // 정렬
+        if (pageRequestDTO.getSort() == null){
+            orderSpecifier = qPost.createDate.desc();
+        }else if (pageRequestDTO.getSort().equals("new")) {
+            orderSpecifier = qPost.createDate.desc();
+        }else if (pageRequestDTO.getSort().equals("hit")) {
+            orderSpecifier = qPost.hit.desc();
+        }else if (pageRequestDTO.getSort().equals("heart")) {
+            orderSpecifier = qPost.heartNum.desc();
+        }
+
+        QueryResults<Tuple> result = jpaQueryFactory
+                .select(qPost, qUser.thumb, qUser.nick).distinct()
+                .from(qTags)
+                .join(qPostTag).on(qTags.tno.eq(qPostTag.tno))
+                .join(qPost).on(qPostTag.pno.eq(qPost.pno))
+                .join(qUser).on(qPost.userNo.eq(qUser.userno))
+                .where(qTags.tag.contains(pageRequestDTO.getKeyword()))
                 .where(expression)
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())

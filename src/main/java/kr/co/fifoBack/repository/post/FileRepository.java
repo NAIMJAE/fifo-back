@@ -10,4 +10,6 @@ import java.util.List;
 public interface FileRepository extends JpaRepository<File, Integer> {
     // 게시글 파일 목록 조회
     public List<File> findByPno(int pno);
+    // 게시글 삭제시 파일 삭제
+    public void deleteByPno(int pno);
 }

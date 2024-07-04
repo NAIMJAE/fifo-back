@@ -12,4 +12,5 @@ public class CommentHeartDTO {
     private int cheartno;
     private int userNo;
     private int cno;
+    private int pno;
 }

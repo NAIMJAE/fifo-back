@@ -27,8 +27,6 @@ public class QPost extends EntityPathBase<Post> {
 
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
-    public final NumberPath<Integer> good = createNumber("good", Integer.class);
-
     public final NumberPath<Integer> heartNum = createNumber("heartNum", Integer.class);
 
     public final NumberPath<Integer> hit = createNumber("hit", Integer.class);

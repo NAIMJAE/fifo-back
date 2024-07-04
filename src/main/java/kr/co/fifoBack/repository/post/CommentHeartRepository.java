@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface CommentHeartRepository extends JpaRepository<CommentHeart, Integer> {
     // 해당 게시글에 이미 좋아요를 눌렀는지 조회
     public Optional<CommentHeart> findByUserNoAndCno(int userNo, int cno);
+    // 게시글 삭제시 댓글 좋아요 삭제
+    public void deleteByPno(int pno);
 }

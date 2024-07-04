@@ -23,6 +23,8 @@ public class QCommentHeart extends EntityPathBase<CommentHeart> {
 
     public final NumberPath<Integer> cno = createNumber("cno", Integer.class);
 
+    public final NumberPath<Integer> pno = createNumber("pno", Integer.class);
+
     public final NumberPath<Integer> userNo = createNumber("userNo", Integer.class);
 
     public QCommentHeart(String variable) {
