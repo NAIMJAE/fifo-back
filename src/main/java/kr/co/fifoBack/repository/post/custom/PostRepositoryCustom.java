@@ -13,6 +13,8 @@ import java.util.List;
 public interface PostRepositoryCustom {
     // 게시글 조회 + 검색
     public Page<Tuple> selectPostByKeyword(PageRequestDTO pageRequestDTO, Pageable pageable);
+    // 게시글 태그로 검색
+    public Page<Tuple> selectPostByTag(PageRequestDTO pageRequestDTO, Pageable pageable);
     // 게시글 태그 조회
     public List<String> selectTagForPno(int pno);
     // 게시글 보기

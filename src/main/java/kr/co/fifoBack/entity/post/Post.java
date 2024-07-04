@@ -22,7 +22,6 @@ public class Post {
     private int userNo;
     @Column(name = "cateNo")
     private int cateNo;
-    private int good;
     private int hit;
     private int comNum;
     private int heartNum;

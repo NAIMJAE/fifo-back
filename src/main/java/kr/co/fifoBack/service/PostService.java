@@ -3,6 +3,7 @@ package kr.co.fifoBack.service;
 import com.querydsl.core.Tuple;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.PageResponseDTO;
 import kr.co.fifoBack.dto.post.CommentDTO;
@@ -24,10 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,8 +39,9 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final HeartRepository heartRepository;
     private final CommentHeartRepository commentHeartRepository;
+    private final PostHitRepository postHitRepository;
     private final UserRepository userRepository;
-
+    private final HttpServletRequest httpServletRequest;
     private final HelperService helperService;
     private final ModelMapper modelMapper;
 
@@ -53,16 +52,18 @@ public class PostService {
     @Transactional
     public ResponseEntity<?> insertPost(PostDTO postDTO){
         Post post = modelMapper.map(postDTO, Post.class);
-        log.info("post : " + post);
         Post savedPost = postRepository.save(post);
-        String[] tagArr = postDTO.getTag().split(" ");
-        log.info("tagArr : " + tagArr.toString());
+
+        // 이미지 주소 대체
+        String replacedContent = savedPost.getContent().replace("$#@^", Integer.toString(savedPost.getPno()));
+        savedPost.setContent(replacedContent);
+        postRepository.save(post);
 
         // 게시글 태그 저장
-        for (String tag : tagArr) {
+        for (String tag : postDTO.getTagName()) {
             // tags 저장
             Tags tags = new Tags();
-            tags.setTag(tag);
+            tags.setTag("#"+tag);
             Tags savedTags = tagsRepository.save(tags); // 태그 중복 저장 오류 해결해야함
             
             // PostTag 저장
@@ -73,17 +74,21 @@ public class PostService {
         }
 
         // 파일 저장
-        List<String> filesNames = helperService.uploadFiles(postDTO.getFiles(), "/post/files/", false);
-        for (int i=0; i<postDTO.getFiles().size(); i++) {
-            File file = new File();
-            file.setPno(savedPost.getPno());
-            file.setSName(filesNames.get(i));
-            file.setOName(postDTO.getFiles().get(i).getOriginalFilename());
-            fileRepository.save(file);
+        if (postDTO.getFiles() != null) {
+            List<String> filesNames = helperService.uploadFiles(postDTO.getFiles(), "/post/files/" + savedPost.getPno() + "/", false);
+            for (int i=0; i<postDTO.getFiles().size(); i++) {
+                File file = new File();
+                file.setPno(savedPost.getPno());
+                file.setSName(filesNames.get(i));
+                file.setOName(postDTO.getFiles().get(i).getOriginalFilename());
+                fileRepository.save(file);
+            }
         }
 
-        // 이미지 저장 (DB 저장 필요 없음)
-        helperService.uploadFiles(postDTO.getImages(), "post/images/", true);
+        // 이미지 저장
+        if (postDTO.getImages() != null) {
+            helperService.uploadFiles(postDTO.getImages(), "post/images/" + savedPost.getPno() + "/", true);
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(savedPost.getPno());
     }
@@ -92,7 +97,12 @@ public class PostService {
     public ResponseEntity<?> selectPostByKeyword(PageRequestDTO pageRequestDTO){
 
         Pageable pageable = pageRequestDTO.getPageable("pno");
-        Page<Tuple> pageTuple = postRepository.selectPostByKeyword(pageRequestDTO, pageable);
+        Page<Tuple> pageTuple = null;
+        if (pageRequestDTO.getType().equals("tag")) {
+            pageTuple = postRepository.selectPostByTag(pageRequestDTO, pageable);
+        }else {
+            pageTuple = postRepository.selectPostByKeyword(pageRequestDTO, pageable);
+        }
 
         List<PostDTO> postDTOList = pageTuple.getContent().stream()
                 .map(tuple -> {
@@ -128,6 +138,17 @@ public class PostService {
 
     // 게시글 보기
     public ResponseEntity<?> selectPost(int pno) {
+        // 조회수 +1
+        String ipAddress = httpServletRequest.getRemoteAddr();
+        Optional<PostHit> optPostHit = postHitRepository.findByPnoAndAddress(pno, ipAddress);
+        if (optPostHit.isEmpty()) {
+            postRepository.incrementPostHit(pno);
+            PostHit postHit = new PostHit();
+            postHit.setAddress(ipAddress);
+            postHit.setPno(pno);
+            postHitRepository.save(postHit);
+        }
+
         // 게시글 정보
         Tuple postTuple = postRepository.selectPost(pno);
 
@@ -138,13 +159,14 @@ public class PostService {
 
         // 파일
         List<File> fileList = fileRepository.findByPno(postDTO.getPno());
-        postDTO.setFileName(fileList.stream().map(file -> file.getOName()).toList());
+        postDTO.setFileName(fileList.stream().map(file -> {
+            LinkedHashMap<Integer, String> fileMap = new LinkedHashMap<>();
+            fileMap.put(file.getFno(), file.getOName());
+            return fileMap;
+        }).toList());
 
         // 태그
         postDTO.setTagName(postRepository.selectTagForPno(postDTO.getPno()));
-
-        // 댓글
-
 
         return ResponseEntity.status(HttpStatus.OK).body(postDTO);
     }
@@ -176,11 +198,13 @@ public class PostService {
     public ResponseEntity<?> modifyPost(PostDTO postDTO) {
 
         Optional<Post> optPost = postRepository.findById(postDTO.getPno());
-        String[] tagArr = postDTO.getTag().split(" ");
 
         if (optPost.isPresent()) {
+            // 이미지 주소 대체
+            String replacedContent = postDTO.getContent().replace("$#@^", Integer.toString(optPost.get().getPno()));
+            optPost.get().setContent(replacedContent);
             optPost.get().setCateNo(postDTO.getCateNo());
-            optPost.get().setContent(postDTO.getContent());
+            optPost.get().setContent(replacedContent);
             optPost.get().setTitle(postDTO.getTitle());
             optPost.get().setModiDate(LocalDateTime.now());
             Post savedPost = postRepository.save(optPost.get());
@@ -194,14 +218,14 @@ public class PostService {
             log.info("tag : " + tag);
             tagsRepository.deleteById(tag.getTno());
         }
+        // DB 새로고침
         entityManager.flush();
 
         // 게시글 태그 저장
-        for (String tag : tagArr) {
-
+        for (String tag : postDTO.getTagName()) {
             // tags 저장
             Tags tags = new Tags();
-            tags.setTag(tag);
+            tags.setTag("#"+tag);
             Tags savedTags = tagsRepository.save(tags); // 태그 중복 저장 오류 해결해야함
 
             // PostTag 저장
@@ -210,20 +234,67 @@ public class PostService {
             postTag.setTno(savedTags.getTno());
             postTagRepository.save(postTag);
         }
-/*
-        // 파일 저장 - 삭제할 파일 이름 가지고와서 삭제하는 로직 추가해야함
-        List<String> filesNames = helperService.uploadFiles(postDTO.getFiles(), "/post/files/", false);
-        for (int i=0; i<postDTO.getFiles().size(); i++) {
-            File file = new File();
-            file.setPno(postDTO.getPno());
-            file.setSName(filesNames.get(i));
-            file.setOName(postDTO.getFiles().get(i).getOriginalFilename());
-            fileRepository.save(file);
+
+        // 파일 저장
+        if (postDTO.getFiles() != null) {
+            List<String> filesNames = helperService.uploadFiles(postDTO.getFiles(), "/post/files/" + postDTO.getPno() + "/", false);
+            for (int i=0; i<postDTO.getFiles().size(); i++) {
+                File file = new File();
+                file.setPno(postDTO.getPno());
+                file.setSName(filesNames.get(i));
+                file.setOName(postDTO.getFiles().get(i).getOriginalFilename());
+                fileRepository.save(file);
+            }
         }
-*/
-        helperService.uploadFiles(postDTO.getImages(), "post/images/", true);
+
+        // 파일 삭제
+        if (postDTO.getDeleteFile().length > 0) {
+            for (int fno : postDTO.getDeleteFile()) {
+                Optional<File> optFile = fileRepository.findById(fno);
+                helperService.deleteFiles("/post/files/" + postDTO.getPno() + "/", optFile.get().getSName());
+                fileRepository.deleteById(fno);
+            }
+        }
+
+        // 이미지 저장
+        if (postDTO.getImages() != null) {
+            helperService.uploadFiles(postDTO.getImages(), "post/images/" + postDTO.getPno() + "/", true);
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(postDTO.getPno());
+    }
+
+    // 게시글 삭제
+    @Transactional
+    public ResponseEntity<?> deletePost(int pno) {
+
+        // 게시글 좋아요 삭제 heart
+        heartRepository.deleteByPno(pno);
+
+        // 댓글 좋아요 삭제 commentheart
+        commentHeartRepository.deleteByPno(pno);
+
+        // 댓글 삭제 comment
+        commentRepository.deleteByPno(pno);
+
+        // 태그 삭제 tags  posttag
+        List<PostTag> postTagList = postTagRepository.findByPno(pno);
+        postTagRepository.deleteByPno(pno);
+        for (PostTag tag : postTagList) {
+            tagsRepository.deleteById(tag.getTno());
+        }
+
+        // 이미지 삭제
+        helperService.deleteFileDirectory("post/images/" + pno);
+
+        // 파일 삭제 file
+        helperService.deleteFileDirectory("post/files/" + pno);
+        fileRepository.deleteByPno(pno);
+
+        // 게시글 삭제 post
+        postRepository.deleteById(pno);
+
+        return ResponseEntity.status(HttpStatus.OK).body(1);
     }
 
     // 댓글 작성

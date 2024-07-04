@@ -9,4 +9,6 @@ import java.util.List;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Integer>, CommentRepositoryCustom {
+    // 게시글 삭제시 댓글 삭제
+    public void deleteByPno(int pno);
 }

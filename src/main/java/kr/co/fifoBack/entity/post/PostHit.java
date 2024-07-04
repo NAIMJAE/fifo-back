@@ -2,9 +2,6 @@ package kr.co.fifoBack.entity.post;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -13,12 +10,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "commentheart")
-public class CommentHeart {
+@Table(name = "posthit")
+public class PostHit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int cheartno;
-    private int userNo;
-    private int cno;
+    private int hno;
     private int pno;
+    private String address;
 }

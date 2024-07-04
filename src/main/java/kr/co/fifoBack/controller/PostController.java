@@ -56,6 +56,13 @@ public class PostController {
         return postService.modifyPost(postDTO);
     }
 
+    // 게시글 삭제
+    @DeleteMapping("/post/{pno}")
+    public ResponseEntity<?> postDelete(@PathVariable int pno) {
+        log.info("pno : " + pno);
+        return postService.deletePost(pno);
+    }
+
     // 댓글 작성
     @PostMapping("/comment")
     public ResponseEntity<?> commentWrite(@RequestBody CommentDTO commentDTO) {
