@@ -1,9 +1,11 @@
 package kr.co.fifoBack.service;
 
 import com.querydsl.core.Tuple;
+import kr.co.fifoBack.dto.PageResponseDTO;
 import kr.co.fifoBack.dto.gathering.GathCommentDTO;
 import kr.co.fifoBack.dto.gathering.GatheringDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
+import kr.co.fifoBack.dto.gathering.page.GathPageResponseDTO;
 import kr.co.fifoBack.entity.gathering.GathComment;
 import kr.co.fifoBack.entity.gathering.Gathering;
 import kr.co.fifoBack.mapper.GatheringMapper;
@@ -58,8 +60,15 @@ public class GatheringService {
                 })
                 .toList();
 
+        int total = (int) tuples.getTotalElements();
 
-        return ResponseEntity.ok().body(dtoList);
+        GathPageResponseDTO pageGathDTO = GathPageResponseDTO.builder()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+
+        return ResponseEntity.ok().body(pageGathDTO);
     }
     // 모임 글 보기
     @Transactional
