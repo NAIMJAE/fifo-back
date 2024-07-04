@@ -26,6 +26,7 @@ public class PageRequestDTO {
     private String cate;  // 모임 카테고리
     private int cateNo; // 게시글 카테고리
     private int pno; // 댓글 조회용
+    private int gathno; // 모임글 댓글 조회용
     private String sort;
     private String type;
     private String keyword;
