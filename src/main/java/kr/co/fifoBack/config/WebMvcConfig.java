@@ -32,7 +32,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .allowedOrigins(frontUrl)  // 허용할 프론트엔드 주소
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowCredentials(true)
+                .exposedHeaders("Content-Disposition");
     }
 
 }

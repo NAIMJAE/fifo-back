@@ -3,13 +3,19 @@ package kr.co.fifoBack.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -91,6 +97,7 @@ public class HelperService {
     /*
         파일 디렉토리 삭제
         - location : 삭제할 디렉토리 주소
+
         uploads에 저장된 파일을 디렉토리 단위로 삭제하는 매서드
      */
     public boolean deleteFileDirectory(String location) {
@@ -114,5 +121,53 @@ public class HelperService {
             return false;
         }
     }
+
+    /*
+        파일 다운로드
+        - location : 다운로드할 파일의 디렉토리 위치
+        - fileName : 다운로드할 파일의 저장된 이름 (sName)
+        - downloadName : 다운로드시 사용할 파일 이름 (oName)
+
+        주소 + 위치 를 통해 다운로드할 파일이 저장된 경로 생성
+        생성된 경로와 파일 이름을 통해 파일의 완전한 경로를 나타내는 path 객체 생성
+        path 객체를 이용해 파일에 접근할 수 있는 URL 생성 (Resource 객체)
+        Resource 객체가 유효한지 확인 후 반환
+
+        ResponseEntity 설명
+        - Content-Disposition: attachment -> 브라우저에게 응답 콘텐츠를 파일로 다운로드하게 지시
+        - filename="..." -> 다운로드하는 파일의 이름 지정
+     */
+    public ResponseEntity<?> fileDownloadHelp(String location, String fileName, String downloadName) {
+        try {
+            File path = new File(fileUploadPath + File.separator + location);
+            Path filePath = Paths.get(path.getAbsolutePath(), fileName);
+
+            // 파일 경로를 URI로 변환하고 UrlResource 객체 생성
+            Resource resource = new UrlResource(filePath.toUri());
+            if (!resource.exists()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("File not found");
+            }
+
+            // response의 contentType 설정
+            String contentType = Files.probeContentType(filePath);
+            if (contentType == null) {
+                contentType = "application/octet-stream";
+            }
+            // 파일 이름이 한글인 경우를 대비해 인코딩
+            String encodedFileName = URLEncoder.encode(downloadName, StandardCharsets.UTF_8.toString()).replaceAll("\\+", "%20");
+
+            // response의 header 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentDisposition(ContentDisposition.builder("attachment")
+                    .filename(encodedFileName)
+                    .build());
+            headers.add(HttpHeaders.CONTENT_TYPE, contentType);
+
+            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new RuntimeException("파일 다운로드 실패 : " + e.getMessage());
+        }
+    }
+
 
 }
