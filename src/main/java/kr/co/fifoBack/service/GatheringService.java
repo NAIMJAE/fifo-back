@@ -1,6 +1,7 @@
 package kr.co.fifoBack.service;
 
 import com.querydsl.core.Tuple;
+import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.PageResponseDTO;
 import kr.co.fifoBack.dto.gathering.GathCommentDTO;
 import kr.co.fifoBack.dto.gathering.GatheringDTO;
@@ -103,9 +104,14 @@ public class GatheringService {
         gatheringDTO.setGathstate("모집중");
         Gathering gathering = gatheringRepository.save(modelMapper.map(gatheringDTO, Gathering.class));
 
+        // 이미지 주소 대체
+        String replacedContent = gathering.getGathdetail().replace("$#@^", Integer.toString(gathering.getGathno()));
+        gathering.setGathdetail(replacedContent);
+        gatheringRepository.save(gathering);
+
         // 이미지 저장 (DB 저장 필요 없음)
         if (gatheringDTO.getImages() != null && !gatheringDTO.getImages().isEmpty()) {
-            helperService.uploadFiles(gatheringDTO.getImages(), "gathering/images/", true);
+            helperService.uploadFiles(gatheringDTO.getImages(), "gathering/images/" + gathering.getGathno() + "/", true);
         }
         return ResponseEntity.ok().body(gathering.getGathno());
     }
@@ -138,9 +144,28 @@ public class GatheringService {
     }
 
     // 댓글 불러오기
-    public ResponseEntity<?> selectComment(int gathno) {
+    public ResponseEntity<?> selectComment(PageRequestDTO pageRequestDTO) {
+        Pageable pageable = pageRequestDTO.getPageable("commentno");
+        Page<Tuple> tuples = gathCommentRepository.selectCommentByGathno(pageRequestDTO, pageable);
 
-        return ResponseEntity.ok().body("");
+        List<GathCommentDTO> dtoList = tuples.stream()
+                .map(tuple -> {
+                    GathCommentDTO gathcommentDTO = modelMapper.map(tuple.get(0, GathComment.class), GathCommentDTO.class);
+                    gathcommentDTO.setUsernick(tuple.get(1, String.class));
+                    gathcommentDTO.setUserthumb(tuple.get(2, String.class));
+                    return gathcommentDTO;
+                })
+                .toList();
+
+        int total = (int) tuples.getTotalElements();
+
+        PageResponseDTO pageGathDTO = PageResponseDTO.builder()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(dtoList)
+                .total(total)
+                .build();
+
+        return ResponseEntity.ok().body(pageGathDTO);
     }
 
     // GatheringDTO가 기본값인지 확인하는 메서드

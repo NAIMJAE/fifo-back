@@ -17,4 +17,8 @@ public class GathCommentDTO {
     private int userno;
     private String content;
     private LocalDateTime rdate;
+    private LocalDateTime updateDate;
+    // JOIN 변수
+    private String usernick;
+    private String userthumb;
 }

@@ -24,4 +24,6 @@ public class GathComment {
     private String content;
     @CreationTimestamp
     private LocalDateTime rdate;
+
+    private LocalDateTime updateDate;
 }
