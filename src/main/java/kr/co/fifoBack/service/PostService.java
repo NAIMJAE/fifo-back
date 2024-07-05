@@ -406,6 +406,4 @@ public class PostService {
             return ResponseEntity.status(HttpStatus.OK).body(1);
         }
     }
-
-
 }
