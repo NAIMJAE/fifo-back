@@ -36,6 +36,7 @@ public class GatheringController {
     // 모임 글 작성
     @PostMapping("/gathering")
     public ResponseEntity<?> insertGathering(GatheringDTO gatheringDTO){
+        log.info("gatheringDTO : " + gatheringDTO);
         return gatheringService.insertGathering(gatheringDTO);
     }
     // 모임 글 수정
@@ -62,9 +63,13 @@ public class GatheringController {
     }
 
     // 댓글 불러오기
-    @GetMapping("/gathcomment/{pno}")
-    public ResponseEntity<?> commentView(@PathVariable("gathno") int gathno) {
+    @GetMapping("/gathcomment")
+    public ResponseEntity<?> commentView(@RequestParam("pg") int pg, @RequestParam("gathno") int gathno) {
         log.info("gathno : " + gathno);
-        return gatheringService.selectComment(gathno);
+        PageRequestDTO pageRequestDTO = new PageRequestDTO();
+        pageRequestDTO.setPg(pg);
+        pageRequestDTO.setGathno(gathno);
+        log.info("pageRequestDTO : " + pageRequestDTO);
+        return gatheringService.selectComment(pageRequestDTO);
     }
 }

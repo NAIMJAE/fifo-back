@@ -6,7 +6,7 @@
 <mapper namespace="kr.co.fifoBack.mapper.GatheringMapper">
 
     <update id="updateGatheringCommentCount">
-        UPDATE gathering SET comment = comment + 1 WHERE gathno = #{gathno};
+        UPDATE gathering SET gathcomment = gathcomment + 1 WHERE gathno = #{gathno};
     </update>
 
 </mapper>
