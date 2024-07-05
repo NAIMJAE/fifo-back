@@ -63,6 +63,13 @@ public class PostController {
         return postService.deletePost(pno);
     }
 
+    // 게시글 파일 다운로드
+    @GetMapping("/post/download/{fno}")
+    public ResponseEntity<?> postDownload(@PathVariable int fno) {
+        log.info("fno : " + fno);
+        return postService.downloadFile(fno);
+    }
+
     // 댓글 작성
     @PostMapping("/comment")
     public ResponseEntity<?> commentWrite(@RequestBody CommentDTO commentDTO) {

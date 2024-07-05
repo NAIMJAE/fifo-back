@@ -297,6 +297,18 @@ public class PostService {
         return ResponseEntity.status(HttpStatus.OK).body(1);
     }
 
+    // 게시글 첨부파일 다운로드
+    public ResponseEntity<?> downloadFile(int fno) {
+
+        Optional<File> optFile = fileRepository.findById(fno);
+
+        if (optFile.isPresent()) {
+            return helperService.fileDownloadHelp("post/files/" + optFile.get().getPno(), optFile.get().getSName(), optFile.get().getOName());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
+        }
+    }
+
     // 댓글 작성
     @Transactional
     public ResponseEntity<?> insertComment(CommentDTO commentDTO) {
