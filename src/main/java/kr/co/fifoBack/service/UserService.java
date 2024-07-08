@@ -1,8 +1,11 @@
 package kr.co.fifoBack.service;
 
+import kr.co.fifoBack.dto.grade.LanguageDTO;
 import kr.co.fifoBack.dto.user.UsersDTO;
 import kr.co.fifoBack.entity.Users;
+import kr.co.fifoBack.entity.grade.Language;
 import kr.co.fifoBack.jwt.JwtProvider;
+import kr.co.fifoBack.repository.grade.LanguageRepository;
 import kr.co.fifoBack.repository.user.UserRepository;
 import kr.co.fifoBack.security.MyUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +20,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,7 +33,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final ModelMapper modelMapper;
-    
+    private final LanguageRepository languageRepository;
+
     /** 회원가입 */
     public ResponseEntity<?> register(UsersDTO usersDTO){
         log.info("회원가입" + usersDTO);
@@ -82,6 +88,20 @@ public class UserService {
         }catch (Exception e){
             log.info("login..." + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("USER NOT FOUND");
+        }
+    }
+
+    public ResponseEntity<?> getLanguage(){
+        List<Language> languages = languageRepository.findAll();
+
+        if(languages.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
+        }else{
+            List<LanguageDTO> result = languages.stream()
+                    .map(language -> modelMapper.map(language, LanguageDTO.class))
+                    .collect(Collectors.toList());
+            log.info(result.toString());
+            return ResponseEntity.ok().body(result);
         }
     }
 }
