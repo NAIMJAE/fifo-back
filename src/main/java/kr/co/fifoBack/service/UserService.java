@@ -28,8 +28,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final ModelMapper modelMapper;
-    private final TermsService termsService;
-    private final UserService userService;
+    
     /** 회원가입 */
     public ResponseEntity<?> register(UsersDTO usersDTO){
         log.info("회원가입" + usersDTO);
