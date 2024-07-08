@@ -5,6 +5,10 @@ import kr.co.fifoBack.repository.gathering.custom.GatheringRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface GatheringRepository extends JpaRepository<Gathering, Integer>, GatheringRepositoryCustom {
+
+    public List<Gathering> findGatheringsByUserno(int userno);
 }

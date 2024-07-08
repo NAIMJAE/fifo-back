@@ -3,9 +3,11 @@ package kr.co.fifoBack.controller;
 import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.gathering.GathCommentDTO;
 import kr.co.fifoBack.dto.gathering.GatheringDTO;
+import kr.co.fifoBack.dto.gathering.MooimDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
 import kr.co.fifoBack.dto.post.CommentDTO;
 import kr.co.fifoBack.service.GatheringService;
+import kr.co.fifoBack.service.MooimService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class GatheringController {
 
     private final GatheringService gatheringService;
+    private final MooimService mooimService;
 
     // 모임 글 목록
     @PostMapping("/gatherings")
@@ -51,9 +54,9 @@ public class GatheringController {
     }
     // 내 모임 목록 조회
     @PostMapping("/my/gatherings")
-    public ResponseEntity<?> selectMyGatherings(@RequestBody GathPageRequestDTO pageRequestDTO){
-        log.info(pageRequestDTO.toString()); // no=1, pg=1, size=12, sort=null, gatheringDTO=null, userno=1, gathcate=1, type=, keyword=
-        return gatheringService.selectGatherings(pageRequestDTO);
+    public ResponseEntity<?> selectMyGatherings(@RequestBody MooimDTO mooimDTO){
+        log.info(mooimDTO.toString());
+        return mooimService.selectMyMooims(mooimDTO);
     }
     // 댓글 작성
     @PostMapping("/gathcomment")
