@@ -1,4 +1,6 @@
 spring:
+    jersey:
+        type: filter
     application:
         name: fifo-back
 
