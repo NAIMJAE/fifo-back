@@ -5,13 +5,17 @@ import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.PageResponseDTO;
 import kr.co.fifoBack.dto.gathering.GathCommentDTO;
 import kr.co.fifoBack.dto.gathering.GatheringDTO;
+import kr.co.fifoBack.dto.gathering.RecruitDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageResponseDTO;
+import kr.co.fifoBack.entity.Users;
 import kr.co.fifoBack.entity.gathering.GathComment;
 import kr.co.fifoBack.entity.gathering.Gathering;
+import kr.co.fifoBack.entity.gathering.Recruit;
 import kr.co.fifoBack.mapper.GatheringMapper;
 import kr.co.fifoBack.repository.gathering.GathCommentRepository;
 import kr.co.fifoBack.repository.gathering.GatheringRepository;
+import kr.co.fifoBack.repository.gathering.RecruitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -23,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,6 +36,7 @@ public class GatheringService {
 
     private final GatheringRepository gatheringRepository;
     private final GathCommentRepository gathCommentRepository;
+    private final RecruitRepository recruitRepository;
 
     private final GatheringMapper gatheringMapper;
     private final HelperService helperService;
@@ -81,6 +87,20 @@ public class GatheringService {
         GatheringDTO gatheringDTO = modelMapper.map(gathering, GatheringDTO.class);
         gatheringDTO.setUsernick(result.get(1, String.class));
         gatheringDTO.setUserthumb(result.get(2, String.class));
+
+        // 모임 신청 현황 조회
+        List<Tuple> recruits = recruitRepository.selectRecruitList(gathno);
+        List<RecruitDTO> recruitList = recruits.stream()
+                .map(tuple -> {
+                    Recruit recruit = tuple.get(0, Recruit.class);
+                    Users users = tuple.get(1, Users.class);
+                    RecruitDTO recruitDTO = modelMapper.map(recruit, RecruitDTO.class);
+                    recruitDTO.setNick(users.getNick());
+                    recruitDTO.setRegion(users.getRegion());
+                    recruitDTO.setThumb(users.getThumb());
+                    return recruitDTO;
+                }).toList();
+        gatheringDTO.setRecruitList(recruitList);
 
         // 조회수 ++
         gathering.setHit(gathering.getHit() + 1);
@@ -179,6 +199,22 @@ public class GatheringService {
                 && gatheringDTO.getGathtotalmember() == 0
                 && gatheringDTO.getGathrecruitfield() == null
                 && gatheringDTO.getGathlanguage() == null;
+    }
+
+    // 모임 신청
+    public ResponseEntity<?> insertRecruit(RecruitDTO recruitDTO) {
+        log.info("recruitDTO : " + recruitDTO);
+
+        Optional<Recruit> optRecruit = recruitRepository.findByUsernoAndGathno(recruitDTO.getUserno(), recruitDTO.getGathno());
+
+        if (optRecruit.isPresent()) {
+            return null;
+        }else {
+            recruitDTO.setRecruitstate("수락 대기");
+            recruitRepository.save(modelMapper.map(recruitDTO, Recruit.class));
+        }
+
+        return null;
     }
 
 }

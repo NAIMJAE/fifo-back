@@ -1,5 +1,6 @@
 package kr.co.fifoBack.dto.gathering;
 
+import kr.co.fifoBack.entity.gathering.Recruit;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,4 +52,7 @@ public class GatheringDTO {
     // JOIN 변수
     private String usernick;
     private String userthumb;
+
+    // 추가 필드
+    private List<RecruitDTO> recruitList; // 모임 신청 현황
 }
