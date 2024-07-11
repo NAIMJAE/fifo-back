@@ -18,6 +18,7 @@ import kr.co.fifoBack.repository.gathering.GatheringRepository;
 import kr.co.fifoBack.repository.gathering.RecruitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -203,6 +204,7 @@ public class GatheringService {
     }
 
     // 모임 신청
+    @Transactional
     public ResponseEntity<?> insertRecruit(RecruitDTO recruitDTO) {
         log.info("recruitDTO : " + recruitDTO);
 
@@ -216,6 +218,19 @@ public class GatheringService {
             recruitRepository.save(modelMapper.map(recruitDTO, Recruit.class));
             return ResponseEntity.status(HttpStatus.OK).body(1);
         }
+    }
+
+    // 모임 신청 관리
+    @Transactional
+    public ResponseEntity<?> updateRecruit(int recruitno, String state) {
+        Optional<Recruit> optRecruit = recruitRepository.findById(recruitno);
+
+        if(optRecruit.isPresent()) {
+            optRecruit.get().setRecruitstate(state);
+            recruitRepository.save(optRecruit.get());
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(0);
     }
 
 }
