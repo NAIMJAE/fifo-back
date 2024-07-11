@@ -79,8 +79,17 @@ public class GatheringController {
 
     // 모임 신청
     @PostMapping("/gathRecruit")
-    public ResponseEntity<?> gathRecruit(@RequestBody RecruitDTO recruitDTO) {
+    public ResponseEntity<?> insertRecruit(@RequestBody RecruitDTO recruitDTO) {
         log.info("recruitDTO : " + recruitDTO);
         return gatheringService.insertRecruit(recruitDTO);
+    }
+
+    // 모임 신청 수락, 거절
+    @GetMapping("/gathRecruit")
+    public ResponseEntity<?> aa(@RequestParam("recruitno") int recruitno, @RequestParam("state") String state) {
+        log.info("recruitno : " + recruitno);
+        log.info("state : " + state);
+
+        return gatheringService.updateRecruit(recruitno, state);
     }
 }
