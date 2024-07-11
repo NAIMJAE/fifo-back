@@ -37,8 +37,6 @@ public class QGathering extends EntityPathBase<Gathering> {
 
     public final StringPath gathstate = createString("gathstate");
 
-    public final StringPath gathsupport = createString("gathsupport");
-
     public final StringPath gathtitle = createString("gathtitle");
 
     public final NumberPath<Integer> gathtotalmember = createNumber("gathtotalmember", Integer.class);
