@@ -18,7 +18,7 @@ public class Recruit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int recruitno;
-    private String gathno;         // 모집 게시글
+    private int gathno;         // 모집 게시글
     private int userno;            // 모임 지원자
     private String recruitstate;   // 지원 상태 (승인, 대기, 거절)
     private String intro;          // 한줄 소개
