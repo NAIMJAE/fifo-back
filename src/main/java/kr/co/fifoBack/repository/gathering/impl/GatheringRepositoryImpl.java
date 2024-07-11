@@ -67,10 +67,10 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 expression = expression != null ? expression.and(qGathering.gathtotalmember.eq(gatheringDTO.getGathtotalmember())) : qGathering.gathtotalmember.eq(gatheringDTO.getGathtotalmember());
             }
             if (gatheringDTO.getGathrecruitfield() != null) {
-                expression = expression != null ? expression.and(qGathering.gathrecruitfield.eq(gatheringDTO.getGathrecruitfield())) : qGathering.gathrecruitfield.eq(gatheringDTO.getGathrecruitfield());
+                expression = expression != null ? expression.and(qGathering.gathrecruitfield.contains(gatheringDTO.getGathrecruitfield())) : qGathering.gathrecruitfield.contains(gatheringDTO.getGathrecruitfield());
             }
             if (gatheringDTO.getGathlanguage() != null) {
-                expression = expression != null ? expression.and(qGathering.gathlanguage.eq(gatheringDTO.getGathlanguage())) : qGathering.gathlanguage.eq(gatheringDTO.getGathlanguage());
+                expression = expression != null ? expression.and(qGathering.gathlanguage.contains(gatheringDTO.getGathlanguage())) : qGathering.gathlanguage.contains(gatheringDTO.getGathlanguage());
             }
         }
 
