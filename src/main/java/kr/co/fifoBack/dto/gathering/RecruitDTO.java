@@ -15,5 +15,5 @@ public class RecruitDTO {
     private String gathno;
     private int userno;
     private String recruitstate;
-
+    private String intro;
 }

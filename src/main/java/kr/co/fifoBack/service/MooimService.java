@@ -26,13 +26,15 @@ public class MooimService {
     public ResponseEntity<?> selectMyMooims(MooimDTO mooimDTO) {
         List<?> results = null;
 
-        if(mooimDTO.getMooimstate() != 0) {
+        if(mooimDTO.getMooimstate() == 0) {
+            // 전체 조회
             results = mooimRepository.findMooimsByUserno(mooimDTO.getUserno());
 
         }else if(mooimDTO.getMooimstate() == 3) {
-            // 모집중 모임글 조회
+            // 모집중 -> 모임글 조회
             results = gatheringRepository.findGatheringsByUserno(mooimDTO.getUserno());
         }else {
+            // 전체 조회가 아닐 때 (진행중, 완료)
             results = mooimRepository.findMooimsByUsernoAndMooimstate(mooimDTO.getUserno(), mooimDTO.getMooimstate());
         }
         List<?> dtoList = results.stream()
