@@ -15,6 +15,7 @@ public class RecruitDTO {
     private int gathno;
     private int userno;
     private String recruitstate;
+    private String intro;
 
     // 추가 필드
     private String nick;

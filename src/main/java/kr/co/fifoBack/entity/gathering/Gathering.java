@@ -34,7 +34,7 @@ public class Gathering {
     private LocalDate recruitend;
     private LocalDate projectstart;
     private LocalDate projectend;
-    private String gathstate;  // 모집상태 (모집중, 모집완료)
+    private String gathstate;  // 모집상태 (1:모집중, 2:모집완료)
     private int hit;
     private int gathcomment;    // 댓글 개수
 }
