@@ -40,6 +40,7 @@ public class MooimService {
         List<?> dtoList = results.stream()
                 .map(entity -> {
                     if(mooimDTO.getMooimstate() == 3){
+                        log.info(entity.toString());
                         return modelMapper.map(entity, GatheringDTO.class);
                     }else {
                         return modelMapper.map(entity, MooimDTO.class);
