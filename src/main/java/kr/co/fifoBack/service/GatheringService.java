@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -208,13 +209,13 @@ public class GatheringService {
         Optional<Recruit> optRecruit = recruitRepository.findByUsernoAndGathno(recruitDTO.getUserno(), recruitDTO.getGathno());
 
         if (optRecruit.isPresent()) {
-            return null;
+            recruitRepository.deleteById(optRecruit.get().getRecruitno());
+            return ResponseEntity.status(HttpStatus.OK).body(0);
         }else {
             recruitDTO.setRecruitstate("수락 대기");
             recruitRepository.save(modelMapper.map(recruitDTO, Recruit.class));
+            return ResponseEntity.status(HttpStatus.OK).body(1);
         }
-
-        return null;
     }
 
 }
