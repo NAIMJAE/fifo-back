@@ -224,10 +224,22 @@ public class GatheringService {
     @Transactional
     public ResponseEntity<?> updateRecruit(int recruitno, String state) {
         Optional<Recruit> optRecruit = recruitRepository.findById(recruitno);
-
         if(optRecruit.isPresent()) {
             optRecruit.get().setRecruitstate(state);
             recruitRepository.save(optRecruit.get());
+            Optional<Gathering> optGathering = gatheringRepository.findById(optRecruit.get().getGathno());
+
+            if (optGathering.isPresent()) {
+                if (state.equals("신청 거절")) {
+                    if (optGathering.get().getGathnowmember() > 0) {
+                        optGathering.get().setGathnowmember(optGathering.get().getGathnowmember()-1);
+                        gatheringRepository.save(optGathering.get());
+                    }
+                }else {
+                    optGathering.get().setGathnowmember(optGathering.get().getGathnowmember()+1);
+                    gatheringRepository.save(optGathering.get());
+                }
+            }
             return ResponseEntity.status(HttpStatus.OK).body(1);
         }
         return ResponseEntity.status(HttpStatus.OK).body(0);
