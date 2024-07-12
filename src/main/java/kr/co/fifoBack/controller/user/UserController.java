@@ -31,11 +31,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 
 public class UserController {
-    private final UserRepository userRepository;
-    private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtProvider jwtProvider;
-    private final ModelMapper modelMapper;
+
     private final TermsService termsService;
     private final UserService userService;
 
@@ -43,6 +39,7 @@ public class UserController {
     @PostMapping("/user/register")
     public ResponseEntity<?> userRegister(@RequestBody UsersDTO usersDTO){
 
+        log.info("여기보세요@"+usersDTO);
         return userService.register(usersDTO);
 
     }
@@ -64,10 +61,11 @@ public class UserController {
     public ResponseEntity<?> getPrivacy(){
         return termsService.getPrivacy();
     }
-    /**언어 목록 가져오기*/
 
+    /**언어 목록 가져오기*/
     @GetMapping("/user/language")
     public ResponseEntity<?> getLanguage(){
         return userService.getLanguage();
     }
+
 }
