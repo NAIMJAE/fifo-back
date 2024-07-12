@@ -23,9 +23,13 @@ public class QQuestion extends EntityPathBase<Question> {
 
     public final StringPath explanation = createString("explanation");
 
+    public final StringPath input = createString("input");
+
     public final StringPath languagename = createString("languagename");
 
     public final NumberPath<Integer> level = createNumber("level", Integer.class);
+
+    public final StringPath output = createString("output");
 
     public final NumberPath<Integer> questionno = createNumber("questionno", Integer.class);
 
