@@ -4,6 +4,7 @@ import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.gathering.GathCommentDTO;
 import kr.co.fifoBack.dto.gathering.GatheringDTO;
 import kr.co.fifoBack.dto.gathering.MooimDTO;
+import kr.co.fifoBack.dto.gathering.RecruitDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
 import kr.co.fifoBack.dto.post.CommentDTO;
 import kr.co.fifoBack.service.GatheringService;
@@ -74,5 +75,21 @@ public class GatheringController {
         pageRequestDTO.setGathno(gathno);
         log.info("pageRequestDTO : " + pageRequestDTO);
         return gatheringService.selectComment(pageRequestDTO);
+    }
+
+    // 모임 신청
+    @PostMapping("/gathRecruit")
+    public ResponseEntity<?> insertRecruit(@RequestBody RecruitDTO recruitDTO) {
+        log.info("recruitDTO : " + recruitDTO);
+        return gatheringService.insertRecruit(recruitDTO);
+    }
+
+    // 모임 신청 수락, 거절
+    @GetMapping("/gathRecruit")
+    public ResponseEntity<?> aa(@RequestParam("recruitno") int recruitno, @RequestParam("state") String state) {
+        log.info("recruitno : " + recruitno);
+        log.info("state : " + state);
+
+        return gatheringService.updateRecruit(recruitno, state);
     }
 }

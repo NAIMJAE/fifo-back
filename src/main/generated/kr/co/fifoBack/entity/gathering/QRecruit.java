@@ -19,7 +19,9 @@ public class QRecruit extends EntityPathBase<Recruit> {
 
     public static final QRecruit recruit = new QRecruit("recruit");
 
-    public final StringPath gathno = createString("gathno");
+    public final NumberPath<Integer> gathno = createNumber("gathno", Integer.class);
+
+    public final StringPath intro = createString("intro");
 
     public final NumberPath<Integer> recruitno = createNumber("recruitno", Integer.class);
 
