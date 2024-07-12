@@ -8,4 +8,5 @@ import org.apache.ibatis.annotations.Param;
 public interface GatheringMapper {
 
     public void updateGatheringCommentCount (@Param("gathno") int gathno);
+    public void updateGatheringGathnow (@Param("gathno") int gathno);
 }
