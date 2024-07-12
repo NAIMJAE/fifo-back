@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,6 +24,9 @@ public class UsersDTO {
     private String gender;
     private String thumb;
     private String role;
+
+    // 스킬 목록 저장
+    private String[] languagename;
 
     @CreationTimestamp
     private LocalDateTime rdate;
