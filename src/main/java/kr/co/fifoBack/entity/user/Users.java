@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @ToString
@@ -24,7 +25,7 @@ public class Users {
     private String nick;
     private String hp;
     private String region;
-    private int age;
+    private Date birth;
     private String gender;
     private String thumb;
     private String role;

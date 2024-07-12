@@ -18,10 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +36,6 @@ public class UserController {
     @PostMapping("/user/register")
     public ResponseEntity<?> userRegister(@RequestBody UsersDTO usersDTO){
 
-        log.info("여기보세요@"+usersDTO);
         return userService.register(usersDTO);
 
     }
@@ -68,4 +64,10 @@ public class UserController {
         return userService.getLanguage();
     }
 
+    /** 유저 정보 가져오기*/
+    @GetMapping("/user/getProfile")
+    public ResponseEntity<?> getProfile (@RequestParam int userno){
+        log.info("회원번호" + userno);
+        return userService.getProfile(userno);
+    }
 }
