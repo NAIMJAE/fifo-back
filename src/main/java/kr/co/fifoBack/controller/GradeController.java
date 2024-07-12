@@ -36,7 +36,7 @@ public class GradeController {
     @PostMapping("/question/execute")
     public CodeExecutionResponseDTO executeCode(@RequestBody CodeExecutionRequestDTO request) {
         log.info(request+"이거 한번만");
-        String output = gradeService.executeCode(request.getLanguage(), request.getCode());
+        String output = gradeService.examineCode(request);
         log.info(output);
         return new CodeExecutionResponseDTO(output);
     }
