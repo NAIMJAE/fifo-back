@@ -162,7 +162,7 @@ public class GatheringService {
         // 모임글 댓글 수 ++
         gatheringMapper.updateGatheringCommentCount(commentDTO.getGathno());
 
-        return ResponseEntity.ok().body(gathComment);
+        return ResponseEntity.ok().body(1);
     }
 
     // 댓글 불러오기

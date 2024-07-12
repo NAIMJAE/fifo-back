@@ -33,7 +33,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
     public Page<Tuple> selectGatherings(GathPageRequestDTO pageRequestDTO, Pageable pageable) {
         log.info("전체 조회");
         QueryResults<Tuple> result = jpaQueryFactory
-                .select(qGathering, qUser.name, qUser.thumb)
+                .select(qGathering, qUser.nick, qUser.thumb)
                 .from(qGathering)
                 .join(qUser)
                 .on(qGathering.userno.eq(qUser.userno))

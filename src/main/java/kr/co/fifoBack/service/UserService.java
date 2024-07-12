@@ -1,11 +1,15 @@
 package kr.co.fifoBack.service;
 
+import jakarta.transaction.Transactional;
 import kr.co.fifoBack.dto.grade.LanguageDTO;
+import kr.co.fifoBack.dto.user.SkillDTO;
 import kr.co.fifoBack.dto.user.UsersDTO;
 import kr.co.fifoBack.entity.Users;
 import kr.co.fifoBack.entity.grade.Language;
+import kr.co.fifoBack.entity.user.Skill;
 import kr.co.fifoBack.jwt.JwtProvider;
 import kr.co.fifoBack.repository.grade.LanguageRepository;
+import kr.co.fifoBack.repository.user.SkillRepository;
 import kr.co.fifoBack.repository.user.UserRepository;
 import kr.co.fifoBack.security.MyUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final SkillRepository skillRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
@@ -36,6 +42,7 @@ public class UserService {
     private final LanguageRepository languageRepository;
 
     /** 회원가입 */
+    @Transactional
     public ResponseEntity<?> register(UsersDTO usersDTO){
         log.info("회원가입" + usersDTO);
 
@@ -44,12 +51,30 @@ public class UserService {
         }else{
             String encoded = passwordEncoder.encode(usersDTO.getPass());
             usersDTO.setPass(encoded);
-            usersDTO.setRegion("부산");
 
             Users users = modelMapper.map(usersDTO, Users.class);
-            userRepository.save(users);
+            Users savedUser = userRepository.save(users);
 
-            return ResponseEntity.ok().body(users);
+            // 유저 테이블 생성 동시에 AI로 생성 되는 pk값 가지고 skill 테이블에 값입력하기
+            String[] languageNames = usersDTO.getLanguagename();
+            log.info("여기보세요2@" + languageNames.toString());
+
+            if(languageNames !=null && languageNames.length !=0){
+                List<Skill> skills = new ArrayList<>();
+
+                for(String languagename : languageNames){
+                    SkillDTO skillDTO = new SkillDTO();
+                    skillDTO.setUserno(savedUser.getUserno());
+                    skillDTO.setLanguagename(languagename);
+
+                    Skill skill = modelMapper.map(skillDTO, Skill.class);
+                    skills.add(skill);
+                }
+
+                log.info("여기보세요3@" + skills);
+                skillRepository.saveAll(skills);
+            }
+            return ResponseEntity.ok().body(savedUser);
         }
     }
 

@@ -1,8 +1,11 @@
 package kr.co.fifoBack.service;
 
+import kr.co.fifoBack.dto.grade.CodeExecutionRequestDTO;
 import kr.co.fifoBack.entity.grade.Language;
 import kr.co.fifoBack.entity.grade.Question;
+import kr.co.fifoBack.entity.grade.QuestionIOData;
 import kr.co.fifoBack.repository.grade.LanguageRepository;
+import kr.co.fifoBack.repository.grade.QuestionIODataRepository;
 import kr.co.fifoBack.repository.grade.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -30,6 +35,7 @@ public class GradeService {
 
     private final LanguageRepository languageRepository;
     private final QuestionRepository questionRepository;
+    private final QuestionIODataRepository questionIODataRepository;
 
     /* 언어 리스트 출력 */
     public ResponseEntity<?> selectAllLanguagesByType2(){
@@ -64,9 +70,25 @@ public class GradeService {
         return ResponseEntity.status(100).body("없음");
     }
 
-    public String executeCode(String language, String code) {
+    public String examineCode(CodeExecutionRequestDTO request){
+        List<QuestionIOData> IOData = selectQuestionIOData(request.getQuestionNo());
 
-        String containerId = null;
+        if (!IOData.isEmpty()){
+            for(QuestionIOData data : IOData){
+                if (!data.getOutput().equals(executeCode(request, data.getInput()))){
+                    return "틀렸습니다.";
+                }
+            }
+            return "정답입니다.";
+        }
+        return "문제 오류";
+    }
+
+    public String executeCode(CodeExecutionRequestDTO request, String input) {
+
+        String language = request.getLanguage();
+        String code = request.getCode();
+
         /* docker에 필요한 파일(임시) */
         String dockerFileContent =
                 "FROM openjdk:11\n" +
@@ -76,15 +98,6 @@ public class GradeService {
                 "COPY run.sh /app/run.sh\n" +
                 "RUN chmod +x /app/run.sh\n" +
                 "CMD [\"/app/run.sh\"]";
-
-        String input = "3 4\n" +
-                "ohhenrie\n" +
-                "charlie\n" +
-                "baesangwook\n" +
-                "obama\n" +
-                "baesangwook\n" +
-                "ohhenrie\n" +
-                "clinton";
 
         String runShell = "#!/bin/sh\n" +
                 "cat input.txt | java Main\n";
@@ -117,9 +130,9 @@ public class GradeService {
             Process process = processBuilder.start();
 
             // 프로세스 완료까지 대기
-            int exitCode = process.waitFor();
+            int buildExitCode = process.waitFor();
             StringBuilder output = new StringBuilder();
-            if(exitCode == 0){
+            if(buildExitCode == 0){
                 // 이전 프로세스(build가 정상 종료 시)
                 ProcessBuilder runProcessBuilder = new ProcessBuilder();
                 processBuilder.directory(new File(String.valueOf(codeDir)));
@@ -131,10 +144,35 @@ public class GradeService {
 
                 // 프로세스의 출력을 읽어오기
                 while ((line = reader.readLine()) != null) {
-                    output.append(line).append("\n");
+                    output.append(line);
                     log.info(line);
                 }
+
+                // 프로세스 종료 대기
+                CompletableFuture<Process> onExitFuture = run.onExit();
+                onExitFuture.thenAccept(p -> {
+                    try {
+                        int runExitCode = p.exitValue();
+                        log.info("Process exited with code: " + runExitCode);
+
+                        // 도커 이미지 삭제
+                        ProcessBuilder rmiProcessBuilder = new ProcessBuilder();
+                        rmiProcessBuilder.command("docker", "rmi", uuid);
+                        Process rmiProcess = rmiProcessBuilder.start();
+
+                        BufferedReader rmiReader = new BufferedReader(new InputStreamReader(rmiProcess.getInputStream()));
+                        String rmiLine;
+                        while ((rmiLine = rmiReader.readLine()) != null) {
+                            log.info(rmiLine);
+                        }
+                        rmiProcess.waitFor();
+                    } catch (IOException | InterruptedException e) {
+                        log.info("Error while deleting Docker image: " + e.getMessage());
+                    }
+                });
+
                 run.waitFor();
+
             }
             // 실행 결과 출력
             return output.toString();
@@ -143,6 +181,10 @@ public class GradeService {
             log.info(e.getMessage());
             return e.getMessage();
         }
+    }
+
+    private List<QuestionIOData> selectQuestionIOData(int questionNo){
+        return questionIODataRepository.findByQuestionno(questionNo);
     }
 
     private String getFileName(String language) {

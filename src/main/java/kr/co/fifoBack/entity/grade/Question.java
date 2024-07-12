@@ -28,4 +28,7 @@ public class Question {
 
     private String languagename;    // 언어
 
+    private String input;           // 입력 조건
+    private String output;          // 출력 조건
+
 }
