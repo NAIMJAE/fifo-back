@@ -1,5 +1,6 @@
 package kr.co.fifoBack.service;
 
+import com.querydsl.core.types.dsl.StringPath;
 import jakarta.transaction.Transactional;
 import kr.co.fifoBack.dto.grade.LanguageDTO;
 import kr.co.fifoBack.dto.user.SkillDTO;
@@ -14,6 +15,8 @@ import kr.co.fifoBack.repository.user.UserRepository;
 import kr.co.fifoBack.security.MyUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
+import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -51,13 +51,12 @@ public class UserService {
         }else{
             String encoded = passwordEncoder.encode(usersDTO.getPass());
             usersDTO.setPass(encoded);
-
+            usersDTO.setRole("USER");
             Users users = modelMapper.map(usersDTO, Users.class);
             Users savedUser = userRepository.save(users);
 
             // 유저 테이블 생성 동시에 AI로 생성 되는 pk값 가지고 skill 테이블에 값입력하기
             String[] languageNames = usersDTO.getLanguagename();
-            log.info("여기보세요2@" + languageNames.toString());
 
             if(languageNames !=null && languageNames.length !=0){
                 List<Skill> skills = new ArrayList<>();
@@ -71,13 +70,13 @@ public class UserService {
                     skills.add(skill);
                 }
 
-                log.info("여기보세요3@" + skills);
                 skillRepository.saveAll(skills);
             }
             return ResponseEntity.ok().body(savedUser);
         }
     }
 
+    /**로그인*/
     public ResponseEntity<?> login(UsersDTO usersDTO){
         log.info("login...1" + usersDTO.getEmail());
         log.info("login...2" + usersDTO.getPass());
@@ -116,6 +115,7 @@ public class UserService {
         }
     }
 
+    /**회원가입에 모든 언어 가져오기*/
     public ResponseEntity<?> getLanguage(){
         List<Language> languages = languageRepository.findAll();
 
@@ -128,5 +128,31 @@ public class UserService {
             log.info(result.toString());
             return ResponseEntity.ok().body(result);
         }
+    }
+
+    /**유저 정보 가져오기*/
+    public ResponseEntity<?> getProfile(int userno){
+        Optional<Users> user = userRepository.findById(userno);
+        List<Skill> skillList = skillRepository.findByUserno(userno);
+
+        if(user.isPresent()){
+            UsersDTO usersDTO = modelMapper.map(user, UsersDTO.class);
+
+            String[] languageNames = skillList.stream()
+                           .map(Skill::getLanguagename)
+                           .toArray(String[]::new);
+
+            Integer [] levels = skillList.stream()
+                    .map(Skill::getLevel)
+                    .toArray(Integer[]::new);
+
+            usersDTO.setLanguagename(languageNames);
+            usersDTO.setLevels(levels);
+
+            return ResponseEntity.ok().body(usersDTO);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
+        }
+
     }
 }

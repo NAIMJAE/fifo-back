@@ -19,7 +19,7 @@ public class QUsers extends EntityPathBase<Users> {
 
     public static final QUsers users = new QUsers("users");
 
-    public final NumberPath<Integer> age = createNumber("age", Integer.class);
+    public final DateTimePath<java.util.Date> birth = createDateTime("birth", java.util.Date.class);
 
     public final StringPath email = createString("email");
 
