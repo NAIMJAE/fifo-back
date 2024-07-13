@@ -28,7 +28,8 @@ public class Users {
     private Date birth;
     private String gender;
     private String thumb;
-    private String role;
+    @Builder.Default
+    private String role = "USER";
 
     @CreationTimestamp
     private LocalDateTime rdate;
