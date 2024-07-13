@@ -16,5 +16,6 @@ public class Skill {
     private int sno;
     private int userno;
     private String languagename;
-    private int level;
+    @Builder.Default
+    private int level = 1;
 }

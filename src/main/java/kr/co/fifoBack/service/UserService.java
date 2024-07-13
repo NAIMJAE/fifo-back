@@ -9,6 +9,7 @@ import kr.co.fifoBack.entity.Users;
 import kr.co.fifoBack.entity.grade.Language;
 import kr.co.fifoBack.entity.user.Skill;
 import kr.co.fifoBack.jwt.JwtProvider;
+import kr.co.fifoBack.mapper.UsersMapper;
 import kr.co.fifoBack.repository.grade.LanguageRepository;
 import kr.co.fifoBack.repository.user.SkillRepository;
 import kr.co.fifoBack.repository.user.UserRepository;
@@ -26,6 +27,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.lang.management.LockInfo;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,7 +42,7 @@ public class UserService {
     private final JwtProvider jwtProvider;
     private final ModelMapper modelMapper;
     private final LanguageRepository languageRepository;
-
+    private final UsersMapper usersMapper;
     /** 회원가입 */
     @Transactional
     public ResponseEntity<?> register(UsersDTO usersDTO){
@@ -154,5 +156,53 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
         }
 
+    }
+
+    /**언어 중복 제거해서 가져오기*/
+    public ResponseEntity<?> getDistinctLanguage(int userno){
+        List<String> result =languageRepository.getDistinctLanguage(userno);
+        log.info("여기야@@@@"+result);
+        if (result.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
+        }else{
+            return ResponseEntity.ok().body(result);
+        }
+    }
+
+    /**선택한 언어 추가하기*/
+    public ResponseEntity<?> addSkill(int userno, String[] inputSkill){
+
+        for(String skills : inputSkill ){
+            SkillDTO skillDTO = new SkillDTO();
+
+            skillDTO.setUserno(userno);
+            skillDTO.setLanguagename(skills);
+            skillDTO.setLevel(1);
+
+            Skill skill = modelMapper.map(skillDTO, Skill.class);
+            Skill result = skillRepository.save(skill);
+
+            if(result.getLanguagename().isEmpty()){
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR");
+            }
+        }
+
+        return ResponseEntity.ok().body("저장");
+    }
+
+    /**기술스택 삭제*/
+    public ResponseEntity<?> deleteSkill(int userno, String languagename){
+        return null;
+    }
+
+    /**중복검사*/
+    public ResponseEntity<?> duplicateTest(String param){
+        int count = usersMapper.duplicateTest(param);
+
+        if(param.isEmpty()){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("NOT FOUND");
+        }else{
+            return ResponseEntity.ok().body(count);
+        }
     }
 }
