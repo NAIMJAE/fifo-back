@@ -1,4 +1,4 @@
-package kr.co.fifoBack.service;
+package kr.co.fifoBack.service.user;
 
 import com.querydsl.core.types.dsl.StringPath;
 import jakarta.transaction.Transactional;
@@ -195,14 +195,5 @@ public class UserService {
         return null;
     }
 
-    /**중복검사*/
-    public ResponseEntity<?> duplicateTest(String param){
-        int count = usersMapper.duplicateTest(param);
 
-        if(param.isEmpty()){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("NOT FOUND");
-        }else{
-            return ResponseEntity.ok().body(count);
-        }
-    }
 }

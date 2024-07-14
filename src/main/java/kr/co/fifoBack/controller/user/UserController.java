@@ -1,29 +1,13 @@
 package kr.co.fifoBack.controller.user;
 
 import kr.co.fifoBack.dto.user.UsersDTO;
-import kr.co.fifoBack.entity.Users;
-import kr.co.fifoBack.jwt.JwtProvider;
-import kr.co.fifoBack.repository.user.UserRepository;
-import kr.co.fifoBack.security.MyUserDetails;
 import kr.co.fifoBack.service.TermsService;
-import kr.co.fifoBack.service.UserService;
+import kr.co.fifoBack.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
-import org.apache.ibatis.annotations.Delete;
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @Slf4j
@@ -67,6 +51,8 @@ public class UserController {
         return userService.getLanguage();
     }
 
+
+
     /** 유저 정보 가져오기*/
     @GetMapping("/user/getProfile")
     public ResponseEntity<?> getProfile (@RequestParam int userno){
@@ -94,10 +80,5 @@ public class UserController {
         return userService.deleteSkill(userno, languagename);
     }
 
-    /**중복검사*/
-    @GetMapping("/user/duplicateTest")
-    public ResponseEntity<?> duplicateTest(@RequestParam("param")String param){
-        log.info("여기요@@"+param);
-        return userService.duplicateTest(param);
-    }
+
 }
