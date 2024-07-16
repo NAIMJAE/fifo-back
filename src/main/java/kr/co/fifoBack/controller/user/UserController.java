@@ -6,8 +6,12 @@ import kr.co.fifoBack.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.awt.dnd.DropTarget;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -64,6 +68,18 @@ public class UserController {
     @GetMapping("/user/distinctLanguage")
     public ResponseEntity<?> getDistinctLanguage(@RequestParam int userno){
         return userService.getDistinctLanguage(userno);
+    }
+
+    /**내 정보 수정*/
+    @PostMapping("/user/update")
+    public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> data, @RequestParam int userno){
+        String type = data.get("type");
+        String information = data.get("information");
+        log.info("타입@@@" + type);
+        log.info("정보@@@" + information);
+        log.info("번호@@@" + userno);
+
+        return userService.updateProfile(userno, type, information);
     }
 
     /**내 기술 스택 추가하기*/

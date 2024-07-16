@@ -169,6 +169,18 @@ public class UserService {
         }
     }
 
+    /**내 정보 수정*/
+    public ResponseEntity<?> updateProfile(int userno, String type, String information){
+
+        try {
+            usersMapper.updateProfile(userno, type, information);
+            return ResponseEntity.ok().body(true);
+        }catch (Exception e){
+            return ResponseEntity.ok().body(false);
+        }
+
+    }
+
     /**선택한 언어 추가하기*/
     public ResponseEntity<?> addSkill(int userno, String[] inputSkill){
 

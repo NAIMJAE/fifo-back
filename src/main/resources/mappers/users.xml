@@ -17,9 +17,22 @@
             </if>
 
         </where>
-
-
-
     </select>
+
+    <update id="updateProfile">
+        UPDATE users SET
+        <if test="type == 'nick'">
+            nick = #{information}
+        </if>
+        <if test="type == 'email'">
+            email = #{information}
+        </if>
+        <if test="type == 'hp'">
+            hp = #{information}
+        </if>
+        <where>
+            userno =#{userno}
+        </where>
+    </update>
 
 </mapper>
