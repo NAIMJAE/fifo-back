@@ -41,6 +41,8 @@ public class QUsers extends EntityPathBase<Users> {
 
     public final StringPath role = createString("role");
 
+    public final NumberPath<Integer> stack = createNumber("stack", Integer.class);
+
     public final StringPath thumb = createString("thumb");
 
     public final NumberPath<Integer> userno = createNumber("userno", Integer.class);

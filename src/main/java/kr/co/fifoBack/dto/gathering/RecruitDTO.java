@@ -1,7 +1,12 @@
 package kr.co.fifoBack.dto.gathering;
 
 import jakarta.persistence.*;
+import kr.co.fifoBack.dto.user.SkillDTO;
+import kr.co.fifoBack.dto.user.UserRegionDTO;
+import kr.co.fifoBack.entity.user.UserRegion;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,7 +24,8 @@ public class RecruitDTO {
 
     // 추가 필드
     private String nick;
-    private String region;
     private String thumb;
+    private List<UserRegionDTO> userRegions;
+    private List<SkillDTO> skill;
 
 }
