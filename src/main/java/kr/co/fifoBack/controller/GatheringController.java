@@ -45,13 +45,14 @@ public class GatheringController {
     }
     // 모임 글 수정
     @PutMapping("/gathering")
-    public ResponseEntity<?> updateGathering(@RequestBody GatheringDTO gatheringDTO){
-        return null;
+    public ResponseEntity<?> updateGathering(GatheringDTO gatheringDTO){
+        log.info("gatheringDTO : " + gatheringDTO);
+        return gatheringService.updateGathering(gatheringDTO);
     }
     // 모임 글 삭제
-    @DeleteMapping("/gathering")
-    public ResponseEntity<?> deleteGathering(@RequestParam("gathno") int gathno){
-        return null;
+    @DeleteMapping("/gathering/{gathno}")
+    public ResponseEntity<?> deleteGathering(@PathVariable int gathno){
+        return gatheringService.deleteGathering(gathno);
     }
     // 내 모임 목록 조회
     @PostMapping("/my/gatherings")
@@ -65,7 +66,18 @@ public class GatheringController {
         log.info("commentDTO : " + commentDTO);
         return gatheringService.insertComment(commentDTO);
     }
-
+    // 댓글 수정
+    @PatchMapping("/gathcomment")
+    public ResponseEntity<?> commentModify(@RequestBody GathCommentDTO commentDTO) {
+        log.info("GathCommentDTO : " + commentDTO);
+        return gatheringService.modifyComment(commentDTO);
+    }
+    // 댓글 삭제
+    @DeleteMapping("/gathcomment/{commentno}")
+    public ResponseEntity<?> commentDelete(@PathVariable int commentno) {
+        log.info("commentno : " + commentno);
+        return gatheringService.deleteComment(commentno);
+    }
     // 댓글 불러오기
     @GetMapping("/gathcomment")
     public ResponseEntity<?> commentView(@RequestParam("pg") int pg, @RequestParam("gathno") int gathno) {
