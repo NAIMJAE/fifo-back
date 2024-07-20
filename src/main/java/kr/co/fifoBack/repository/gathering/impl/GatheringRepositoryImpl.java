@@ -95,7 +95,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
     }
 
     // 모임 글 보기
-    @Override
+    //
     public Tuple selectGathering(int gathno) {
         return jpaQueryFactory
                 .select(qGathering, qUser.nick, qUser.thumb)

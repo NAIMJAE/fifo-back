@@ -31,11 +31,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.Console;
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -91,12 +91,38 @@ public class GatheringService {
     // 모임 글 보기
     @Transactional
     public ResponseEntity<?> selectGathering(int gathno){
+
         // 글 조회
-        Tuple result = gatheringRepository.selectGathering(gathno);
-        Gathering gathering = result.get(0, Gathering.class);
+        List<Object[]> result = gatheringRepository.selectGatheringAndHitUp(gathno);
+        log.info(result.toString());
+        Object[] row = result.get(0);
+
+        Gathering gathering = Gathering.builder()
+                .gathcate((Integer) row[0])
+                .gathcomment((Integer) row[1])
+                .gathno((Integer) row[2])
+                .gathnowmember((Integer) row[3])
+                .gathtotalmember((Integer) row[4])
+                .hit((Integer) row[5])
+                .projectend(helperService.convertToLocalDate(row[6]))
+                .projectstart(helperService.convertToLocalDate(row[7]))
+                .recruitend(helperService.convertToLocalDate(row[8]))
+                .recruitstart(helperService.convertToLocalDate(row[9]))
+                .userno((Integer) row[10])
+                .gathdetail((String) row[11])
+                .gathlanguage((String) row[12])
+                .gathmode((String) row[13])
+                .gathrecruitfield((String) row[14])
+                .gathstate((String) row[15])
+                .gathtitle((String) row[16])
+                .thumb((String) row[17])
+                .modiDate(row[18] != null ? ((Timestamp) row[18]).toLocalDateTime() : null)
+                .build();
+
+
         GatheringDTO gatheringDTO = modelMapper.map(gathering, GatheringDTO.class);
-        gatheringDTO.setUsernick(result.get(1, String.class));
-        gatheringDTO.setUserthumb(result.get(2, String.class));
+        gatheringDTO.setUsernick((String) row[19]);
+        gatheringDTO.setUserthumb((String) row[20]);
 
         // 모임 신청 현황 조회
         List<Tuple> recruits = recruitRepository.selectRecruitList(gathno);
@@ -111,10 +137,6 @@ public class GatheringService {
                     return recruitDTO;
                 }).toList();
         gatheringDTO.setRecruitList(recruitList);
-
-        // 조회수 ++
-        gathering.setHit(gathering.getHit() + 1);
-        gatheringRepository.save(gathering);
 
         return ResponseEntity.ok().body(gatheringDTO);
     }
