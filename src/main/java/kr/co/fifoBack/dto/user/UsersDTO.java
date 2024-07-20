@@ -25,6 +25,7 @@ public class UsersDTO {
     private String gender;
     private String thumb;
     private String role;
+    private int stack;
 
     // 스킬 목록 저장
     private String[] languagename;

@@ -28,6 +28,7 @@ public class Users {
     private Date birth;
     private String gender;
     private String thumb;
+    private int stack;
     @Builder.Default
     private String role = "USER";
 

@@ -8,6 +8,8 @@ import kr.co.fifoBack.dto.gathering.GatheringDTO;
 import kr.co.fifoBack.dto.gathering.RecruitDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageResponseDTO;
+import kr.co.fifoBack.dto.user.SkillDTO;
+import kr.co.fifoBack.dto.user.UserRegionDTO;
 import kr.co.fifoBack.entity.Users;
 import kr.co.fifoBack.entity.gathering.GathComment;
 import kr.co.fifoBack.entity.gathering.Gathering;
@@ -106,8 +108,20 @@ public class GatheringService {
                     Users users = tuple.get(1, Users.class);
                     RecruitDTO recruitDTO = modelMapper.map(recruit, RecruitDTO.class);
                     recruitDTO.setNick(users.getNick());
-                    recruitDTO.setRegion(users.getRegion());
                     recruitDTO.setThumb(users.getThumb());
+
+                    List<UserRegion> userRegions = userRegionRepository.findByUserno(users.getUserno());
+                    List<UserRegionDTO> userRegionDTOS = userRegions.stream().map(
+                            regin -> modelMapper.map(regin, UserRegionDTO.class)
+                    ).toList();
+                    recruitDTO.setUserRegions(userRegionDTOS);
+
+                    List<Skill> skillList = skillRepository.findByUserno(users.getUserno());
+                    List<SkillDTO> skillDTOS = skillList.stream().map(
+                            skill -> modelMapper.map(skill, SkillDTO.class)
+                    ).toList();
+                    recruitDTO.setSkill(skillDTOS);
+
                     return recruitDTO;
                 }).toList();
         gatheringDTO.setRecruitList(recruitList);
