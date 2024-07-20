@@ -9,13 +9,11 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="skill")
-public class Skill {
+@Table(name="userregion")
+public class UserRegion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int sno;
+    private int urno;
+    private String regionname;
     private int userno;
-    private String languagename;
-    @Builder.Default
-    private int level = 1;
 }

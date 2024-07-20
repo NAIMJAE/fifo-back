@@ -8,20 +8,20 @@ import kr.co.fifoBack.dto.gathering.GatheringDTO;
 import kr.co.fifoBack.dto.gathering.RecruitDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageResponseDTO;
-import kr.co.fifoBack.dto.post.CommentDTO;
 import kr.co.fifoBack.entity.Users;
 import kr.co.fifoBack.entity.gathering.GathComment;
 import kr.co.fifoBack.entity.gathering.Gathering;
 import kr.co.fifoBack.entity.gathering.Recruit;
-import kr.co.fifoBack.entity.post.Comment;
-import kr.co.fifoBack.entity.post.Post;
+import kr.co.fifoBack.entity.user.Skill;
+import kr.co.fifoBack.entity.user.UserRegion;
 import kr.co.fifoBack.mapper.GatheringMapper;
 import kr.co.fifoBack.repository.gathering.GathCommentRepository;
 import kr.co.fifoBack.repository.gathering.GatheringRepository;
 import kr.co.fifoBack.repository.gathering.RecruitRepository;
+import kr.co.fifoBack.repository.user.SkillRepository;
+import kr.co.fifoBack.repository.user.UserRegionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +33,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Slf4j
@@ -43,6 +45,8 @@ public class GatheringService {
     private final GatheringRepository gatheringRepository;
     private final GathCommentRepository gathCommentRepository;
     private final RecruitRepository recruitRepository;
+    private final SkillRepository skillRepository;
+    private final UserRegionRepository userRegionRepository;
 
     private final GatheringMapper gatheringMapper;
     private final HelperService helperService;
@@ -83,10 +87,10 @@ public class GatheringService {
 
         return ResponseEntity.ok().body(pageGathDTO);
     }
+
     // 모임 글 보기
     @Transactional
     public ResponseEntity<?> selectGathering(int gathno){
-
         // 글 조회
         Tuple result = gatheringRepository.selectGathering(gathno);
         Gathering gathering = result.get(0, Gathering.class);
@@ -114,10 +118,10 @@ public class GatheringService {
 
         return ResponseEntity.ok().body(gatheringDTO);
     }
+
     // 모임 글 작성
     @Transactional
     public ResponseEntity<?> insertGathering(GatheringDTO gatheringDTO){
-
         // 썸네일 저장
         MultipartFile thumbnail = gatheringDTO.getThumbnail();
         String thumb = null;
@@ -141,9 +145,9 @@ public class GatheringService {
         }
         return ResponseEntity.ok().body(gathering.getGathno());
     }
+
     // 모임 글 수정
     public ResponseEntity<?> updateGathering(GatheringDTO gatheringDTO){
-
         Optional<Gathering> optGathering = gatheringRepository.findById(gatheringDTO.getGathno());
 
         if(optGathering.isPresent()) {
@@ -155,18 +159,15 @@ public class GatheringService {
             // 썸네일 변경했으면
             MultipartFile thumbnail = gatheringDTO.getThumbnail();
             if (thumbnail != null && !thumbnail.isEmpty()) {
-
                 // 기존 썸네일 있었으면 파일 삭제
                 if (optGathering.get().getThumb() != null) {
                     log.info("바꿈 : " + optGathering.get().getThumb());
                     // 기존 썸네일 삭제
                     helperService.deleteFiles("/gathering/thumb/" , optGathering.get().getThumb());
                 }
-
                 // 썸네일 저장
                 String thumb = helperService.uploadFiles(List.of(thumbnail), "gathering/thumb/", false).get(0);
                 optGathering.get().setThumb(thumb);
-
             }
 
             Gathering savedGathering = gatheringRepository.save(optGathering.get());
@@ -175,11 +176,11 @@ public class GatheringService {
             if (gatheringDTO.getImages() != null && !gatheringDTO.getImages().isEmpty()) {
                 helperService.uploadFiles(gatheringDTO.getImages(), "gathering/images/" + gatheringDTO.getGathno() + "/", true);
             }
-
         }
 
         return ResponseEntity.ok().body(gatheringDTO.getGathno());
     }
+
     // 모임 글 삭제
     @Transactional
     public ResponseEntity<?> deleteGathering(int gathno){
@@ -199,18 +200,17 @@ public class GatheringService {
 
             // 모임글 삭제
             gatheringRepository.deleteById(gathno);
-
         }
         return ResponseEntity.status(HttpStatus.OK).body(1);
     }
 
     // 내 모임 목록 조회
     public ResponseEntity<?> selectGatheringsByUser(GathPageRequestDTO gathPageRequestDTO){
-
         // 내 모임 글?조회???인가 프로젝트 테이블 조회인가
         // 채팅이랑 프로젝트에 포함된 게시판(노션 페이지같은거)도 같이 조회
         return ResponseEntity.ok().body("");
     }
+
     // 댓글 작성
     @Transactional
     public ResponseEntity<?> insertComment(GathCommentDTO commentDTO) {
@@ -222,6 +222,7 @@ public class GatheringService {
 
         return ResponseEntity.ok().body(1);
     }
+
     // 댓글 수정
     @Transactional
     public ResponseEntity<?> modifyComment(GathCommentDTO commentDTO) {
@@ -236,9 +237,10 @@ public class GatheringService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
         }
     }
+
     // 댓글 삭제
-    public ResponseEntity<?> deleteComment(int commnetno) {
-        Optional<GathComment> optComment = gathCommentRepository.findById(commnetno);
+    public ResponseEntity<?> deleteComment(int commentno) {
+        Optional<GathComment> optComment = gathCommentRepository.findById(commentno);
 
         if (optComment.isPresent()) {
             optComment.get().setContent("삭제되었습니다.");
@@ -250,6 +252,7 @@ public class GatheringService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
         }
     }
+
     // 댓글 불러오기
     public ResponseEntity<?> selectComment(PageRequestDTO pageRequestDTO) {
         Pageable pageable = pageRequestDTO.getPageable("commentno");
@@ -330,4 +333,15 @@ public class GatheringService {
         return ResponseEntity.status(HttpStatus.OK).body(0);
     }
 
+    // 모임 신청 모달 정보 불러오기
+    public ResponseEntity<?> selectUserInfo(int userno) {
+        List<Skill> skillList = skillRepository.findByUserno(userno);
+        List<UserRegion> regionList = userRegionRepository.findByUserno(userno);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("skill", skillList);
+        result.put("region", regionList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 }
