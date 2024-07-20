@@ -9,11 +9,11 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="userregion")
-public class UserRegion {
+@Table(name="region")
+public class Region {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int urno;
+    @Column(name = "rno")
+    private int rno;
     private String regionname;
-    private int userno;
 }

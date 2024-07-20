@@ -8,8 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserRegionDTO {
-    private int urno;
+public class RegionDTO {
+    private int rno;
     private String regionname;
-    private int userno;
 }
