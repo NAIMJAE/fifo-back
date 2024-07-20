@@ -26,7 +26,6 @@ public class GatheringDTO {
     private String thumb;
     private int gathnowmember;
     private int gathtotalmember;
-    private String gathsupport;
     private String gathrecruitfield;
     private String gathlanguage;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -44,6 +43,8 @@ public class GatheringDTO {
 
     private int hit;
     private int gathcomment;    // 댓글 개수
+
+    private LocalDateTime modiDate;
 
     // 저장용 변수
     private MultipartFile thumbnail;

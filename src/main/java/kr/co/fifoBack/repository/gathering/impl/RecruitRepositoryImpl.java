@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.fifoBack.entity.QUsers;
 import kr.co.fifoBack.entity.gathering.QRecruit;
 import kr.co.fifoBack.entity.gathering.Recruit;
+import kr.co.fifoBack.entity.user.QUserRegion;
 import kr.co.fifoBack.repository.gathering.custom.RecruitRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ public class RecruitRepositoryImpl implements RecruitRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
     private final QRecruit qRecruit = QRecruit.recruit;
     private final QUsers qUsers = QUsers.users;
+    private final QUserRegion qUserRegion = QUserRegion.userRegion;
 
     // 모임 신청 목록 조회
     public List<Tuple> selectRecruitList(int gathno) {

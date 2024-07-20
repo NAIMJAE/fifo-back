@@ -9,17 +9,12 @@ import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 
 
-/**
- * QUserRegion is a Querydsl query type for UserRegion
- */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QUserRegion extends EntityPathBase<UserRegion> {
 
     private static final long serialVersionUID = 193640855L;
 
     public static final QUserRegion userRegion = new QUserRegion("userRegion");
-
-    public final NumberPath<Integer> countpeople = createNumber("countpeople", Integer.class);
 
     public final StringPath regionname = createString("regionname");
 
@@ -40,4 +35,3 @@ public class QUserRegion extends EntityPathBase<UserRegion> {
     }
 
 }
-

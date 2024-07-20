@@ -3,8 +3,6 @@ package kr.co.fifoBack.entity.user;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.lang.reflect.UndeclaredThrowableException;
-
 @Getter
 @ToString
 @AllArgsConstructor
@@ -15,9 +13,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 public class UserRegion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "rno")
     private int urno;
-    private int userno;
     private String regionname;
-    private int countpeople;
+    private int userno;
 }

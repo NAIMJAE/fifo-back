@@ -37,7 +37,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 .from(qGathering)
                 .join(qUser)
                 .on(qGathering.userno.eq(qUser.userno))
-                .orderBy(qGathering.gathno.asc())
+                .orderBy(qGathering.gathno.desc()) // or asc depending on the latest requirement
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
@@ -49,6 +49,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
 
         return new PageImpl<>(gathList, pageable, total);
     }
+
     // 모임글 목록 검색 조회
     @Override
     public Page<Tuple> selectGatheringsByKeyword(GathPageRequestDTO pageRequestDTO, Pageable pageable) {
@@ -80,7 +81,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 .join(qUser)
                 .on(qGathering.userno.eq(qUser.userno))
                 .where(expression)
-                .orderBy(qGathering.gathno.asc())
+                .orderBy(qGathering.gathno.desc()) // or asc depending on the latest requirement
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
@@ -92,9 +93,10 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
 
         return new PageImpl<>(gathList, pageable, total);
     }
+
     // 모임 글 보기
-    @Override
-    public Tuple selectGathering(int gathno){
+    //
+    public Tuple selectGathering(int gathno) {
         return jpaQueryFactory
                 .select(qGathering, qUser.nick, qUser.thumb)
                 .from(qGathering)

@@ -1,7 +1,6 @@
 package kr.co.fifoBack.dto.user;
 
 import lombok.*;
-import org.eclipse.jdt.internal.compiler.env.IBinaryNestedType;
 
 @Getter
 @Setter
@@ -11,7 +10,6 @@ import org.eclipse.jdt.internal.compiler.env.IBinaryNestedType;
 @Builder
 public class UserRegionDTO {
     private int urno;
-    private int userno;
     private String regionname;
-    private int countpeople;
+    private int userno;
 }

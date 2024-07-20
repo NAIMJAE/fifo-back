@@ -27,6 +27,8 @@ public class QGathComment extends EntityPathBase<GathComment> {
 
     public final DateTimePath<java.time.LocalDateTime> rdate = createDateTime("rdate", java.time.LocalDateTime.class);
 
+    public final NumberPath<Integer> state = createNumber("state", Integer.class);
+
     public final DateTimePath<java.time.LocalDateTime> updateDate = createDateTime("updateDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Integer> userno = createNumber("userno", Integer.class);
