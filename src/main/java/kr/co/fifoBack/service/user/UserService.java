@@ -42,7 +42,7 @@ public class UserService {
     private final JwtProvider jwtProvider;
     private final ModelMapper modelMapper;
     private final LanguageRepository languageRepository;
-    private final UsersMapper usersMapper;
+
     /** 회원가입 */
     @Transactional
     public ResponseEntity<?> register(UsersDTO usersDTO){
@@ -131,81 +131,5 @@ public class UserService {
             return ResponseEntity.ok().body(result);
         }
     }
-
-    /**유저 정보 가져오기*/
-    public ResponseEntity<?> getProfile(int userno){
-        Optional<Users> user = userRepository.findById(userno);
-        List<Skill> skillList = skillRepository.findByUserno(userno);
-
-        if(user.isPresent()){
-            UsersDTO usersDTO = modelMapper.map(user, UsersDTO.class);
-
-            String[] languageNames = skillList.stream()
-                           .map(Skill::getLanguagename)
-                           .toArray(String[]::new);
-
-            Integer [] levels = skillList.stream()
-                    .map(Skill::getLevel)
-                    .toArray(Integer[]::new);
-
-            usersDTO.setLanguagename(languageNames);
-            usersDTO.setLevels(levels);
-
-            return ResponseEntity.ok().body(usersDTO);
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
-        }
-
-    }
-
-    /**언어 중복 제거해서 가져오기*/
-    public ResponseEntity<?> getDistinctLanguage(int userno){
-        List<String> result =languageRepository.getDistinctLanguage(userno);
-        log.info("여기야@@@@"+result);
-        if (result.isEmpty()){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
-        }else{
-            return ResponseEntity.ok().body(result);
-        }
-    }
-
-    /**내 정보 수정*/
-    public ResponseEntity<?> updateProfile(int userno, String type, String information){
-
-        try {
-            usersMapper.updateProfile(userno, type, information);
-            return ResponseEntity.ok().body(true);
-        }catch (Exception e){
-            return ResponseEntity.ok().body(false);
-        }
-
-    }
-
-    /**선택한 언어 추가하기*/
-    public ResponseEntity<?> addSkill(int userno, String[] inputSkill){
-
-        for(String skills : inputSkill ){
-            SkillDTO skillDTO = new SkillDTO();
-
-            skillDTO.setUserno(userno);
-            skillDTO.setLanguagename(skills);
-            skillDTO.setLevel(1);
-
-            Skill skill = modelMapper.map(skillDTO, Skill.class);
-            Skill result = skillRepository.save(skill);
-
-            if(result.getLanguagename().isEmpty()){
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR");
-            }
-        }
-
-        return ResponseEntity.ok().body("저장");
-    }
-
-    /**기술스택 삭제*/
-    public ResponseEntity<?> deleteSkill(int userno, String languagename){
-        return null;
-    }
-
 
 }

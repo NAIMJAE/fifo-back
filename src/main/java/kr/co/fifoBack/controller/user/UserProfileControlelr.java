@@ -1,0 +1,65 @@
+package kr.co.fifoBack.controller.user;
+
+import kr.co.fifoBack.service.user.UserProfileService;
+import kr.co.fifoBack.service.user.UserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+
+@Controller
+@Slf4j
+@RequiredArgsConstructor
+public class UserProfileControlelr {
+
+    private final UserService userService;
+    private final UserProfileService userProfileService;
+
+    /** 유저 정보 가져오기*/
+    @GetMapping("/profile/select")
+    public ResponseEntity<?> getProfile (@RequestParam int userno){
+        log.info("회원번호" + userno);
+        return userProfileService.getProfile(userno);
+    }
+
+    /**내 언어 목록 중복 제거해서 가져오기*/
+    @GetMapping("/profile/distinctLanguage")
+    public ResponseEntity<?> getDistinctLanguage(@RequestParam int userno){
+        return userProfileService.getDistinctLanguage(userno);
+    }
+
+    /**내 정보 수정*/
+    @PostMapping("/profile/update")
+    public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> data, @RequestParam int userno){
+        String type = data.get("type");
+        String information = data.get("information");
+        log.info("타입@@@" + type);
+        log.info("정보@@@" + information);
+        log.info("번호@@@" + userno);
+
+        return userProfileService.updateProfile(userno, type, information);
+    }
+
+    /**지역 가져오기*/
+    @GetMapping("/profile/selectRegion")
+    public ResponseEntity<?> selectRegion(){
+        return userProfileService.selectRegion();
+    }
+
+    /**내 기술 스택 추가하기*/
+    @PostMapping("/profile/addSkill")
+    public ResponseEntity<?> addSkill(@RequestParam("userno") int userno, @RequestBody String[] inputSkill ){
+
+        return userProfileService.addSkill(userno, inputSkill);
+    }
+
+    /**내 기술 스택 삭제*/
+    @DeleteMapping("/profile/deleteSkill")
+    public ResponseEntity<?> deleteSkill(@RequestParam("userno") int userno, @RequestParam("languagename") String languagename ){
+
+        return userProfileService.deleteSkill(userno, languagename);
+    }
+}

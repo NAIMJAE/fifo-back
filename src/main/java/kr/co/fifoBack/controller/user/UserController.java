@@ -16,7 +16,6 @@ import java.util.Map;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-
 public class UserController {
 
     private final TermsService termsService;
@@ -57,44 +56,6 @@ public class UserController {
 
 
 
-    /** 유저 정보 가져오기*/
-    @GetMapping("/user/getProfile")
-    public ResponseEntity<?> getProfile (@RequestParam int userno){
-        log.info("회원번호" + userno);
-        return userService.getProfile(userno);
-    }
-    
-    /**내 언어 목록 중복 제거해서 가져오기*/
-    @GetMapping("/user/distinctLanguage")
-    public ResponseEntity<?> getDistinctLanguage(@RequestParam int userno){
-        return userService.getDistinctLanguage(userno);
-    }
-
-    /**내 정보 수정*/
-    @PostMapping("/user/update")
-    public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> data, @RequestParam int userno){
-        String type = data.get("type");
-        String information = data.get("information");
-        log.info("타입@@@" + type);
-        log.info("정보@@@" + information);
-        log.info("번호@@@" + userno);
-
-        return userService.updateProfile(userno, type, information);
-    }
-
-    /**내 기술 스택 추가하기*/
-    @PostMapping("/user/addSkill")
-    public ResponseEntity<?> addSkill(@RequestParam("userno") int userno, @RequestBody String[] inputSkill ){
-
-        return userService.addSkill(userno, inputSkill);
-    }
-
-    /**내 기술 스택 삭제*/
-    @DeleteMapping("/user/deleteSkill")
-    public ResponseEntity<?> deleteSkill(@RequestParam("userno") int userno, @RequestParam("languagename") String languagename ){
-
-        return userService.deleteSkill(userno, languagename);
-    }
 
 
 }
