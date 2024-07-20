@@ -8,10 +8,13 @@ import kr.co.fifoBack.dto.gathering.GatheringDTO;
 import kr.co.fifoBack.dto.gathering.RecruitDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageResponseDTO;
+import kr.co.fifoBack.dto.post.CommentDTO;
 import kr.co.fifoBack.entity.Users;
 import kr.co.fifoBack.entity.gathering.GathComment;
 import kr.co.fifoBack.entity.gathering.Gathering;
 import kr.co.fifoBack.entity.gathering.Recruit;
+import kr.co.fifoBack.entity.post.Comment;
+import kr.co.fifoBack.entity.post.Post;
 import kr.co.fifoBack.mapper.GatheringMapper;
 import kr.co.fifoBack.repository.gathering.GathCommentRepository;
 import kr.co.fifoBack.repository.gathering.GatheringRepository;
@@ -28,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -139,11 +143,65 @@ public class GatheringService {
     }
     // 모임 글 수정
     public ResponseEntity<?> updateGathering(GatheringDTO gatheringDTO){
-        return null;
+
+        Optional<Gathering> optGathering = gatheringRepository.findById(gatheringDTO.getGathno());
+
+        if(optGathering.isPresent()) {
+            String replacedContent = gatheringDTO.getGathdetail().replace("$#@^", Integer.toString(optGathering.get().getGathno()));
+            optGathering.get().setGathdetail(replacedContent);
+            optGathering.get().setGathtitle(gatheringDTO.getGathtitle());
+            optGathering.get().setModiDate(LocalDateTime.now());
+
+            // 썸네일 변경했으면
+            MultipartFile thumbnail = gatheringDTO.getThumbnail();
+            if (thumbnail != null && !thumbnail.isEmpty()) {
+
+                // 기존 썸네일 있었으면 파일 삭제
+                if (optGathering.get().getThumb() != null) {
+                    log.info("바꿈 : " + optGathering.get().getThumb());
+                    // 기존 썸네일 삭제
+                    helperService.deleteFiles("/gathering/thumb/" , optGathering.get().getThumb());
+                }
+
+                // 썸네일 저장
+                String thumb = helperService.uploadFiles(List.of(thumbnail), "gathering/thumb/", false).get(0);
+                optGathering.get().setThumb(thumb);
+
+            }
+
+            Gathering savedGathering = gatheringRepository.save(optGathering.get());
+
+            // 이미지 저장 (DB 저장 필요 없음)
+            if (gatheringDTO.getImages() != null && !gatheringDTO.getImages().isEmpty()) {
+                helperService.uploadFiles(gatheringDTO.getImages(), "gathering/images/" + gatheringDTO.getGathno() + "/", true);
+            }
+
+        }
+
+        return ResponseEntity.ok().body(gatheringDTO.getGathno());
     }
     // 모임 글 삭제
+    @Transactional
     public ResponseEntity<?> deleteGathering(int gathno){
-        return null;
+        Optional<Gathering> optGathering = gatheringRepository.findById(gathno);
+
+        if(optGathering.isPresent()) {
+            // 지원 목록 삭제
+            recruitRepository.deleteByGathno(gathno);
+
+            // 썸네일 이미지 삭제
+            if (optGathering.get().getThumb() != null) {
+                helperService.deleteFiles("/gathering/thumb/", optGathering.get().getThumb());
+            }
+
+            // 게시글 이미지 삭제
+            helperService.deleteFileDirectory("gathering/images/" + gathno);
+
+            // 모임글 삭제
+            gatheringRepository.deleteById(gathno);
+
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(1);
     }
 
     // 내 모임 목록 조회
@@ -164,7 +222,34 @@ public class GatheringService {
 
         return ResponseEntity.ok().body(1);
     }
+    // 댓글 수정
+    @Transactional
+    public ResponseEntity<?> modifyComment(GathCommentDTO commentDTO) {
+        Optional<GathComment> optComment = gathCommentRepository.findById(commentDTO.getCommentno());
 
+        if (optComment.isPresent()) {
+            optComment.get().setContent(commentDTO.getContent());
+            optComment.get().setUpdateDate(LocalDateTime.now());
+            gathCommentRepository.save(optComment.get());
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
+        }
+    }
+    // 댓글 삭제
+    public ResponseEntity<?> deleteComment(int commnetno) {
+        Optional<GathComment> optComment = gathCommentRepository.findById(commnetno);
+
+        if (optComment.isPresent()) {
+            optComment.get().setContent("삭제되었습니다.");
+            optComment.get().setUpdateDate(LocalDateTime.now());
+            optComment.get().setState(1);
+            gathCommentRepository.save(optComment.get());
+            return ResponseEntity.status(HttpStatus.OK).body(1);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(0);
+        }
+    }
     // 댓글 불러오기
     public ResponseEntity<?> selectComment(PageRequestDTO pageRequestDTO) {
         Pageable pageable = pageRequestDTO.getPageable("commentno");

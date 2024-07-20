@@ -37,7 +37,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 .from(qGathering)
                 .join(qUser)
                 .on(qGathering.userno.eq(qUser.userno))
-                .orderBy(qGathering.gathno.asc())
+                .orderBy(qGathering.gathno.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
@@ -80,7 +80,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 .join(qUser)
                 .on(qGathering.userno.eq(qUser.userno))
                 .where(expression)
-                .orderBy(qGathering.gathno.asc())
+                .orderBy(qGathering.gathno.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();

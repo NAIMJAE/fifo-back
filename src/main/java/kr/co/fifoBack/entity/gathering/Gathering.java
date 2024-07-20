@@ -36,4 +36,6 @@ public class Gathering {
     private String gathstate;  // 모집상태 (1:모집중, 2:모집완료)
     private int hit;
     private int gathcomment;    // 댓글 개수
+
+    private LocalDateTime modiDate;
 }

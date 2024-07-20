@@ -18,6 +18,7 @@ public class GathCommentDTO {
     private String content;
     private LocalDateTime rdate;
     private LocalDateTime updateDate;
+    private int state; // 1 : 삭제
     // JOIN 변수
     private String usernick;
     private String userthumb;
