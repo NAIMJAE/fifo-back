@@ -25,6 +25,7 @@ public class RecruitDTO {
     // 추가 필드
     private String nick;
     private String thumb;
+    private int stack;
     private List<UserRegionDTO> userRegions;
     private List<SkillDTO> skill;
 

@@ -109,6 +109,7 @@ public class GatheringService {
                     RecruitDTO recruitDTO = modelMapper.map(recruit, RecruitDTO.class);
                     recruitDTO.setNick(users.getNick());
                     recruitDTO.setThumb(users.getThumb());
+                    recruitDTO.setStack(users.getStack());
 
                     List<UserRegion> userRegions = userRegionRepository.findByUserno(users.getUserno());
                     List<UserRegionDTO> userRegionDTOS = userRegions.stream().map(
@@ -332,12 +333,7 @@ public class GatheringService {
             Optional<Gathering> optGathering = gatheringRepository.findById(optRecruit.get().getGathno());
 
             if (optGathering.isPresent()) {
-                if (state.equals("신청 거절")) {
-                    if (optGathering.get().getGathnowmember() > 0) {
-                        optGathering.get().setGathnowmember(optGathering.get().getGathnowmember()-1);
-                        gatheringRepository.save(optGathering.get());
-                    }
-                }else {
+                if (state.equals("신청 수락")) {
                     optGathering.get().setGathnowmember(optGathering.get().getGathnowmember()+1);
                     gatheringRepository.save(optGathering.get());
                 }
