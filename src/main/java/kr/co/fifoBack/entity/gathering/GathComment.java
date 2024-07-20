@@ -22,6 +22,7 @@ public class GathComment {
     private int gathno;
     private int userno;
     private String content;
+    private int state; // 1 : 삭제
     @CreationTimestamp
     private LocalDateTime rdate;
 
