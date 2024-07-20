@@ -16,7 +16,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -169,5 +172,13 @@ public class HelperService {
         }
     }
 
+    // java.util.Date -> LocalDate
+    public LocalDate convertToLocalDate(Object dateObj) {
+
+        if (dateObj instanceof java.util.Date) {
+            return new java.sql.Date(((java.util.Date) dateObj).getTime()).toLocalDate();
+        }
+        return null;
+    }
 
 }
