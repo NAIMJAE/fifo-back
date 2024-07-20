@@ -12,10 +12,14 @@ import kr.co.fifoBack.entity.Users;
 import kr.co.fifoBack.entity.gathering.GathComment;
 import kr.co.fifoBack.entity.gathering.Gathering;
 import kr.co.fifoBack.entity.gathering.Recruit;
+import kr.co.fifoBack.entity.user.Skill;
+import kr.co.fifoBack.entity.user.UserRegion;
 import kr.co.fifoBack.mapper.GatheringMapper;
 import kr.co.fifoBack.repository.gathering.GathCommentRepository;
 import kr.co.fifoBack.repository.gathering.GatheringRepository;
 import kr.co.fifoBack.repository.gathering.RecruitRepository;
+import kr.co.fifoBack.repository.user.SkillRepository;
+import kr.co.fifoBack.repository.user.UserRegionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
@@ -28,8 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,6 +42,8 @@ public class GatheringService {
     private final GatheringRepository gatheringRepository;
     private final GathCommentRepository gathCommentRepository;
     private final RecruitRepository recruitRepository;
+    private final SkillRepository skillRepository;
+    private final UserRegionRepository userRegionRepository;
 
     private final GatheringMapper gatheringMapper;
     private final HelperService helperService;
@@ -245,4 +250,15 @@ public class GatheringService {
         return ResponseEntity.status(HttpStatus.OK).body(0);
     }
 
+    // 모임 신청 모달 정보 불러오기
+    public ResponseEntity<?> selectUserInfo(int userno) {
+        List<Skill> skillList = skillRepository.findByUserno(userno);
+        List<UserRegion> regionList = userRegionRepository.findByUserno(userno);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("skill", skillList);
+        result.put("region", regionList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 }

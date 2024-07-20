@@ -92,4 +92,12 @@ public class GatheringController {
 
         return gatheringService.updateRecruit(recruitno, state);
     }
+
+    // 모임 신청 모달 정보 불러오기
+    @GetMapping("/userInfo/{userno}")
+    public ResponseEntity<?> selectUserInfo(@PathVariable("userno")  int userno) {
+        log.info("userno : " + userno);
+        return gatheringService.selectUserInfo(userno);
+    }
+
 }
