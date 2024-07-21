@@ -374,4 +374,36 @@ public class GatheringService {
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    //
+    public ResponseEntity<?> selectGathStart(int gathno) {
+
+        // 모임 멤버
+        List<Tuple> recruits = recruitRepository.selectRecruitStart(gathno, "신청 수락");
+        List<RecruitDTO> recruitList = recruits.stream()
+                .map(tuple -> {
+                    Recruit recruit = tuple.get(0, Recruit.class);
+                    Users users = tuple.get(1, Users.class);
+                    RecruitDTO recruitDTO = modelMapper.map(recruit, RecruitDTO.class);
+                    recruitDTO.setNick(users.getNick());
+                    recruitDTO.setThumb(users.getThumb());
+                    recruitDTO.setStack(users.getStack());
+
+                    List<UserRegion> userRegions = userRegionRepository.findByUserno(users.getUserno());
+                    List<UserRegionDTO> userRegionDTOS = userRegions.stream().map(
+                            regin -> modelMapper.map(regin, UserRegionDTO.class)
+                    ).toList();
+                    recruitDTO.setUserRegions(userRegionDTOS);
+
+                    List<Skill> skillList = skillRepository.findByUserno(users.getUserno());
+                    List<SkillDTO> skillDTOS = skillList.stream().map(
+                            skill -> modelMapper.map(skill, SkillDTO.class)
+                    ).toList();
+                    recruitDTO.setSkill(skillDTOS);
+
+                    return recruitDTO;
+                }).toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(recruitList);
+    }
 }

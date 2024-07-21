@@ -12,4 +12,7 @@ import java.util.Optional;
 public interface RecruitRepositoryCustom {
     // 모임 신청 목록 조회
     public List<Tuple> selectRecruitList(int gathno);
+
+    // 모임 신청 수락 목록 조회
+    public List<Tuple> selectRecruitStart(int gathno, String state);
 }

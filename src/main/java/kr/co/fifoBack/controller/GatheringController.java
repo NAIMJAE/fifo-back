@@ -118,4 +118,11 @@ public class GatheringController {
         log.info("userno : " + userno);
         return gatheringService.selectUserInfo(userno);
     }
+
+    // 모임 시작 모달 정보 불러오기
+    @GetMapping("/gathStart/{gathno}")
+    public ResponseEntity<?> selectGathStart(@PathVariable("gathno") int gathno) {
+        log.info("gathno : " + gathno);
+        return gatheringService.selectGathStart(gathno);
+    }
 }
