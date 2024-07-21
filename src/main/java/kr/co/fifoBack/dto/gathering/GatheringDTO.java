@@ -24,7 +24,8 @@ public class GatheringDTO {
     private String gathdetail;
     private String gathmode;
     private String thumb;
-    private int gathnowmember;
+    @Builder.Default
+    private int gathnowmember  = 1;
     private int gathtotalmember;
     private String gathrecruitfield;
     private String gathlanguage;
@@ -34,11 +35,7 @@ public class GatheringDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate recruitend;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate projectstart;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate projectend;
+    private String mooimperiod;
     private String gathstate;
 
     private int hit;
