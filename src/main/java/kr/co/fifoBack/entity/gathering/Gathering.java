@@ -31,8 +31,7 @@ public class Gathering {
     private String thumb;
     private LocalDate recruitstart;
     private LocalDate recruitend;
-    private LocalDate projectstart;
-    private LocalDate projectend;
+    private String mooimperiod; // 모임 예상 기간
     private String gathstate;  // 모집상태 (1:모집중, 2:모집완료)
     private int hit;
     private int gathcomment;    // 댓글 개수

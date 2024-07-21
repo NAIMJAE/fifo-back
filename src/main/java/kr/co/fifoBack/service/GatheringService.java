@@ -94,7 +94,7 @@ public class GatheringService {
     @Transactional
     public ResponseEntity<?> selectGathering(int gathno){
 
-        // 글 조회
+    // 글 조회
         List<Object[]> result = gatheringRepository.selectGatheringAndHitUp(gathno);
         log.info(result.toString());
         Object[] row = result.get(0);
@@ -106,25 +106,23 @@ public class GatheringService {
                 .gathnowmember((Integer) row[3])
                 .gathtotalmember((Integer) row[4])
                 .hit((Integer) row[5])
-                .projectend(helperService.convertToLocalDate(row[6]))
-                .projectstart(helperService.convertToLocalDate(row[7]))
-                .recruitend(helperService.convertToLocalDate(row[8]))
-                .recruitstart(helperService.convertToLocalDate(row[9]))
-                .userno((Integer) row[10])
-                .gathdetail((String) row[11])
-                .gathlanguage((String) row[12])
-                .gathmode((String) row[13])
-                .gathrecruitfield((String) row[14])
-                .gathstate((String) row[15])
-                .gathtitle((String) row[16])
-                .thumb((String) row[17])
-                .modiDate(row[18] != null ? ((Timestamp) row[18]).toLocalDateTime() : null)
+                .recruitend(helperService.convertToLocalDate(row[6]))
+                .recruitstart(helperService.convertToLocalDate(row[7]))
+                .userno((Integer) row[8])
+                .gathdetail((String) row[9])
+                .gathlanguage((String) row[10])
+                .gathmode((String) row[11])
+                .gathrecruitfield((String) row[12])
+                .gathstate((String) row[13])
+                .gathtitle((String) row[14])
+                .thumb((String) row[15])
+                .modiDate(row[16] != null ? ((Timestamp) row[16]).toLocalDateTime() : null)
+                .mooimperiod((String) row[17])
                 .build();
 
-
         GatheringDTO gatheringDTO = modelMapper.map(gathering, GatheringDTO.class);
-        gatheringDTO.setUsernick((String) row[19]);
-        gatheringDTO.setUserthumb((String) row[20]);
+        gatheringDTO.setUsernick((String) row[18]);
+        gatheringDTO.setUserthumb((String) row[19]);
 
         // 모임 신청 현황 조회
         List<Tuple> recruits = recruitRepository.selectRecruitList(gathno);

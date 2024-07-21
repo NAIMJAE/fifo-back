@@ -45,9 +45,7 @@ public class QGathering extends EntityPathBase<Gathering> {
 
     public final DateTimePath<java.time.LocalDateTime> modiDate = createDateTime("modiDate", java.time.LocalDateTime.class);
 
-    public final DatePath<java.time.LocalDate> projectend = createDate("projectend", java.time.LocalDate.class);
-
-    public final DatePath<java.time.LocalDate> projectstart = createDate("projectstart", java.time.LocalDate.class);
+    public final StringPath mooimperiod = createString("mooimperiod");
 
     public final DatePath<java.time.LocalDate> recruitend = createDate("recruitend", java.time.LocalDate.class);
 
