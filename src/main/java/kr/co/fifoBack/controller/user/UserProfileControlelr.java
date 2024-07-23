@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Map;
 
 @Controller
@@ -47,6 +49,18 @@ public class UserProfileControlelr {
     @GetMapping("/profile/selectRegion")
     public ResponseEntity<?> selectRegion(){
         return userProfileService.selectRegion();
+    }
+
+    /**내 지역 가져오기*/
+    @GetMapping("/profile/selectMyRegion")
+    public ResponseEntity<?> selectMyRegion(@RequestParam int userno){
+        return userProfileService.selectMyRegion(userno);
+    }
+    /**내 지역 변경하기*/
+    @PostMapping("/profile/updateRegion")
+    public ResponseEntity<?> addRegion(@RequestParam("userno") int userno, @RequestBody String[] regionArr) {
+        log.info("컨트롤러@"+Arrays.toString(regionArr));
+        return userProfileService.addRegion(userno, regionArr);
     }
 
     /**내 기술 스택 추가하기*/

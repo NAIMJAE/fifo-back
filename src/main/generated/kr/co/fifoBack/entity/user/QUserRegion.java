@@ -9,6 +9,9 @@ import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
 
 
+/**
+ * QUserRegion is a Querydsl query type for UserRegion
+ */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QUserRegion extends EntityPathBase<UserRegion> {
 
@@ -35,3 +38,4 @@ public class QUserRegion extends EntityPathBase<UserRegion> {
     }
 
 }
+
