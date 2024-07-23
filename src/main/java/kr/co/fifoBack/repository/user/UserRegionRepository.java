@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface UserRegionRepository extends JpaRepository<UserRegion, Integer> {
     public List<UserRegion> findByUserno(int userno);
+
 }
 
