@@ -91,20 +91,24 @@ public class GradeService {
 
         /* docker에 필요한 파일(임시) */
         String dockerFileContent =
-                "FROM openjdk:11\n" +
-                "WORKDIR /app\n" +
-                "COPY . /app\n" +
-                "RUN javac Main.java\n" +
-                "COPY run.sh /app/run.sh\n" +
-                "RUN chmod +x /app/run.sh\n" +
-                "CMD [\"/app/run.sh\"]";
+                """
+                        FROM openjdk:11
+                        WORKDIR /app
+                        COPY . /app
+                        RUN javac Main.java
+                        COPY run.sh /app/run.sh
+                        RUN chmod +x /app/run.sh
+                        CMD ["/app/run.sh"]""";
 
-        String runShell = "#!/bin/sh\n" +
-                "cat input.txt | java Main\n";
+        String runShell = """
+                #!/bin/sh
+                cat input.txt | java Main
+                """;
 
         try {
             // 코드 저장 디렉토리 생성
             String uuid = UUID.randomUUID().toString();
+
             Path codeDir = Paths.get("code", uuid);
             Files.createDirectories(codeDir);
 
@@ -174,6 +178,10 @@ public class GradeService {
                 run.waitFor();
 
             }
+
+            File directory = new File(codeDir.toString());
+            deleteFiles(directory);
+
             // 실행 결과 출력
             return output.toString();
 
@@ -218,6 +226,17 @@ public class GradeService {
             default:
                 throw new IllegalArgumentException("Unsupported language: " + language);
         }
+    }
+
+    private boolean deleteFiles(File codeFile){
+        File[] allFiles = codeFile.listFiles();
+        if(allFiles != null){
+            for(File file : allFiles){
+                deleteFiles(file);
+            }
+        }
+        log.info("delete file log : " + codeFile.getPath());
+        return codeFile.delete();
     }
 
 }

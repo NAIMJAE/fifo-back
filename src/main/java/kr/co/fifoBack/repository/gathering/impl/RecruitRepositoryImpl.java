@@ -35,8 +35,22 @@ public class RecruitRepositoryImpl implements RecruitRepositoryCustom {
                 .where(qRecruit.gathno.eq(gathno))
                 .fetchResults();
 
-        // recruitno, userno, gathno, recruitState, nick, region, thumb
         List<Tuple> recruitList = result.getResults();
         return recruitList;
      }
+
+    // 모임 신청 수락 목록 조회
+    public List<Tuple> selectRecruitStart(int gathno, String state) {
+        QueryResults<Tuple> result = jpaQueryFactory
+                .select(qRecruit, qUsers)
+                .from(qRecruit)
+                .join(qUsers)
+                .on(qRecruit.userno.eq(qUsers.userno))
+                .where(qRecruit.gathno.eq(gathno))
+                .where(qRecruit.recruitstate.eq(state))
+                .fetchResults();
+
+        List<Tuple> recruitList = result.getResults();
+        return recruitList;
+    }
 }

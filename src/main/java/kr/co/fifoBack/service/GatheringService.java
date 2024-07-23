@@ -94,7 +94,7 @@ public class GatheringService {
     @Transactional
     public ResponseEntity<?> selectGathering(int gathno){
 
-        // 글 조회
+    // 글 조회
         List<Object[]> result = gatheringRepository.selectGatheringAndHitUp(gathno);
         log.info(result.toString());
         Object[] row = result.get(0);
@@ -106,25 +106,23 @@ public class GatheringService {
                 .gathnowmember((Integer) row[3])
                 .gathtotalmember((Integer) row[4])
                 .hit((Integer) row[5])
-                .projectend(helperService.convertToLocalDate(row[6]))
-                .projectstart(helperService.convertToLocalDate(row[7]))
-                .recruitend(helperService.convertToLocalDate(row[8]))
-                .recruitstart(helperService.convertToLocalDate(row[9]))
-                .userno((Integer) row[10])
-                .gathdetail((String) row[11])
-                .gathlanguage((String) row[12])
-                .gathmode((String) row[13])
-                .gathrecruitfield((String) row[14])
-                .gathstate((String) row[15])
-                .gathtitle((String) row[16])
-                .thumb((String) row[17])
-                .modiDate(row[18] != null ? ((Timestamp) row[18]).toLocalDateTime() : null)
+                .recruitend(helperService.convertToLocalDate(row[6]))
+                .recruitstart(helperService.convertToLocalDate(row[7]))
+                .userno((Integer) row[8])
+                .gathdetail((String) row[9])
+                .gathlanguage((String) row[10])
+                .gathmode((String) row[11])
+                .gathrecruitfield((String) row[12])
+                .gathstate((String) row[13])
+                .gathtitle((String) row[14])
+                .thumb((String) row[15])
+                .modiDate(row[16] != null ? ((Timestamp) row[16]).toLocalDateTime() : null)
+                .mooimperiod((String) row[17])
                 .build();
 
-
         GatheringDTO gatheringDTO = modelMapper.map(gathering, GatheringDTO.class);
-        gatheringDTO.setUsernick((String) row[19]);
-        gatheringDTO.setUserthumb((String) row[20]);
+        gatheringDTO.setUsernick((String) row[18]);
+        gatheringDTO.setUserthumb((String) row[19]);
 
         // 모임 신청 현황 조회
         List<Tuple> recruits = recruitRepository.selectRecruitList(gathno);
@@ -375,5 +373,37 @@ public class GatheringService {
         result.put("region", regionList);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    //
+    public ResponseEntity<?> selectGathStart(int gathno) {
+
+        // 모임 멤버
+        List<Tuple> recruits = recruitRepository.selectRecruitStart(gathno, "신청 수락");
+        List<RecruitDTO> recruitList = recruits.stream()
+                .map(tuple -> {
+                    Recruit recruit = tuple.get(0, Recruit.class);
+                    Users users = tuple.get(1, Users.class);
+                    RecruitDTO recruitDTO = modelMapper.map(recruit, RecruitDTO.class);
+                    recruitDTO.setNick(users.getNick());
+                    recruitDTO.setThumb(users.getThumb());
+                    recruitDTO.setStack(users.getStack());
+
+                    List<UserRegion> userRegions = userRegionRepository.findByUserno(users.getUserno());
+                    List<UserRegionDTO> userRegionDTOS = userRegions.stream().map(
+                            regin -> modelMapper.map(regin, UserRegionDTO.class)
+                    ).toList();
+                    recruitDTO.setUserRegions(userRegionDTOS);
+
+                    List<Skill> skillList = skillRepository.findByUserno(users.getUserno());
+                    List<SkillDTO> skillDTOS = skillList.stream().map(
+                            skill -> modelMapper.map(skill, SkillDTO.class)
+                    ).toList();
+                    recruitDTO.setSkill(skillDTOS);
+
+                    return recruitDTO;
+                }).toList();
+
+        return ResponseEntity.status(HttpStatus.OK).body(recruitList);
     }
 }
