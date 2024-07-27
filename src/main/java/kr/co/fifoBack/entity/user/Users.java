@@ -27,7 +27,8 @@ public class Users {
     private String region;
     private Date birth;
     private String gender;
-    private String thumb;
+    @Builder.Default
+    private String thumb = "ppoppi.png";
     private int stack;
     @Builder.Default
     private String role = "USER";
