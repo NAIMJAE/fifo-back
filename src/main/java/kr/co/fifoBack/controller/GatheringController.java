@@ -125,4 +125,11 @@ public class GatheringController {
         log.info("gathno : " + gathno);
         return gatheringService.selectGathStart(gathno);
     }
+
+    // 모임 시작
+    @PostMapping("/mooim")
+    public ResponseEntity<?> insertMooim(@RequestBody MooimDTO mooimDTO){
+        log.info("mooimDTO : " + mooimDTO);
+        return mooimService.insertMooim(mooimDTO);
+    }
 }

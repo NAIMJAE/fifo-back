@@ -3,6 +3,7 @@ package kr.co.fifoBack.dto.gathering;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,4 +23,7 @@ public class MooimDTO {
     private String mooimtitle;
     private int mooimcate; // 1:프로젝트 2:스터디 3:모임
     private String thumb;
+
+    // 참가 멤버 정보
+    private List<RecruitDTO> recruitMember;
 }
