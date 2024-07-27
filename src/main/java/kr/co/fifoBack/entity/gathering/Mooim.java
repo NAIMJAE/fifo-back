@@ -2,6 +2,7 @@ package kr.co.fifoBack.entity.gathering;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 
@@ -21,6 +22,8 @@ public class Mooim {
 
     private int gathno;
     private int userno;
+
+    @CreationTimestamp
     private LocalDate mooimstart;
     private LocalDate mooimend;
     private int mooimstate; // 1:진행중 2:완료
