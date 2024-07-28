@@ -132,4 +132,10 @@ public class GatheringController {
         log.info("mooimDTO : " + mooimDTO);
         return mooimService.insertMooim(mooimDTO);
     }
+    // 모임 조회
+    @GetMapping("/mooim/{mooimno}")
+    public ResponseEntity<?> selectMooim(@PathVariable int mooimno){
+        log.info("mooimno : " + mooimno);
+        return mooimService.selectMooim(mooimno);
+    }
 }

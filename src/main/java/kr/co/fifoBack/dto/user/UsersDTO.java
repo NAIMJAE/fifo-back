@@ -30,6 +30,7 @@ public class UsersDTO {
     // 스킬 목록 저장
     private String[] languagename;
     private Integer[] levels;
+    private List<SkillDTO> skillList;
 
     @CreationTimestamp
     private LocalDateTime rdate;
