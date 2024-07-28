@@ -19,11 +19,13 @@ public class MooimDTO {
     private int userno;
     private LocalDate mooimstart;
     private LocalDate mooimend;
-    private int mooimstate;
+    @Builder.Default
+    private int mooimstate = 1; // 1:진행중 2:완료
     private String mooimtitle;
     private int mooimcate; // 1:프로젝트 2:스터디 3:모임
     private String thumb;
 
     // 참가 멤버 정보
     private List<RecruitDTO> recruitMember;
+    private List<MooimMemberDTO> memberList;
 }

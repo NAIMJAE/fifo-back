@@ -1,6 +1,7 @@
 package kr.co.fifoBack.dto.gathering;
 
 import jakarta.persistence.*;
+import kr.co.fifoBack.dto.user.UsersDTO;
 import lombok.*;
 
 @Getter
@@ -15,4 +16,6 @@ public class MooimMemberDTO {
 
     private int mooimno;
     private int userno;
+
+    private UsersDTO usersDTO;
 }

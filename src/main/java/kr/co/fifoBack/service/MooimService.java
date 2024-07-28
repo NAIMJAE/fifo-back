@@ -1,13 +1,18 @@
 package kr.co.fifoBack.service;
 
+import com.querydsl.core.Tuple;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import kr.co.fifoBack.dto.gathering.*;
-import kr.co.fifoBack.entity.gathering.Gathering;
-import kr.co.fifoBack.entity.gathering.Kanban;
-import kr.co.fifoBack.entity.gathering.Mooim;
-import kr.co.fifoBack.entity.gathering.MooimMember;
+import kr.co.fifoBack.dto.user.SkillDTO;
+import kr.co.fifoBack.dto.user.UserRegionDTO;
+import kr.co.fifoBack.dto.user.UsersDTO;
+import kr.co.fifoBack.entity.Users;
+import kr.co.fifoBack.entity.gathering.*;
+import kr.co.fifoBack.entity.user.Skill;
+import kr.co.fifoBack.entity.user.UserRegion;
 import kr.co.fifoBack.repository.gathering.*;
+import kr.co.fifoBack.repository.user.SkillRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -29,6 +34,7 @@ public class MooimService {
     private final MooimMemberRepository mooimMemberRepository;
     private final KanbanRepository kanbanRepository;
     private final CalendarRepository calendarRepository;
+    private final SkillRepository skillRepository;
 
     private final ModelMapper modelMapper;
 
@@ -89,6 +95,11 @@ public class MooimService {
             memberDTO.setMooimno(mooimno);
             mooimMemberRepository.save(modelMapper.map(memberDTO, MooimMember.class));
         }
+        // 모임 팀장
+        MooimMemberDTO memberDTO = new MooimMemberDTO();
+        memberDTO.setUserno(mooimDTO.getUserno());
+        memberDTO.setMooimno(mooimno);
+        mooimMemberRepository.save(modelMapper.map(memberDTO, MooimMember.class));
 
         // 캘린더 생성
 
@@ -100,5 +111,37 @@ public class MooimService {
         kanbanRepository.save(modelMapper.map(kanbanDTO, Kanban.class));
 
         return ResponseEntity.ok().body(mooimno);
+    }
+
+    // 모임 조회
+    public ResponseEntity<?> selectMooim(int mooimno) {
+        Mooim mooim = mooimRepository.findById(mooimno).get();
+
+        // 모임 멤버
+        List<Tuple> results = mooimMemberRepository.selectMooimMemberAndSkills(mooimno);
+        List<MooimMemberDTO> memberList = results.stream()
+                .map(tuple -> {
+                    MooimMember mooimMember = tuple.get(0, MooimMember.class);
+                    Users users = tuple.get(1, Users.class);
+
+                    MooimMemberDTO mooimmemberDTO = modelMapper.map(mooimMember, MooimMemberDTO.class);
+                    UsersDTO usersDTO = modelMapper.map(users, UsersDTO.class);
+
+                    // 멤버별 스킬 불러오기
+                    List<Skill> skillList = skillRepository.findByUserno(users.getUserno());
+                    List<SkillDTO> skillDTOS = skillList.stream().map(
+                            skill -> modelMapper.map(skill, SkillDTO.class)
+                    ).toList();
+                    usersDTO.setSkillList(skillDTOS);
+
+                    mooimmemberDTO.setUsersDTO(usersDTO);
+
+                    return mooimmemberDTO;
+                }).toList();
+
+        MooimDTO mooimDTO = modelMapper.map(mooim, MooimDTO.class);
+        mooimDTO.setMemberList(memberList);
+
+        return ResponseEntity.ok().body(mooimDTO);
     }
 }
