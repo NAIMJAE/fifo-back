@@ -375,7 +375,7 @@ public class GatheringService {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    //
+    // 모임 시작 모달 정보 불러오기
     public ResponseEntity<?> selectGathStart(int gathno) {
 
         // 모임 멤버
