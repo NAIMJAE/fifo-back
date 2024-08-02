@@ -37,7 +37,6 @@ public class MooimService {
     private final GatheringRepository gatheringRepository;
     private final MooimMemberRepository mooimMemberRepository;
     private final KanbanRepository kanbanRepository;
-    private final CalendarRepository calendarRepository;
     private final SkillRepository skillRepository;
 
     private final MooimMapper mooimMapper;
