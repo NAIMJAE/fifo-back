@@ -24,6 +24,9 @@ public class GathPageRequestDTO {
     @Builder.Default
     private int size = 12;
 
+    // 모집중 조회
+    private boolean gathState;
+
     // 전체 조회
     private String sort;
     private GatheringDTO gatheringDTO;

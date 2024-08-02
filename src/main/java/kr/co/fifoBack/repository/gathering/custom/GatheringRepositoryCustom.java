@@ -16,6 +16,8 @@ public interface GatheringRepositoryCustom {
 
     // 모임글 목록 전체 조회
     public Page<Tuple> selectGatherings(GathPageRequestDTO pageRequestDTO, Pageable pageable);
+    // 모임글 목록 모집중 조회
+    public Page<Tuple> selectGatheringsByState(GathPageRequestDTO pageRequestDTO, Pageable pageable);
     // 모임글 목록 검색 조회
     public Page<Tuple> selectGatheringsByKeyword(GathPageRequestDTO pageRequestDTO, Pageable pageable);
 
