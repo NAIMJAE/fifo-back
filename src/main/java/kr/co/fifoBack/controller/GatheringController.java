@@ -7,6 +7,7 @@ import kr.co.fifoBack.dto.gathering.MooimDTO;
 import kr.co.fifoBack.dto.gathering.RecruitDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
 import kr.co.fifoBack.dto.post.CommentDTO;
+import kr.co.fifoBack.service.CalendarService;
 import kr.co.fifoBack.service.GatheringService;
 import kr.co.fifoBack.service.MooimService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class GatheringController {
 
     private final GatheringService gatheringService;
+    private final CalendarService calendarService;
     private final MooimService mooimService;
 
     // 모임 글 목록
@@ -149,5 +151,11 @@ public class GatheringController {
     public ResponseEntity<?> updateMooimThumb(MooimDTO mooimDTO){
         log.info("mooimDTO : " + mooimDTO);
         return mooimService.updateMooimThumb(mooimDTO);
+    }
+    // 캘린더 불러오기
+    @GetMapping("/calendar/{mooimno}")
+    public ResponseEntity<?> selectCalendar(@PathVariable int mooimno){
+        log.info("mooimno : " + mooimno);
+        return calendarService.selectCalendars(mooimno);
     }
 }
