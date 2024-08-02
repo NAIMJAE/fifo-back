@@ -138,4 +138,16 @@ public class GatheringController {
         log.info("mooimno : " + mooimno);
         return mooimService.selectMooim(mooimno);
     }
+    // 모임 소개 수정
+    @PutMapping("/mooimintro")
+    public ResponseEntity<?> updateMooimIntro(@RequestBody MooimDTO mooimDTO){
+        log.info("mooimDTO : " + mooimDTO);
+        return mooimService.updateMooimIntro(mooimDTO);
+    }
+    // 모임 프로필 사진 수정
+    @PutMapping("/mooimthumb")
+    public ResponseEntity<?> updateMooimThumb(MooimDTO mooimDTO){
+        log.info("mooimDTO : " + mooimDTO);
+        return mooimService.updateMooimThumb(mooimDTO);
+    }
 }

@@ -25,6 +25,8 @@ public class QMooim extends EntityPathBase<Mooim> {
 
     public final DatePath<java.time.LocalDate> mooimend = createDate("mooimend", java.time.LocalDate.class);
 
+    public final StringPath mooimintro = createString("mooimintro");
+
     public final NumberPath<Integer> mooimno = createNumber("mooimno", Integer.class);
 
     public final DatePath<java.time.LocalDate> mooimstart = createDate("mooimstart", java.time.LocalDate.class);

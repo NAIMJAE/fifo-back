@@ -5,12 +5,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import kr.co.fifoBack.dto.gathering.*;
 import kr.co.fifoBack.dto.user.SkillDTO;
-import kr.co.fifoBack.dto.user.UserRegionDTO;
 import kr.co.fifoBack.dto.user.UsersDTO;
 import kr.co.fifoBack.entity.Users;
 import kr.co.fifoBack.entity.gathering.*;
 import kr.co.fifoBack.entity.user.Skill;
-import kr.co.fifoBack.entity.user.UserRegion;
+import kr.co.fifoBack.mapper.MooimMapper;
 import kr.co.fifoBack.repository.gathering.*;
 import kr.co.fifoBack.repository.user.SkillRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.desktop.PrintFilesEvent;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +31,8 @@ public class MooimService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    private final HelperService helperService;
+
     private final MooimRepository mooimRepository;
     private final GatheringRepository gatheringRepository;
     private final MooimMemberRepository mooimMemberRepository;
@@ -36,6 +40,7 @@ public class MooimService {
     private final CalendarRepository calendarRepository;
     private final SkillRepository skillRepository;
 
+    private final MooimMapper mooimMapper;
     private final ModelMapper modelMapper;
 
     // 내 모임 목록 조회
@@ -143,5 +148,35 @@ public class MooimService {
         mooimDTO.setMemberList(memberList);
 
         return ResponseEntity.ok().body(mooimDTO);
+    }
+
+    // 모임 소개글 수정
+    public ResponseEntity<?> updateMooimIntro(MooimDTO mooimDTO) {
+
+        mooimMapper.updateMooimIntro(mooimDTO.getMooimno(), mooimDTO.getMooimintro());
+        return ResponseEntity.ok().body(1);
+    }
+    // 모임 프사 수정
+    public ResponseEntity<?> updateMooimThumb(MooimDTO mooimDTO) {
+        Optional<Mooim> optMooim = mooimRepository.findById(mooimDTO.getMooimno());
+
+        MultipartFile thumbnail = mooimDTO.getThumbnail();
+
+        String path = "mooim/"+ mooimDTO.getMooimno() + "/thumb";
+
+        // 기존 썸네일 있었으면 파일 삭제
+        if (optMooim.get().getThumb() != null) {
+            log.info("바꿈 : " + optMooim.get().getThumb());
+            // 기존 썸네일 삭제
+            helperService.deleteFiles("/" + path , optMooim.get().getThumb());
+        }
+        // 썸네일 저장
+        String thumb = helperService.uploadFiles(List.of(thumbnail), path , false).get(0);
+        optMooim.get().setThumb(thumb);
+
+        // 새 이미지 저장
+        mooimRepository.save(optMooim.get());
+
+        return ResponseEntity.ok().body(thumb);
     }
 }
