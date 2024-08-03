@@ -191,7 +191,7 @@ public class GradeService {
         }
     }
 
-    private List<QuestionIOData> selectQuestionIOData(int questionNo){
+    public List<QuestionIOData> selectQuestionIOData(int questionNo){
         return questionIODataRepository.findByQuestionno(questionNo);
     }
 
