@@ -32,6 +32,7 @@ public class ChatRepositoryImpl implements ChatRepositoryCustom {
                 .join(qUsers)
                 .on(qChat.userno.eq(qUsers.userno))
                 .where(qChat.mooimno.eq(mooimno))
+                .orderBy(qChat.chatno.asc())
                 .fetchResults();
 
         return result.getResults();
