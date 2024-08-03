@@ -1,5 +1,6 @@
 package kr.co.fifoBack.service.user;
 
+import jakarta.transaction.Transactional;
 import kr.co.fifoBack.dto.user.RegionDTO;
 import kr.co.fifoBack.dto.user.SkillDTO;
 import kr.co.fifoBack.dto.user.UserRegionDTO;
@@ -16,16 +17,21 @@ import kr.co.fifoBack.repository.user.UserRegionRepository;
 import kr.co.fifoBack.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnailator;
+import net.coobird.thumbnailator.Thumbnails;
+import org.aspectj.weaver.ConstantPoolReader;
+import org.aspectj.weaver.NewFieldTypeMunger;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.internal.bytebuddy.asm.Advice;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -40,6 +46,9 @@ public class UserProfileService {
     private final RegionRepository regionRepository;
     private final UserRegionRepository userRegionRepository;
     private final UsersMapper usersMapper;
+
+    @Value("uploads/user/")
+    private String fileUploadPath;
 
     /**유저 정보 가져오기*/
     public ResponseEntity<?> getProfile(int userno){
@@ -77,6 +86,67 @@ public class UserProfileService {
             return ResponseEntity.ok().body(false);
         }
 
+    }
+
+    /**프로필 업로드*/
+    @Transactional
+    public ResponseEntity<?> uploadProfile(MultipartFile file, int userno) throws IOException {
+
+        if(file.isEmpty()){
+            return ResponseEntity.ok().body(false);
+        }else{
+            Optional<Users> users = userRepository.findById(userno);
+
+            Map<String, String> oldFileMap = new HashMap<>();
+
+            users.ifPresent(user -> {
+                UsersDTO dto = modelMapper.map(user, UsersDTO.class);
+                dto.setThumb(user.getThumb());
+                oldFileMap.put("thumb", dto.getThumb());
+            });
+
+            String oldFileName = oldFileMap.get("thumb");
+
+            /**디폴트 프로필이 아니라면 삭제 후 삽입*/
+            if(!oldFileName.equals("ppoppi.png")){
+                log.info("기존 파일명@@" + oldFileName);
+                File oldFile = new File(fileUploadPath, oldFileName);
+
+                // 기존 파일 삭제
+                oldFile.delete();
+
+                String path = new File(fileUploadPath).getAbsolutePath();
+
+                String thumb = file.getOriginalFilename();
+
+                File uploadFile = new File(path, thumb);
+
+                // 파일 저장
+                Thumbnails.of(file.getInputStream())
+                        .size(250,250)
+                        .toFile(uploadFile);
+
+                // 유저 정보 수정
+                usersMapper.uploadProfile(userno, thumb);
+            }else{
+                log.info("@@2번으로");
+                String path = new File(fileUploadPath).getAbsolutePath();
+
+                String thumb = file.getOriginalFilename();
+
+                File uploadFile = new File(path, thumb);
+
+                // 파일 저장
+                Thumbnails.of(file.getInputStream())
+                        .size(250,250)
+                        .toFile(uploadFile);
+
+                // 유저 정보 수정
+                usersMapper.uploadProfile(userno, thumb);
+            }
+
+            return ResponseEntity.ok().body(true);
+        }
     }
 
     /**지역 가져오기*/

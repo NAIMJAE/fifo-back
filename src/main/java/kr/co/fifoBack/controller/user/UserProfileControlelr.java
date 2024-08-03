@@ -7,7 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Map;
@@ -43,6 +46,14 @@ public class UserProfileControlelr {
         log.info("번호@@@" + userno);
 
         return userProfileService.updateProfile(userno, type, information);
+    }
+
+    /**프로필 사진 수정*/
+    @PostMapping("/profile/upload")
+    public ResponseEntity<?> uploadProfile(@RequestBody MultipartFile file, @RequestParam int userno) throws IOException {
+        log.info("@@여 보소 " + file);
+        log.info("@@여 보소 " + userno);
+        return userProfileService.uploadProfile(file, userno);
     }
 
     /**지역 가져오기*/

@@ -35,4 +35,8 @@
         </where>
     </update>
 
+    <update id="uploadProfile">
+        UPDATE users SET thumb = #{thumb} WHERE userno=#{userno}
+    </update>
+
 </mapper>
