@@ -38,5 +38,8 @@
     <update id="uploadProfile">
         UPDATE users SET thumb = #{thumb} WHERE userno=#{userno}
     </update>
-
+    
+    <select id="findEmail">
+        SELECT email FROM users WHERE name=#{name} AND hp=#{hp}
+    </select>
 </mapper>

@@ -38,20 +38,23 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final SkillRepository skillRepository;
+    private final UsersMapper usersMapper;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final ModelMapper modelMapper;
     private final LanguageRepository languageRepository;
 
-    /** 회원가입 */
+    /**
+     * 회원가입
+     */
     @Transactional
-    public ResponseEntity<?> register(UsersDTO usersDTO){
+    public ResponseEntity<?> register(UsersDTO usersDTO) {
         log.info("회원가입" + usersDTO);
 
-        if(usersDTO.getEmail().isEmpty()){
+        if (usersDTO.getEmail().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR");
-        }else{
+        } else {
             String encoded = passwordEncoder.encode(usersDTO.getPass());
             usersDTO.setPass(encoded);
             usersDTO.setRole("USER");
@@ -61,10 +64,10 @@ public class UserService {
             // 유저 테이블 생성 동시에 AI로 생성 되는 pk값 가지고 skill 테이블에 값입력하기
             String[] languageNames = usersDTO.getLanguagename();
 
-            if(languageNames !=null && languageNames.length !=0){
+            if (languageNames != null && languageNames.length != 0) {
                 List<Skill> skills = new ArrayList<>();
 
-                for(String languagename : languageNames){
+                for (String languagename : languageNames) {
                     SkillDTO skillDTO = new SkillDTO();
                     skillDTO.setUserno(savedUser.getUserno());
                     skillDTO.setLanguagename(languagename);
@@ -79,14 +82,16 @@ public class UserService {
         }
     }
 
-    /**로그인*/
-    public ResponseEntity<?> login(UsersDTO usersDTO){
+    /**
+     * 로그인
+     */
+    public ResponseEntity<?> login(UsersDTO usersDTO) {
         log.info("login...1" + usersDTO.getEmail());
         log.info("login...2" + usersDTO.getPass());
 
         try {
             UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(usersDTO.getEmail(),usersDTO.getPass());
+                    new UsernamePasswordAuthenticationToken(usersDTO.getEmail(), usersDTO.getPass());
 
             // db 조회
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
@@ -112,19 +117,21 @@ public class UserService {
             log.info("login...4" + userMap);
 
             return ResponseEntity.ok().body(userMap);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.info("login..." + e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("USER NOT FOUND");
         }
     }
 
-    /**회원가입에 모든 언어 가져오기*/
-    public ResponseEntity<?> getLanguage(){
+    /**
+     * 회원가입에 모든 언어 가져오기
+     */
+    public ResponseEntity<?> getLanguage() {
         List<Language> languages = languageRepository.findAll();
 
-        if(languages.isEmpty()){
+        if (languages.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
-        }else{
+        } else {
             List<LanguageDTO> result = languages.stream()
                     .map(language -> modelMapper.map(language, LanguageDTO.class))
                     .collect(Collectors.toList());
@@ -133,5 +140,24 @@ public class UserService {
         }
     }
 
+    /** 아이디 찾기*/
+    public ResponseEntity<?> findId(String name, String hp) {
+
+        if (name.isEmpty() || hp.isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("NOT FOUND");
+        }else{
+            String email = usersMapper.findEmail(name, hp);
+            log.info("이메일 : " + email);
+            if (email.isEmpty()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
+            }else{
+                return ResponseEntity.ok().body(email);
+            }
+        }
+    }
+    /** 비밀번호 찾기*/
+    public ResponseEntity<?> findPass() {
+        return null;
+    }
 }
 
