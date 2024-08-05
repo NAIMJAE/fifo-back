@@ -2,16 +2,24 @@ package kr.co.fifoBack.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import kr.co.fifoBack.config.GsonLocalDateTimeAdapter;
 import kr.co.fifoBack.dto.grade.CodeExecutionRequestDTO;
+import kr.co.fifoBack.dto.grade.SolveDTO;
 import kr.co.fifoBack.entity.grade.QuestionIOData;
+import kr.co.fifoBack.entity.grade.Solve;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,10 +47,26 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
         log.info(requestDTO.toString());
 
+        SolveDTO solveDTO = SolveDTO.builder()
+                .userno(requestDTO.getUserno())
+                .questionno(requestDTO.getQuestionNo())
+                .code(requestDTO.getCode())
+                .build();
+
+        Solve savedSolve = gradeService.insertSolve(solveDTO);
+        Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new GsonLocalDateTimeAdapter()).create();
+        String solveInfo = gson.toJson(savedSolve);
+
+        String result = "100";
+
         for(String key : sessionMap.keySet()) {
             log.info(key);
             WebSocketSession wss = sessionMap.get(key);
+
             try {
+
+                wss.sendMessage(new TextMessage(solveInfo));
+
                 List<QuestionIOData> IOData = gradeService.selectQuestionIOData(requestDTO.getQuestionNo());
 
                 if (!IOData.isEmpty()){
@@ -51,19 +75,26 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     for(QuestionIOData data : IOData){
 
                         if (!data.getOutput().equals(gradeService.executeCode(requestDTO, data.getInput()))){
-                            wss.sendMessage(new TextMessage("틀렸습니다."));
+                            wss.sendMessage(new TextMessage("200"));
+                            result = "200";
                             break;
                         }
                         wss.sendMessage(new TextMessage(count / size + ""));
                         count+=1;
                     }
                 }else{
-                    wss.sendMessage(new TextMessage("문제 오류 입니다."));
+                    wss.sendMessage(new TextMessage("300"));
+                    result = "300";
                 }
 
             }catch(Exception e) {
                 log.error(e.getMessage());
             }
+            solveDTO.setSolveid(savedSolve.getSolveid());
+            solveDTO.setSolveddate(savedSolve.getSolveddate());
+            solveDTO.setSolved(result);
+
+            gradeService.insertSolve(solveDTO);
         }
     }
 
@@ -82,21 +113,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         //소켓 종료
         sessionMap.remove(session.getId());
         super.afterConnectionClosed(session, status);
-    }
-
-
-    public String examineCode(CodeExecutionRequestDTO request){
-        List<QuestionIOData> IOData = gradeService.selectQuestionIOData(request.getQuestionNo());
-
-        if (!IOData.isEmpty()){
-            for(QuestionIOData data : IOData){
-                if (!data.getOutput().equals(gradeService.executeCode(request, data.getInput()))){
-                    return "틀렸습니다.";
-                }
-            }
-            return "정답입니다.";
-        }
-        return "문제 오류";
     }
 
 }

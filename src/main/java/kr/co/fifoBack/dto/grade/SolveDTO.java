@@ -2,15 +2,22 @@ package kr.co.fifoBack.dto.grade;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Builder
-public class CodeExecutionRequestDTO {
-    private int questionNo;
+public class SolveDTO {
+
+    private int solveid;
     private int userno;
-    private String language;
+    private int questionno;
+    private String solved;
     private String code;
+
+    private LocalDateTime solveddate;
+
 }
