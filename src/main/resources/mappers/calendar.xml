@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.fifoBack.mapper.CalendarMapper">
+    <update id="updateEvent">
+        UPDATE calendar
+        <set>
+            <if test="calendarDTO.calendarId != null">calendarId = #{calendarDTO.calendarId},</if>
+            <if test="calendarDTO.title != null">title = #{calendarDTO.title},</if>
+            <if test="calendarDTO.location != null">location = #{calendarDTO.location},</if>
+            <if test="calendarDTO.start != null">start = #{calendarDTO.start},</if>
+            <if test="calendarDTO.end != null">end = #{calendarDTO.end},</if>
+            <if test="calendarDTO.state != null">state = #{calendarDTO.state},</if>
+            <if test="calendarDTO.isAllDay != null">isAllDay = #{calendarDTO.isAllDay},</if>
+            <if test="calendarDTO.isReadOnly != null">isReadOnly = #{calendarDTO.isReadOnly},</if>
+        </set>
+        WHERE id = #{calendarDTO.id}
+    </update>
+</mapper>

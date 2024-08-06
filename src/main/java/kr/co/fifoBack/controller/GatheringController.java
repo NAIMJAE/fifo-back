@@ -1,10 +1,7 @@
 package kr.co.fifoBack.controller;
 
 import kr.co.fifoBack.dto.PageRequestDTO;
-import kr.co.fifoBack.dto.gathering.GathCommentDTO;
-import kr.co.fifoBack.dto.gathering.GatheringDTO;
-import kr.co.fifoBack.dto.gathering.MooimDTO;
-import kr.co.fifoBack.dto.gathering.RecruitDTO;
+import kr.co.fifoBack.dto.gathering.*;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
 import kr.co.fifoBack.dto.post.CommentDTO;
 import kr.co.fifoBack.service.CalendarService;
@@ -152,10 +149,29 @@ public class GatheringController {
         log.info("mooimDTO : " + mooimDTO);
         return mooimService.updateMooimThumb(mooimDTO);
     }
-    // 캘린더 불러오기
+    // 캘린더 조회
     @GetMapping("/calendar/{mooimno}")
     public ResponseEntity<?> selectCalendar(@PathVariable int mooimno){
         log.info("mooimno : " + mooimno);
         return calendarService.selectCalendars(mooimno);
+    }
+    // 캘린더 일정 등록
+    @PostMapping("/calendar")
+    public ResponseEntity<?> insertCalendar(@RequestBody CalendarDTO calendarDTO) {
+        log.info("캘린더 컨트롤러 : " + calendarDTO);
+        return calendarService.insertCalendar(calendarDTO);
+    }
+    // 캘린더 일정 수정
+    @PutMapping("/calendar")
+    public ResponseEntity<?> modifyEvent(@RequestBody CalendarDTO calendarDTO){
+        log.info("캘린더 컨트롤러 : " + calendarDTO);
+        return calendarService.updateCalendar(calendarDTO);
+    }
+
+    // 캘린더 일정 삭제
+    @DeleteMapping("/calendar/{calno}")
+    public ResponseEntity<?> deleteCalendar(@PathVariable int calno){
+        log.info("캘린더 컨트롤러 : " + calno);
+        return calendarService.deleteCalendar(calno);
     }
 }
