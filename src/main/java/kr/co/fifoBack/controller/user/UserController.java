@@ -54,7 +54,19 @@ public class UserController {
         return userService.getLanguage();
     }
 
+    /**아이디 찾기*/
+    @PostMapping("/user/findId")
+    public ResponseEntity<?> findId(@RequestBody UsersDTO usersDTO){
+        String name = usersDTO.getName();
+        String hp = usersDTO.getHp();
 
+        return userService.findId(name, hp);
+    }
 
+    /**비밀번호 찾기*/
+    @GetMapping("/user/findPass")
+    public ResponseEntity<?> findPass(){
+        return userService.findPass();
+    }
 }
 

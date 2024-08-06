@@ -15,4 +15,7 @@ public interface UsersMapper {
 
     /**프로필 업로드*/
     public void uploadProfile(int userno, String thumb);
+
+    /**이메일 찾기*/
+    public String findEmail(String name, String hp);
 }
