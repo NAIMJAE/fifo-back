@@ -12,4 +12,7 @@ public interface UsersMapper {
 
     /**정보 수정*/
     public int updateProfile(@Param("userno")int userno, @Param("type")String type, @Param("information") String information);
+
+    /**프로필 업로드*/
+    public void uploadProfile(int userno, String thumb);
 }

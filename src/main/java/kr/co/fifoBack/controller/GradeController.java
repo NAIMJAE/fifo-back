@@ -1,13 +1,15 @@
 package kr.co.fifoBack.controller;
 
-import jakarta.websocket.server.PathParam;
 import kr.co.fifoBack.dto.grade.CodeExecutionRequestDTO;
 import kr.co.fifoBack.dto.grade.CodeExecutionResponseDTO;
+import kr.co.fifoBack.entity.grade.Solve;
 import kr.co.fifoBack.service.GradeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,6 +33,12 @@ public class GradeController {
     public ResponseEntity<?> questionView(@PathVariable("questionNo") int questionNo){
         log.info("여기");
         return gradeService.selectQuestionByQuestionNo(questionNo);
+    }
+
+    @GetMapping("/solve/{questionNo}/{userNo}")
+    public List<Solve> solveList(@PathVariable("questionNo") int questionNo, @PathVariable("userNo") int userNo){
+        log.info("여기");
+        return gradeService.selectSolve(questionNo, userNo);
     }
 
     @PostMapping("/question/execute")

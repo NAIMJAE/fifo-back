@@ -10,6 +10,7 @@ import lombok.*;
 @Builder
 public class CodeExecutionRequestDTO {
     private int questionNo;
+    private int userno;
     private String language;
     private String code;
 }

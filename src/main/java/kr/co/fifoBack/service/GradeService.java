@@ -1,12 +1,15 @@
 package kr.co.fifoBack.service;
 
 import kr.co.fifoBack.dto.grade.CodeExecutionRequestDTO;
+import kr.co.fifoBack.dto.grade.SolveDTO;
 import kr.co.fifoBack.entity.grade.Language;
 import kr.co.fifoBack.entity.grade.Question;
 import kr.co.fifoBack.entity.grade.QuestionIOData;
+import kr.co.fifoBack.entity.grade.Solve;
 import kr.co.fifoBack.repository.grade.LanguageRepository;
 import kr.co.fifoBack.repository.grade.QuestionIODataRepository;
 import kr.co.fifoBack.repository.grade.QuestionRepository;
+import kr.co.fifoBack.repository.grade.SolveRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -36,6 +39,7 @@ public class GradeService {
     private final LanguageRepository languageRepository;
     private final QuestionRepository questionRepository;
     private final QuestionIODataRepository questionIODataRepository;
+    private final SolveRepository solveRepository;
 
     /* 언어 리스트 출력 */
     public ResponseEntity<?> selectAllLanguagesByType2(){
@@ -67,7 +71,16 @@ public class GradeService {
             return ResponseEntity.ok().body(question);
         }
 
-        return ResponseEntity.status(100).body("없음");
+        return ResponseEntity.status(400).body("없음");
+    }
+
+    public Solve insertSolve(SolveDTO solveDTO){
+        Solve solve = modelMapper.map(solveDTO, Solve.class);
+        return solveRepository.save(solve);
+    }
+
+    public List<Solve> selectSolve(int questionNo, int userNo){
+        return solveRepository.findByQuestionnoAndUserno(questionNo, userNo);
     }
 
     public String examineCode(CodeExecutionRequestDTO request){
@@ -191,7 +204,7 @@ public class GradeService {
         }
     }
 
-    private List<QuestionIOData> selectQuestionIOData(int questionNo){
+    public List<QuestionIOData> selectQuestionIOData(int questionNo){
         return questionIODataRepository.findByQuestionno(questionNo);
     }
 

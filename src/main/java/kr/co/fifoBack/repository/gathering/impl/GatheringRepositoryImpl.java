@@ -37,7 +37,29 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 .from(qGathering)
                 .join(qUser)
                 .on(qGathering.userno.eq(qUser.userno))
-                .orderBy(qGathering.gathno.desc()) // or asc depending on the latest requirement
+                .orderBy(qGathering.gathno.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetchResults();
+
+        log.info("result : " + result);
+
+        List<Tuple> gathList = result.getResults();
+        int total = (int) result.getTotal();
+
+        return new PageImpl<>(gathList, pageable, total);
+    }
+    // 모임글 목록 모집중 조회
+    @Override
+    public Page<Tuple> selectGatheringsByState(GathPageRequestDTO pageRequestDTO, Pageable pageable) {
+        log.info("모집중 조회");
+        QueryResults<Tuple> result = jpaQueryFactory
+                .select(qGathering, qUser.nick, qUser.thumb)
+                .from(qGathering)
+                .join(qUser)
+                .on(qGathering.userno.eq(qUser.userno))
+                .where(qGathering.gathstate.eq("모집중"))
+                .orderBy(qGathering.gathno.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();
@@ -74,6 +96,10 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 expression = expression != null ? expression.and(qGathering.gathlanguage.contains(gatheringDTO.getGathlanguage())) : qGathering.gathlanguage.contains(gatheringDTO.getGathlanguage());
             }
         }
+        // 모집중만 보기일 때
+        if(pageRequestDTO.isGathState()){
+            expression = expression.and(qGathering.gathstate.eq("모집중"));
+        }
 
         QueryResults<Tuple> result = jpaQueryFactory
                 .select(qGathering, qUser.nick, qUser.thumb)
@@ -81,7 +107,7 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 .join(qUser)
                 .on(qGathering.userno.eq(qUser.userno))
                 .where(expression)
-                .orderBy(qGathering.gathno.desc()) // or asc depending on the latest requirement
+                .orderBy(qGathering.gathno.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetchResults();

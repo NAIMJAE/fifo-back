@@ -28,6 +28,7 @@ public class Mooim {
     private LocalDate mooimend;
     private int mooimstate; // 1:진행중 2:완료
     private String mooimtitle;
+    private String mooimintro;
     private int mooimcate; // 1:프로젝트 2:스터디 3:모임
     private String thumb;
 }

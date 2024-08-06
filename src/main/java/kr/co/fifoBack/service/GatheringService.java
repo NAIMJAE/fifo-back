@@ -61,11 +61,19 @@ public class GatheringService {
         // GatheringDTO 기본값인지 확인
         boolean isDefaultGatheringDTO = isDefaultGatheringDTO(pageRequestDTO.getGatheringDTO());
 
+        // 모집 중만 보기인지 확인
+        boolean state = pageRequestDTO.isGathState();
+
         Page<Tuple> tuples = null;
 
         if (isDefaultGatheringDTO) {
-            // 기본값이거나 null이면 전체 조회
-            tuples = gatheringRepository.selectGatherings(pageRequestDTO, pageable);
+            if(state){
+                // 모집중 조회
+                tuples = gatheringRepository.selectGatheringsByState(pageRequestDTO, pageable);
+            }else{
+                // 기본값이거나 null이면 전체 조회
+                tuples = gatheringRepository.selectGatherings(pageRequestDTO, pageable);
+            }
         } else {
             // 기본값이 아니면 검색 조회
             tuples = gatheringRepository.selectGatheringsByKeyword(pageRequestDTO, pageable);

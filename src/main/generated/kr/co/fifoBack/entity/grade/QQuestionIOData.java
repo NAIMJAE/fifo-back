@@ -21,7 +21,7 @@ public class QQuestionIOData extends EntityPathBase<QuestionIOData> {
 
     public final StringPath input = createString("input");
 
-    public final NumberPath<Integer> no = createNumber("no", Integer.class);
+    public final NumberPath<Integer> iono = createNumber("iono", Integer.class);
 
     public final StringPath output = createString("output");
 
