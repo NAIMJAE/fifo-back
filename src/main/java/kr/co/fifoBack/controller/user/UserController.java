@@ -64,9 +64,14 @@ public class UserController {
     }
 
     /**비밀번호 찾기*/
-    @GetMapping("/user/findPass")
-    public ResponseEntity<?> findPass(){
-        return userService.findPass();
+    @PostMapping("/user/findPass")
+    public ResponseEntity<?> findPass(@RequestBody Map<String, String> data){
+        String email = data.get("email");
+        String pass = data.get("pass");
+        log.info(email);
+        log.info(pass);
+        return userService.findPass(email, pass);
+
     }
 }
 

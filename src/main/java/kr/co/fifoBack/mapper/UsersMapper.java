@@ -1,6 +1,7 @@
 package kr.co.fifoBack.mapper;
 
 import kr.co.fifoBack.dto.user.UsersDTO;
+import kr.co.fifoBack.service.user.EmailService;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.parameters.P;
@@ -18,4 +19,10 @@ public interface UsersMapper {
 
     /**이메일 찾기*/
     public String findEmail(String name, String hp);
+
+    /**비밀번호 변경*/
+    public int changePass(String email, String pass);
+
+    /**이메일로 이름 찾기*/
+    public String selectNameForEmail(String email);
 }

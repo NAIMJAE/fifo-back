@@ -156,8 +156,23 @@ public class UserService {
         }
     }
     /** 비밀번호 찾기*/
-    public ResponseEntity<?> findPass() {
-        return null;
+    public ResponseEntity<?> findPass(String email, String pass) {
+
+        if(email.isEmpty() || pass.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
+        }else{
+            String encoded = passwordEncoder.encode(pass);
+
+            int result = usersMapper.changePass(email, encoded);
+            if(result <= 1){
+                // 사용자 이름 리턴
+                String name = usersMapper.selectNameForEmail(email);
+                return ResponseEntity.ok().body(name);
+            }else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD REQUEST");
+
+            }
+        }
     }
 }
 
