@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.fifoBack.mapper.ExperienceMapper">
+    <update id="updateExp">
+        UPDATE experience
+        SET job=#{job},
+            skill=#{skill},
+            period=#{period}
+        WHERE userno=#{userno}
+    </update>
+</mapper>
