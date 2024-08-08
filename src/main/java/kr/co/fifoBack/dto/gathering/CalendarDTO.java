@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 public class CalendarDTO {
     private int calno;
 
-    private int mooinno;    // 모임 번호
+    private int mooimno;    // 모임 번호
     private String id;
     private String calendarid;
     private String title;
     private LocalDateTime start; // 시작 시간
-    private LocalDateTime end; // 종료 시간
+    private LocalDateTime eventend; // 종료 시간
     private String bgcolor;
     private boolean isallday;
     private boolean isreadonly;
