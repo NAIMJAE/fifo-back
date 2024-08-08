@@ -9,5 +9,8 @@ import java.util.List;
 @Repository
 public interface CalendarRepository extends JpaRepository<Calendar, Integer>  {
 
-    public List<Calendar> findByMooinno(int mooimno);
+    public List<Calendar> findByMooimno(int mooimno);
+
+    public List<Calendar> findById(String id);
+    public void deleteById(String id);
 }

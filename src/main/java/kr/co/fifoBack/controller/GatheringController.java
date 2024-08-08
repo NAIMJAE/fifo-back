@@ -158,20 +158,19 @@ public class GatheringController {
     // 캘린더 일정 등록
     @PostMapping("/calendar")
     public ResponseEntity<?> insertCalendar(@RequestBody CalendarDTO calendarDTO) {
-        log.info("캘린더 컨트롤러 : " + calendarDTO);
         return calendarService.insertCalendar(calendarDTO);
     }
     // 캘린더 일정 수정
     @PutMapping("/calendar")
     public ResponseEntity<?> modifyEvent(@RequestBody CalendarDTO calendarDTO){
-        log.info("캘린더 컨트롤러 : " + calendarDTO);
+        log.info("캘린더 수정 : " + calendarDTO);
         return calendarService.updateCalendar(calendarDTO);
     }
 
     // 캘린더 일정 삭제
-    @DeleteMapping("/calendar/{calno}")
-    public ResponseEntity<?> deleteCalendar(@PathVariable int calno){
-        log.info("캘린더 컨트롤러 : " + calno);
-        return calendarService.deleteCalendar(calno);
+    @DeleteMapping("/calendar/{id}")
+    public ResponseEntity<?> deleteCalendar(@PathVariable String id){
+        log.info("캘린더 컨트롤러 : " + id);
+        return calendarService.deleteCalendar(id);
     }
 }

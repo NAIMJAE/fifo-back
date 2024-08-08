@@ -28,7 +28,7 @@ public class CalendarService {
     // 캘린더 조회
     public ResponseEntity<?> selectCalendars(int mooimno) {
 
-        List<Calendar> calendars = calendarRepository.findByMooinno(mooimno);
+        List<Calendar> calendars = calendarRepository.findByMooimno(mooimno);
         if(calendars.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
         }else{
@@ -44,14 +44,10 @@ public class CalendarService {
     }
     // 캘린더 수정
     public ResponseEntity<?> updateCalendar(CalendarDTO calendarDTO) {
-        Optional<Calendar> optCalendar = calendarRepository.findById(calendarDTO.getCalno());
-        if (optCalendar.isPresent()) {
-            Calendar calendar = optCalendar.get();
-
-            /////// calno로 안한 이유? id를 써야해서?? -> 그런듯
+        List<Calendar> optCalendar = calendarRepository.findById(calendarDTO.getId());
+        if (!optCalendar.isEmpty()) {
             calendarMapper.updateEvent(calendarDTO);
-
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body(1);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Calendar not found");
         }
@@ -59,13 +55,13 @@ public class CalendarService {
 
     // 캘린더 삭제
     @Transactional
-    public ResponseEntity<?> deleteCalendar(int calno) {
-        Optional<Calendar> optCalendar = calendarRepository.findById(calno);
+    public ResponseEntity<?> deleteCalendar(String id) {
+        List<Calendar> optCalendar = calendarRepository.findById(id);
         if(optCalendar.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
         }else{
-            calendarRepository.deleteById(calno);
-            return ResponseEntity.ok().body(optCalendar.get());
+            calendarRepository.deleteById(id);
+            return ResponseEntity.ok().body(optCalendar.get(0));
         }
     }
 }

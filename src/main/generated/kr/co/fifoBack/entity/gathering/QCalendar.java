@@ -27,7 +27,7 @@ public class QCalendar extends EntityPathBase<Calendar> {
 
     public final StringPath color = createString("color");
 
-    public final DateTimePath<java.time.LocalDateTime> end = createDateTime("end", java.time.LocalDateTime.class);
+    public final DateTimePath<java.time.LocalDateTime> eventend = createDateTime("eventend", java.time.LocalDateTime.class);
 
     public final StringPath id = createString("id");
 
@@ -37,7 +37,7 @@ public class QCalendar extends EntityPathBase<Calendar> {
 
     public final StringPath location = createString("location");
 
-    public final NumberPath<Integer> mooinno = createNumber("mooinno", Integer.class);
+    public final NumberPath<Integer> mooimno = createNumber("mooimno", Integer.class);
 
     public final DateTimePath<java.time.LocalDateTime> start = createDateTime("start", java.time.LocalDateTime.class);
 
