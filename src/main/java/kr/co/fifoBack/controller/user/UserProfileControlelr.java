@@ -1,10 +1,13 @@
 package kr.co.fifoBack.controller.user;
 
+import kr.co.fifoBack.dto.user.ExperienceDTO;
+import kr.co.fifoBack.dto.user.JobDTO;
 import kr.co.fifoBack.service.user.UserProfileService;
 import kr.co.fifoBack.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.invocation.ReactiveReturnValueHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -86,5 +89,32 @@ public class UserProfileControlelr {
     public ResponseEntity<?> deleteSkill(@RequestParam("userno") int userno, @RequestParam("languagename") String languagename ){
 
         return userProfileService.deleteSkill(userno, languagename);
+    }
+
+    /**직무 가져오기*/
+    @PostMapping("/profile/selectJob")
+    public ResponseEntity<?> selectJob(){
+        return userProfileService.selectJob();
+    }
+
+    /**내 경력 가져오기*/
+    @GetMapping("/profile/selectMyExp")
+    public ResponseEntity<?>selectMyExp(@RequestParam int userno) {
+        return userProfileService.selectExp(userno);
+    }
+        /**내 경력 넣기*/
+    @PostMapping("/profile/addExe")
+    public ResponseEntity<?>addExe(@RequestBody ExperienceDTO experienceDTO){
+        int userno = experienceDTO.getUserno();
+        String period = experienceDTO.getPeriod();
+        String job = experienceDTO.getJob();
+        String skills = experienceDTO.getSkill();
+
+        log.info("@@" + userno);
+        log.info("@@" + period);
+        log.info("@@" + job);
+        log.info("@@" + skills);
+
+        return userProfileService.addExe(experienceDTO);
     }
 }
