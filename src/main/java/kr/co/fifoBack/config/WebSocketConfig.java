@@ -23,6 +23,6 @@ public class WebSocketConfig  implements WebSocketConfigurer {
         //다른 url에서도 접속할 수있게(CORS방지)
         registry.addHandler(websocketHandler, "/question").setAllowedOrigins("*");
         registry.addHandler(chatSocketHandler, "/chat/{roomId}/{userno}").setAllowedOrigins("*");
-        registry.addHandler(chatSocketHandler, "/calendar/{roomId}/{userno}").setAllowedOrigins("*");
+        registry.addHandler(calendarSocketHandler, "/cal/{roomId}").setAllowedOrigins("*");
     }
 }
