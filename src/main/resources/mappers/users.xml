@@ -42,4 +42,12 @@
     <select id="findEmail">
         SELECT email FROM users WHERE name=#{name} AND hp=#{hp}
     </select>
+
+    <update id="changePass">
+        UPDATE users SET pass =#{pass} WHERE email=#{email}
+    </update>
+
+    <select id="selectNameForEmail" resultType="String">
+        SELECT name FROM users WHERE email=#{email}
+    </select>
 </mapper>
