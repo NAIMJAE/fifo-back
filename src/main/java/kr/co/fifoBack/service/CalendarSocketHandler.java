@@ -27,7 +27,6 @@ public class CalendarSocketHandler extends TextWebSocketHandler {
     // 웹 소켓이 클라이언트와 연결된 후 실행되는 메서드
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        log.info("나니요!");
         // 소켓 연결 URI에서 방 번호와 회원 번호 추출
         String roomId = getRoomId(session);
 
