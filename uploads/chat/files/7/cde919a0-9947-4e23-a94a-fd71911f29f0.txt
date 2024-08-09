@@ -1,0 +1,22 @@
+<ul>
+            {items.map((item, index) => (
+                <li
+                key={index}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => {
+                e.preventDefault();
+                handleDragOver(index);
+                }}
+                onDrop={handleDrop}
+                style={{
+                padding: '8px',
+                margin: '4px',
+                border: '1px solid #ccc',
+                cursor: 'move'
+                }}
+            >
+                {item}
+            </li>
+            ))}
+        </ul>
