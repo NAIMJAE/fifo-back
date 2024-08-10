@@ -1,13 +1,13 @@
 package kr.co.fifoBack.repository.gathering;
 
 import kr.co.fifoBack.entity.gathering.Mooim;
+import kr.co.fifoBack.repository.mooim.MooimRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 @SpringBootTest
 class MooimRepositoryTest {

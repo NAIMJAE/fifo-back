@@ -1,4 +1,4 @@
-package kr.co.fifoBack.repository.gathering.custom;
+package kr.co.fifoBack.repository.mooim.custom;
 
 import com.querydsl.core.Tuple;
 import kr.co.fifoBack.entity.gathering.MooimMember;

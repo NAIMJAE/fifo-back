@@ -1,7 +1,7 @@
-package kr.co.fifoBack.repository.gathering;
+package kr.co.fifoBack.repository.mooim;
 
 import kr.co.fifoBack.entity.gathering.MooimMember;
-import kr.co.fifoBack.repository.gathering.custom.MooimMemberRepositoryCustom;
+import kr.co.fifoBack.repository.mooim.custom.MooimMemberRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
