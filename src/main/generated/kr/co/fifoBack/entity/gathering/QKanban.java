@@ -23,8 +23,6 @@ public class QKanban extends EntityPathBase<Kanban> {
 
     public final NumberPath<Integer> kanno = createNumber("kanno", Integer.class);
 
-    public final StringPath kanstatus = createString("kanstatus");
-
     public final NumberPath<Integer> mooimno = createNumber("mooimno", Integer.class);
 
     public QKanban(String variable) {

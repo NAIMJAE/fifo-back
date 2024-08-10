@@ -17,7 +17,6 @@ public class Kanban {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int kanno;
     private int mooimno;
-    private String kanstatus;
     private String content;
 
 }

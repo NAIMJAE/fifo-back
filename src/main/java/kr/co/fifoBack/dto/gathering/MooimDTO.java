@@ -26,6 +26,7 @@ public class MooimDTO {
     private String mooimintro;
     private int mooimcate; // 1:프로젝트 2:스터디 3:모임
     private String thumb;
+    private int progress;
 
     // 참가 멤버 정보
     private List<RecruitDTO> recruitMember;

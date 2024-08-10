@@ -35,6 +35,8 @@ public class QMooim extends EntityPathBase<Mooim> {
 
     public final StringPath mooimtitle = createString("mooimtitle");
 
+    public final NumberPath<Integer> progress = createNumber("progress", Integer.class);
+
     public final StringPath thumb = createString("thumb");
 
     public final NumberPath<Integer> userno = createNumber("userno", Integer.class);
