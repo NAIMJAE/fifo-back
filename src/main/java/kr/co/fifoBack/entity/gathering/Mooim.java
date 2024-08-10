@@ -31,4 +31,5 @@ public class Mooim {
     private String mooimintro;
     private int mooimcate; // 1:프로젝트 2:스터디 3:모임
     private String thumb;
+    private int progress;
 }
