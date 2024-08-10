@@ -1,10 +1,10 @@
-package kr.co.fifoBack.repository.gathering.impl;
+package kr.co.fifoBack.repository.mooim.impl;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.fifoBack.entity.QUsers;
 import kr.co.fifoBack.entity.gathering.QMooimMember;
-import kr.co.fifoBack.repository.gathering.custom.MooimMemberRepositoryCustom;
+import kr.co.fifoBack.repository.mooim.custom.MooimMemberRepositoryCustom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

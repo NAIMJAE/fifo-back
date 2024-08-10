@@ -1,4 +1,4 @@
-package kr.co.fifoBack.repository.gathering.custom;
+package kr.co.fifoBack.repository.mooim.custom;
 
 import com.querydsl.core.Tuple;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
@@ -11,4 +11,8 @@ import java.util.List;
 
 @Repository
 public interface MooimRepositoryCustom {
+
+    // 모임 목록 전체 조회
+    public List<Mooim> findMooimsByUserno(int userno);
+
 }

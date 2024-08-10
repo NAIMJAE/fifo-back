@@ -1,4 +1,4 @@
-package kr.co.fifoBack.repository.gathering;
+package kr.co.fifoBack.repository.mooim;
 
 import kr.co.fifoBack.entity.gathering.Calendar;
 import org.springframework.data.jpa.repository.JpaRepository;
