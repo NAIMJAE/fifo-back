@@ -4,7 +4,7 @@ import kr.co.fifoBack.dto.gathering.KanbanDTO;
 import kr.co.fifoBack.entity.gathering.Kanban;
 import kr.co.fifoBack.entity.gathering.Mooim;
 import kr.co.fifoBack.repository.gathering.KanbanRepository;
-import kr.co.fifoBack.repository.gathering.MooimRepository;
+import kr.co.fifoBack.repository.mooim.MooimRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
