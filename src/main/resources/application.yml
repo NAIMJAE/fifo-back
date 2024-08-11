@@ -72,6 +72,7 @@ file:
 # 프론트 주소
 front:
     url: 'http://localhost:3000'
+    #url: 'http://3.39.72.175'
 
 jwt:
     issuer: kkj80911@gmail.com
