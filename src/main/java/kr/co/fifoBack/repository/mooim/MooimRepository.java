@@ -9,6 +9,5 @@ import java.util.List;
 
 @Repository
 public interface MooimRepository extends JpaRepository<Mooim, Integer> , MooimRepositoryCustom {
-    // 모임글 목록 상태 조회
-    public List<Mooim> findMooimsByUsernoAndMooimstate(int userno, int mooimstate);
+
 }

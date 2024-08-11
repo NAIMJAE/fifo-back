@@ -15,4 +15,7 @@ public interface MooimRepositoryCustom {
     // 모임 목록 전체 조회
     public List<Mooim> findMooimsByUserno(int userno);
 
+    // 모임글 목록 상태 조회
+    public List<Mooim> findMooimsByUsernoAndMooimstate(int userno, int mooimstate);
+
 }
