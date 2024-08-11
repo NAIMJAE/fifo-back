@@ -24,5 +24,6 @@ public class WebSocketConfig  implements WebSocketConfigurer {
         registry.addHandler(websocketHandler, "/question").setAllowedOrigins("*");
         registry.addHandler(chatSocketHandler, "/chat/{roomId}/{userno}").setAllowedOrigins("*");
         registry.addHandler(calendarSocketHandler, "/cal/{roomId}").setAllowedOrigins("*");
+        registry.addHandler(calendarSocketHandler, "/kan/{roomId}").setAllowedOrigins("*");
     }
 }
