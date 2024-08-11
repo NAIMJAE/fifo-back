@@ -13,4 +13,5 @@ public class SkillDTO {
     private int userno;
     private String languagename;
     private int level;
+    private int experience;
 }

@@ -94,6 +94,25 @@ public class WebSocketHandler extends TextWebSocketHandler {
             solveDTO.setSolveddate(savedSolve.getSolveddate());
             solveDTO.setSolved(result);
 
+            if(Integer.parseInt(result) == 100){
+
+                // 경험치 중복 검사
+                boolean isSolvedBefore = false;
+                List<Solve> checkSolved = gradeService.selectSolve(requestDTO.getQuestionNo(), requestDTO.getUserno());
+                log.info(checkSolved.toString());
+                if(!checkSolved.isEmpty()){
+                    for(Solve check : checkSolved){
+                        if(check.getSolved() != null && Integer.parseInt(check.getSolved()) == 100){
+                            isSolvedBefore = true;
+                            break;
+                        }
+                    }
+                }
+                if(!isSolvedBefore){
+                    gradeService.updateExperience(requestDTO);
+                }
+            }
+
             gradeService.insertSolve(solveDTO);
         }
     }

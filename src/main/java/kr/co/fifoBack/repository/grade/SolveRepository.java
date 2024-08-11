@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface SolveRepository extends JpaRepository<Solve, String> {
-    public List<Solve> findByQuestionnoAndUserno(int questionNo, int userNo);
+    public List<Solve> findByQuestionnoAndUsernoOrderBySolveid(int questionNo, int userNo);
 }
