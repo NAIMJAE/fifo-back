@@ -6,10 +6,12 @@ import kr.co.fifoBack.entity.grade.Language;
 import kr.co.fifoBack.entity.grade.Question;
 import kr.co.fifoBack.entity.grade.QuestionIOData;
 import kr.co.fifoBack.entity.grade.Solve;
+import kr.co.fifoBack.entity.user.Skill;
 import kr.co.fifoBack.repository.grade.LanguageRepository;
 import kr.co.fifoBack.repository.grade.QuestionIODataRepository;
 import kr.co.fifoBack.repository.grade.QuestionRepository;
 import kr.co.fifoBack.repository.grade.SolveRepository;
+import kr.co.fifoBack.repository.user.SkillRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -40,6 +42,7 @@ public class GradeService {
     private final QuestionRepository questionRepository;
     private final QuestionIODataRepository questionIODataRepository;
     private final SolveRepository solveRepository;
+    private final SkillRepository skillRepository;
 
     /* 언어 리스트 출력 */
     public ResponseEntity<?> selectAllLanguagesByType2(){
@@ -80,7 +83,32 @@ public class GradeService {
     }
 
     public List<Solve> selectSolve(int questionNo, int userNo){
-        return solveRepository.findByQuestionnoAndUserno(questionNo, userNo);
+        return solveRepository.findByQuestionnoAndUsernoOrderBySolveid(questionNo, userNo);
+    }
+
+    public void updateExperience(CodeExecutionRequestDTO requestDTO){
+        StringBuilder language = new StringBuilder();
+        language.append(requestDTO.getLanguage().substring(0,1).toUpperCase()).append(requestDTO.getLanguage().substring(1));
+        log.info(language.toString());
+        Optional<Skill> skillOpt = skillRepository.findByUsernoAndLanguagename(requestDTO.getUserno(), language.toString());
+        if(skillOpt.isEmpty()){
+            //저장
+            Skill insertSkill = Skill.builder()
+                    .userno(requestDTO.getUserno())
+                    .languagename(language.toString())
+                    .experience(requestDTO.getLevel() * 100)
+                    .build();
+            skillRepository.save(insertSkill);
+        }else{
+            Skill skill = modelMapper.map(skillOpt, Skill.class);
+            Skill updateSkill = Skill.builder()
+                    .sno(skill.getSno())
+                    .userno(requestDTO.getUserno())
+                    .languagename(language.toString())
+                    .experience(skill.getExperience() + (requestDTO.getLevel() * 100))
+                    .build();
+            skillRepository.save(updateSkill);
+        }
     }
 
     public String examineCode(CodeExecutionRequestDTO request){

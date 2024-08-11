@@ -19,6 +19,8 @@ public class QSkill extends EntityPathBase<Skill> {
 
     public static final QSkill skill = new QSkill("skill");
 
+    public final NumberPath<Integer> experience = createNumber("experience", Integer.class);
+
     public final StringPath languagename = createString("languagename");
 
     public final NumberPath<Integer> level = createNumber("level", Integer.class);

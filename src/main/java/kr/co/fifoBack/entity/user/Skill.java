@@ -18,4 +18,6 @@ public class Skill {
     private String languagename;
     @Builder.Default
     private int level = 1;
+    @Builder.Default
+    private int experience = 0;
 }
