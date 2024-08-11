@@ -35,4 +35,18 @@ public class MooimRepositoryImpl implements MooimRepositoryCustom {
 
         return results;
     }
+
+    @Override
+    public List<Mooim> findMooimsByUsernoAndMooimstate(int userno, int mooimstate) {
+        List<Mooim> results = jpaQueryFactory
+                .select(qMooim)
+                .from(qMooim)
+                .join(qMooimMember).on(qMooim.mooimno.eq(qMooimMember.mooimno)
+                        .and(qMooimMember.userno.eq(userno)))
+                .where(qMooim.mooimstate.eq(mooimstate))
+                .orderBy(qMooim.mooimno.desc())
+                .fetch();
+
+        return results;
+    }
 }
