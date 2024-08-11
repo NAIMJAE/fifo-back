@@ -108,6 +108,12 @@ public class MooimService {
 
         // 캘린더 생성
 
+        // 칸반 생성
+        KanbanDTO kanbanDTO = new KanbanDTO();
+        kanbanDTO.setMooimno(mooimno);
+        kanbanDTO.setContent("");
+        kanbanRepository.save(modelMapper.map(kanbanDTO, Kanban.class));
+        
         return ResponseEntity.ok().body(mooimno);
     }
 
