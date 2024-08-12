@@ -2,8 +2,10 @@ package kr.co.fifoBack.config;
 
 import kr.co.fifoBack.service.CalendarSocketHandler;
 import kr.co.fifoBack.service.ChatSocketHandler;
+import kr.co.fifoBack.service.DocumentSocketHandler;
 import kr.co.fifoBack.service.WebSocketHandler;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.jdt.internal.compiler.classfmt.FieldInfoWithAnnotation;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -16,6 +18,7 @@ public class WebSocketConfig  implements WebSocketConfigurer {
     private final WebSocketHandler websocketHandler;
     private final ChatSocketHandler chatSocketHandler;
     private final CalendarSocketHandler calendarSocketHandler;
+    private final DocumentSocketHandler documentSocketHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
@@ -25,5 +28,6 @@ public class WebSocketConfig  implements WebSocketConfigurer {
         registry.addHandler(chatSocketHandler, "/chat/{roomId}/{userno}").setAllowedOrigins("*");
         registry.addHandler(calendarSocketHandler, "/cal/{roomId}").setAllowedOrigins("*");
         registry.addHandler(calendarSocketHandler, "/kan/{roomId}").setAllowedOrigins("*");
+        registry.addHandler(documentSocketHandler, "/document/{mooimno}").setAllowedOrigins("*");
     }
 }
