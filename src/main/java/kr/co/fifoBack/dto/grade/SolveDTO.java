@@ -20,4 +20,12 @@ public class SolveDTO {
 
     private LocalDateTime solveddate;
 
+    //add
+
+    private LocalDateTime solvedDate;
+    private String languagename;
+    private String title;
+    private int level;
+
+
 }

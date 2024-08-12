@@ -10,5 +10,7 @@ import java.util.Optional;
 @Repository
 public interface SkillRepository extends JpaRepository<Skill, Integer> {
     List<Skill> findByUserno(int userno);
+
+    List<Skill> findTop5ByUsernoOrderByExperienceDesc(int userno);
     Optional<Skill> findByUsernoAndLanguagename(int userNo, String LanguageName);
 }

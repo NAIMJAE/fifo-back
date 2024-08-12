@@ -9,7 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,6 +19,14 @@ import java.util.List;
 public class GradeController {
 
     private final GradeService gradeService;
+
+    @GetMapping("/grade/{userNo}")
+    public Map<String, ?> userGradeInfo(@PathVariable("userNo") int userNo){
+        Map<String, List<?>> userGradeInfo = new HashMap<>();
+        userGradeInfo.put("solvedQuestions", gradeService.selectSolvedQuestions(userNo));
+        userGradeInfo.put("userSkills", gradeService.selectUserSkills(userNo));
+        return userGradeInfo;
+    }
 
     @GetMapping("/language/list")
     public ResponseEntity<?> languageList(){
