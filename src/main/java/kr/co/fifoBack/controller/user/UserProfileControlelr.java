@@ -86,9 +86,9 @@ public class UserProfileControlelr {
 
     /**내 기술 스택 삭제*/
     @DeleteMapping("/profile/deleteSkill")
-    public ResponseEntity<?> deleteSkill(@RequestParam("userno") int userno, @RequestParam("languagename") String languagename ){
+    public ResponseEntity<?> deleteSkill(@RequestParam("sno") int sno ){
 
-        return userProfileService.deleteSkill(userno, languagename);
+        return userProfileService.deleteSkill(sno);
     }
 
     /**직무 가져오기*/

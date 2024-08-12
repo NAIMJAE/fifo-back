@@ -34,8 +34,15 @@ public class DocumentController {
         return documentService.getDocument(docno);
     }
 
-        /**파일 저장*/
-        @GetMapping("/document/upload")
+    /**문서 삭제*/
+    @DeleteMapping("/document/delete")
+    public ResponseEntity<?> deleteDocument(@RequestParam int docno){
+        log.info("docno:" + docno);
+        return documentService.deleteDocument(docno);
+    }
+
+    /**파일 저장*/
+    @GetMapping("/document/upload")
     public ResponseEntity<?> uploadFile(){
         return documentService.uploadFile();
     }

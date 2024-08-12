@@ -52,20 +52,22 @@ public class UserProfileService {
     public ResponseEntity<?> getProfile(int userno) {
         Optional<Users> user = userRepository.findById(userno);
         List<Skill> skillList = skillRepository.findByUserno(userno);
-
+        log.info("요요" + skillList);
         if (user.isPresent()) {
             UsersDTO usersDTO = modelMapper.map(user, UsersDTO.class);
 
-            String[] languageNames = skillList.stream()
-                    .map(Skill::getLanguagename)
-                    .toArray(String[]::new);
+//            String[] languageNames = skillList.stream()
+//                    .map(Skill::getLanguagename)
+//                    .toArray(String[]::new);
+//
+//            Integer[] levels = skillList.stream()
+//                    .map(Skill::getLevel)
+//                    .toArray(Integer[]::new);
+            List<SkillDTO> skillDTOS = skillList.stream()
+                            .map(list->modelMapper.map(list, SkillDTO.class))
+                            .toList();
 
-            Integer[] levels = skillList.stream()
-                    .map(Skill::getLevel)
-                    .toArray(Integer[]::new);
-
-            usersDTO.setLanguagename(languageNames);
-            usersDTO.setLevels(levels);
+            usersDTO.setSkillList(skillDTOS);
 
             return ResponseEntity.ok().body(usersDTO);
         } else {
@@ -269,8 +271,12 @@ public class UserProfileService {
     /**
      * 기술스택 삭제
      */
-    public ResponseEntity<?> deleteSkill(int userno, String languagename) {
-        return null;
+    public ResponseEntity<?> deleteSkill(int sno) {
+        if(sno<=0) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD REQUEST");
+        else{
+            skillRepository.deleteById(sno);
+            return ResponseEntity.ok().body(1);
+        }
 
     }
 
