@@ -74,6 +74,15 @@ public class DocumentService {
         }
     }
 
+    /**문서 삭제하기*/
+    public ResponseEntity<?> deleteDocument(int docno) {
+        if(docno<=0) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD REQUEST");
+        else{
+            documentRepository.deleteById(docno);
+            return ResponseEntity.ok().body(1);
+        }
+    }
+
     /**파일 업로드*/
     public ResponseEntity<?> uploadFile(){
         return null;
