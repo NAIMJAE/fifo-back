@@ -1,5 +1,6 @@
 package kr.co.fifoBack.service;
 
+import com.querydsl.core.Tuple;
 import kr.co.fifoBack.dto.grade.CodeExecutionRequestDTO;
 import kr.co.fifoBack.dto.grade.SolveDTO;
 import kr.co.fifoBack.entity.grade.Language;
@@ -84,6 +85,27 @@ public class GradeService {
 
     public List<Solve> selectSolve(int questionNo, int userNo){
         return solveRepository.findByQuestionnoAndUsernoOrderBySolveid(questionNo, userNo);
+    }
+
+    public List<Skill> selectUserSkills(int userNo){
+        return skillRepository.findTop5ByUsernoOrderByExperienceDesc(userNo);
+    }
+
+    public List<SolveDTO> selectSolvedQuestions(int userNo){
+        List<Tuple> result = solveRepository.getUserGradeInfo(userNo);
+        log.info("이거 봐바"+result.toString());
+        List<SolveDTO> solvedQuestions = result.stream()
+                .map(tuple -> {
+                    Solve solve = tuple.get(0, Solve.class);
+                    Question question = tuple.get(1, Question.class);
+                    SolveDTO solveDTO = modelMapper.map(solve, SolveDTO.class);
+                    solveDTO.setLanguagename(question.getLanguagename());
+                    solveDTO.setTitle(question.getTitle());
+                    solveDTO.setLevel(question.getLevel());
+                    return solveDTO;
+                }).toList();
+        log.info("이번엔 이거"+solvedQuestions);
+        return solvedQuestions;
     }
 
     public void updateExperience(CodeExecutionRequestDTO requestDTO){
