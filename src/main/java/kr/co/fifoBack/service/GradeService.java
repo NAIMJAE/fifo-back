@@ -149,6 +149,7 @@ public class GradeService {
 
     public String executeCode(CodeExecutionRequestDTO request, String input) {
 
+        // 문제 풀이에 필요한 내용 설정
         String language = request.getLanguage();
         String code = request.getCode();
 
@@ -163,6 +164,7 @@ public class GradeService {
                         RUN chmod +x /app/run.sh
                         CMD ["/app/run.sh"]""";
 
+        // bash 실행할 내용
         String runShell = """
                 #!/bin/sh
                 cat input.txt | java Main
@@ -189,20 +191,31 @@ public class GradeService {
             Path runShellFile = codeDir.resolve("run.sh");
             Files.write(runShellFile, runShell.getBytes());
 
-            // 명령
+            /**
+             * Docker이미지 생성 명령 수행
+             * ProcessBuilder를 통해 현재 실행되고 있는 서버에서 CMD명령을 실행
+             * 임시로 만들어진 디렉토리에서 Dockerfile등 실행에 필요한 파일을 이용해서 docker build 명령 수행
+             * 정상 종료될때까지 ProcessBuilder 유지
+             * */
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.directory(new File(String.valueOf(codeDir)));
             processBuilder.command("docker", "build", "-t", uuid, ".");
 
             Process process = processBuilder.start();
 
-            // 프로세스 완료까지 대기
             int buildExitCode = process.waitFor();
+            // 결과 출력을 위한 StringBuilder
             StringBuilder output = new StringBuilder();
+            // build가 정상 종료 시
             if(buildExitCode == 0){
-                // 이전 프로세스(build가 정상 종료 시)
+                /**
+                 * Docker run 명령 수행
+                 * 생성된 이미지를 실행시켜 입력받은 코드를 실행시킴
+                 * */
                 ProcessBuilder runProcessBuilder = new ProcessBuilder();
+                //?
                 processBuilder.directory(new File(String.valueOf(codeDir)));
+                // --rm 명령으로 실행 한 컨테이너 삭제
                 runProcessBuilder.command("docker", "run", "--rm", uuid);
                 Process run = runProcessBuilder.start();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(run.getInputStream()));
@@ -215,7 +228,10 @@ public class GradeService {
                     log.info(line);
                 }
 
-                // 프로세스 종료 대기
+                /**
+                 * 프로세스 종료시 실행
+                 * docker 이미지와 임시 디렉토리 삭제
+                 * */
                 CompletableFuture<Process> onExitFuture = run.onExit();
                 onExitFuture.thenAccept(p -> {
                     try {
@@ -237,11 +253,10 @@ public class GradeService {
                         log.info("Error while deleting Docker image: " + e.getMessage());
                     }
                 });
-
+                // 코드 실행 종료 대기
                 run.waitFor();
-
             }
-
+            // 임시 디렉토리 내용 및 디렉토리 삭제
             File directory = new File(codeDir.toString());
             deleteFiles(directory);
 
