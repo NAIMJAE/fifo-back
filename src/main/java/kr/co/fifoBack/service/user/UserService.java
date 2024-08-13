@@ -58,6 +58,7 @@ public class UserService {
             String encoded = passwordEncoder.encode(usersDTO.getPass());
             usersDTO.setPass(encoded);
             usersDTO.setRole("USER");
+            usersDTO.setThumb("ppippo.png");
             Users users = modelMapper.map(usersDTO, Users.class);
             Users savedUser = userRepository.save(users);
 
