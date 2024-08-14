@@ -14,6 +14,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GatheringRepositoryCustom {
 
+
+    // 모임글 보기
+    public Tuple selectGatheringAndWriter(int gathno);
+
     // 모임글 목록 전체 조회
     public Page<Tuple> selectGatherings(GathPageRequestDTO pageRequestDTO, Pageable pageable);
     // 모임글 목록 모집중 조회
