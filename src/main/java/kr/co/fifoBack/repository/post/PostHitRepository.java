@@ -13,4 +13,7 @@ public interface PostHitRepository extends JpaRepository<PostHit, Integer> {
 
     // 모임글 조회수 체크
     public Optional<PostHit> findByGathnoAndAddress(int pno, String address);
+
+    // 게시글 삭제시 조회수 보관 삭제
+    public void deleteByPno(int pno);
 }
