@@ -41,6 +41,7 @@ public class CalendarService {
     }
     // 캘린더 수정
     public ResponseEntity<?> updateCalendar(CalendarDTO calendarDTO) {
+        log.info("calendarDTO : " + calendarDTO);
         List<Calendar> optCalendar = calendarRepository.findById(calendarDTO.getId());
         if (!optCalendar.isEmpty()) {
             calendarMapper.updateEvent(calendarDTO);
