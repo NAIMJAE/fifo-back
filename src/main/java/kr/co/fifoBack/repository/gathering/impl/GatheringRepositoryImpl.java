@@ -28,6 +28,17 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
     private final QGathering qGathering = QGathering.gathering;
     private final QUsers qUser = QUsers.users;
 
+    // 모임글 조회
+    @Override
+    public Tuple selectGatheringAndWriter(int gathno) {
+        return jpaQueryFactory
+                .select(qGathering, qUser.nick, qUser.thumb)
+                .from(qGathering)
+                .join(qUser).on(qGathering.userno.eq(qUser.userno))
+                .where(qGathering.gathno.eq(gathno))
+                .fetchOne();
+    }
+
     // 모임글 목록 전체 조회
     @Override
     public Page<Tuple> selectGatherings(GathPageRequestDTO pageRequestDTO, Pageable pageable) {

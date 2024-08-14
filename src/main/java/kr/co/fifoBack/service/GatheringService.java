@@ -1,6 +1,7 @@
 package kr.co.fifoBack.service;
 
 import com.querydsl.core.Tuple;
+import jakarta.servlet.http.HttpServletRequest;
 import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.PageResponseDTO;
 import kr.co.fifoBack.dto.gathering.GathCommentDTO;
@@ -14,12 +15,14 @@ import kr.co.fifoBack.entity.Users;
 import kr.co.fifoBack.entity.gathering.GathComment;
 import kr.co.fifoBack.entity.gathering.Gathering;
 import kr.co.fifoBack.entity.gathering.Recruit;
+import kr.co.fifoBack.entity.post.PostHit;
 import kr.co.fifoBack.entity.user.Skill;
 import kr.co.fifoBack.entity.user.UserRegion;
 import kr.co.fifoBack.mapper.GatheringMapper;
 import kr.co.fifoBack.repository.gathering.GathCommentRepository;
 import kr.co.fifoBack.repository.gathering.GatheringRepository;
 import kr.co.fifoBack.repository.gathering.RecruitRepository;
+import kr.co.fifoBack.repository.post.PostHitRepository;
 import kr.co.fifoBack.repository.user.SkillRepository;
 import kr.co.fifoBack.repository.user.UserRegionRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,12 +46,13 @@ import java.util.*;
 @RequiredArgsConstructor
 @Service
 public class GatheringService {
-
+    private final HttpServletRequest httpServletRequest;
     private final GatheringRepository gatheringRepository;
     private final GathCommentRepository gathCommentRepository;
     private final RecruitRepository recruitRepository;
     private final SkillRepository skillRepository;
     private final UserRegionRepository userRegionRepository;
+    private final PostHitRepository postHitRepository;
 
     private final GatheringMapper gatheringMapper;
     private final HelperService helperService;
@@ -102,35 +106,53 @@ public class GatheringService {
     @Transactional
     public ResponseEntity<?> selectGathering(int gathno){
 
-    // 글 조회
-        List<Object[]> result = gatheringRepository.selectGatheringAndHitUp(gathno);
-        log.info(result.toString());
-        Object[] row = result.get(0);
+        // 조회수 +1
+        String ipAddress = httpServletRequest.getRemoteAddr();
+        Optional<PostHit> optPostHit = postHitRepository.findByGathnoAndAddress(gathno, ipAddress);
+        GatheringDTO gatheringDTO = new GatheringDTO();
+        // 오늘 조회한 적이 없는 사용자면
+        if (optPostHit.isEmpty()) {
+            // 글 조회 + 조회수++
+            List<Object[]> result = gatheringRepository.selectGatheringAndHitUp(gathno);
+            Object[] row = result.get(0);
 
-        Gathering gathering = Gathering.builder()
-                .gathcate((Integer) row[0])
-                .gathcomment((Integer) row[1])
-                .gathno((Integer) row[2])
-                .gathnowmember((Integer) row[3])
-                .gathtotalmember((Integer) row[4])
-                .hit((Integer) row[5])
-                .recruitend(helperService.convertToLocalDate(row[6]))
-                .recruitstart(helperService.convertToLocalDate(row[7]))
-                .userno((Integer) row[8])
-                .gathdetail((String) row[9])
-                .gathlanguage((String) row[10])
-                .gathmode((String) row[11])
-                .gathrecruitfield((String) row[12])
-                .gathstate((String) row[13])
-                .gathtitle((String) row[14])
-                .thumb((String) row[15])
-                .modiDate(row[16] != null ? ((Timestamp) row[16]).toLocalDateTime() : null)
-                .mooimperiod((String) row[17])
-                .build();
+            Gathering gathering = Gathering.builder()
+                    .gathcate((Integer) row[0])
+                    .gathcomment((Integer) row[1])
+                    .gathno((Integer) row[2])
+                    .gathnowmember((Integer) row[3])
+                    .gathtotalmember((Integer) row[4])
+                    .hit((Integer) row[5])
+                    .recruitend(helperService.convertToLocalDate(row[6]))
+                    .recruitstart(helperService.convertToLocalDate(row[7]))
+                    .userno((Integer) row[8])
+                    .gathdetail((String) row[9])
+                    .gathlanguage((String) row[10])
+                    .gathmode((String) row[11])
+                    .gathrecruitfield((String) row[12])
+                    .gathstate((String) row[13])
+                    .gathtitle((String) row[14])
+                    .thumb((String) row[15])
+                    .modiDate(row[16] != null ? ((Timestamp) row[16]).toLocalDateTime() : null)
+                    .mooimperiod((String) row[17])
+                    .build();
 
-        GatheringDTO gatheringDTO = modelMapper.map(gathering, GatheringDTO.class);
-        gatheringDTO.setUsernick((String) row[18]);
-        gatheringDTO.setUserthumb((String) row[19]);
+            gatheringDTO = modelMapper.map(gathering, GatheringDTO.class);
+            gatheringDTO.setUsernick((String) row[18]);
+            gatheringDTO.setUserthumb((String) row[19]);
+
+            // 조회한 사용자 목록에 추가
+            PostHit postHit = new PostHit();
+            postHit.setAddress(ipAddress);
+            postHit.setGathno(gathno);
+            postHitRepository.save(postHit);
+        }else{
+            Tuple result = gatheringRepository.selectGatheringAndWriter(gathno);
+            gatheringDTO = modelMapper.map(result.get(0, Gathering.class), GatheringDTO.class);
+            gatheringDTO.setUsernick(result.get(1, String.class));
+            gatheringDTO.setUserthumb(result.get(2, String.class));
+        }
+
 
         // 모임 신청 현황 조회
         List<Tuple> recruits = recruitRepository.selectRecruitList(gathno);

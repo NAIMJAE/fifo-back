@@ -15,7 +15,8 @@ public interface GatheringRepository extends JpaRepository<Gathering, Integer>, 
 
     public List<Gathering> findGatheringsByUserno(int userno);
 
-    // 모임 글 보기
+    // 모임 글 보기 + 조회수 업
     @Query(value = "select * from get_and_update_gathering(:ingathno)", nativeQuery = true)
     List<Object[]> selectGatheringAndHitUp(@Param("ingathno") int ingathno);
+
 }

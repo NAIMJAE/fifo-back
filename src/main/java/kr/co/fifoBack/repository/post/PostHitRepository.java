@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface PostHitRepository extends JpaRepository<PostHit, Integer> {
     // 조회수 체크
     public Optional<PostHit> findByPnoAndAddress(int pno, String address);
+
+    // 모임글 조회수 체크
+    public Optional<PostHit> findByGathnoAndAddress(int pno, String address);
 }
