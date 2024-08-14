@@ -21,6 +21,8 @@ public class QPostHit extends EntityPathBase<PostHit> {
 
     public final StringPath address = createString("address");
 
+    public final NumberPath<Integer> gathno = createNumber("gathno", Integer.class);
+
     public final NumberPath<Integer> hno = createNumber("hno", Integer.class);
 
     public final NumberPath<Integer> pno = createNumber("pno", Integer.class);
