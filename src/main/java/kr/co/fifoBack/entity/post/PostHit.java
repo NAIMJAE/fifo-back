@@ -16,5 +16,6 @@ public class PostHit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int hno;
     private int pno;
+    private int gathno;
     private String address;
 }
