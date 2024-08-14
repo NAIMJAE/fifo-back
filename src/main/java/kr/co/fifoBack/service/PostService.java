@@ -291,6 +291,9 @@ public class PostService {
         helperService.deleteFileDirectory("post/files/" + pno);
         fileRepository.deleteByPno(pno);
 
+        // 게시글 조회수 삭제
+        postHitRepository.deleteByPno(pno);
+
         // 게시글 삭제 post
         postRepository.deleteById(pno);
 
