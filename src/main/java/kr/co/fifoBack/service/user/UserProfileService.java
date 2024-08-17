@@ -8,18 +8,22 @@ import kr.co.fifoBack.mapper.ExperienceMapper;
 import kr.co.fifoBack.mapper.UsersMapper;
 import kr.co.fifoBack.repository.grade.LanguageRepository;
 import kr.co.fifoBack.repository.user.*;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
+import org.apache.catalina.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,6 +41,8 @@ public class UserProfileService {
     private final UserRegionRepository userRegionRepository;
     private final JobRepository jobRepository;
     private final ExperienceRepository experienceRepository;
+    private final PasswordEncoder passwordEncoder;
+
 
     private final UsersMapper usersMapper;
     private final ExperienceMapper experienceMapper;
@@ -348,5 +354,36 @@ public class UserProfileService {
         else return ResponseEntity.ok().body(result);
 
         }
+    }
+
+    @Transactional
+    public ResponseEntity<?> deleteAcc (String pass, int userno){
+        if(pass.isEmpty()) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD REQUEST");
+
+        else{
+            Optional<Users> users = userRepository.findById(userno);
+
+            Users users1 = users.get();
+            boolean isMatch = passwordEncoder.matches(pass, users1.getPass());
+        
+            log.info("디코딩"+isMatch);
+
+            if(isMatch){
+                LocalDateTime currentDateTime = LocalDateTime.now();
+
+                UsersDTO newUsersDTO = new UsersDTO();
+                newUsersDTO.setLeaveDate(currentDateTime);
+
+                int result = usersMapper.insertLeaveDate(userno, currentDateTime);
+                log.info("탈퇴완" + result);
+
+                if(result<=0) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("BAD REQUEST");
+                else return ResponseEntity.ok().body(isMatch);
+
+            }else{
+                return ResponseEntity.ok().body(isMatch);
+            }
+        }
+
     }
 }

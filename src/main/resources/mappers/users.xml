@@ -50,4 +50,8 @@
     <select id="selectNameForEmail" resultType="String">
         SELECT name FROM users WHERE email=#{email}
     </select>
+
+    <update id="insertLeaveDate">
+        UPDATE  users SET leavedate=#{currentDateTime} WHERE userno=#{userno}
+    </update>
 </mapper>

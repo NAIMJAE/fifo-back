@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.parameters.P;
 
+import java.time.LocalDateTime;
+
 @Mapper
 public interface UsersMapper {
     /**중복검사*/
@@ -25,4 +27,7 @@ public interface UsersMapper {
 
     /**이메일로 이름 찾기*/
     public String selectNameForEmail(String email);
+
+    /**회원탈퇴*/
+    public int insertLeaveDate(int userno, LocalDateTime currentDateTime);
 }
