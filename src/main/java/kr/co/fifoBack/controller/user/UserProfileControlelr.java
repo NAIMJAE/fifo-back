@@ -2,6 +2,7 @@ package kr.co.fifoBack.controller.user;
 
 import kr.co.fifoBack.dto.user.ExperienceDTO;
 import kr.co.fifoBack.dto.user.JobDTO;
+import kr.co.fifoBack.dto.user.UsersDTO;
 import kr.co.fifoBack.service.user.UserProfileService;
 import kr.co.fifoBack.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -102,7 +103,8 @@ public class UserProfileControlelr {
     public ResponseEntity<?>selectMyExp(@RequestParam int userno) {
         return userProfileService.selectExp(userno);
     }
-        /**내 경력 넣기*/
+
+    /**내 경력 넣기*/
     @PostMapping("/profile/addExe")
     public ResponseEntity<?>addExe(@RequestBody ExperienceDTO experienceDTO){
         int userno = experienceDTO.getUserno();
@@ -116,5 +118,16 @@ public class UserProfileControlelr {
         log.info("@@" + skills);
 
         return userProfileService.addExe(experienceDTO);
+    }
+
+    /**회원 탈퇴*/
+    @PostMapping("/profile/deleteAcc")
+    public ResponseEntity<?>deleteAcc(@RequestBody UsersDTO usersDTO){
+        String pass = usersDTO.getPass();
+        int userno = usersDTO.getUserno();
+
+        log.info("회원탈퇴" + pass);
+        log.info("회원탈퇴" + userno);
+        return userProfileService.deleteAcc(pass, userno);
     }
 }

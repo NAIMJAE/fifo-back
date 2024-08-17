@@ -120,7 +120,9 @@ public class UserService {
             return ResponseEntity.ok().body(userMap);
         } catch (Exception e) {
             log.info("login..." + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("USER NOT FOUND");
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
         }
     }
 

@@ -18,7 +18,6 @@ import java.util.List;
 @Getter @Setter @ToString @Builder
 public class MyUserDetails implements UserDetails {
 
-
     private Users users;
 
     @Override
@@ -60,6 +59,6 @@ public class MyUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         // 계정 활성화 여부(true: 활성화 ,false: 비활성화)
-        return true;
+        return users.getLeaveDate() == null;
     }
 }
