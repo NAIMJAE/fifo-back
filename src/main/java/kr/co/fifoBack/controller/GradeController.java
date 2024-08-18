@@ -2,6 +2,7 @@ package kr.co.fifoBack.controller;
 
 import kr.co.fifoBack.dto.grade.CodeExecutionRequestDTO;
 import kr.co.fifoBack.dto.grade.CodeExecutionResponseDTO;
+import kr.co.fifoBack.dto.grade.SolveDTO;
 import kr.co.fifoBack.entity.grade.Solve;
 import kr.co.fifoBack.service.GradeService;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,11 @@ public class GradeController {
     public List<Solve> solveList(@PathVariable("questionNo") int questionNo, @PathVariable("userNo") int userNo){
         log.info("여기");
         return gradeService.selectSolve(questionNo, userNo);
+    }
+
+    @GetMapping("/solve/other/{questionNo}")
+    public List<SolveDTO> otherSolveList(@PathVariable("questionNo") int questionNo){
+        return gradeService.selectAllSolve(questionNo);
     }
 
     @PostMapping("/question/execute")
