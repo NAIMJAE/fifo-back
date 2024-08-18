@@ -4,6 +4,7 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.co.fifoBack.entity.QUsers;
 import kr.co.fifoBack.entity.grade.QQuestion;
 import kr.co.fifoBack.entity.grade.QSolve;
 import kr.co.fifoBack.entity.user.QSkill;
@@ -22,6 +23,8 @@ public class SolveRepositoryImpl implements SolveRepositoryCustom {
     private final QSolve qSolve=  QSolve.solve;
     private final QQuestion qQuestion = QQuestion.question;
 
+    private final QUsers qUsers = QUsers.users;
+
     public List<Tuple> getUserGradeInfo(int userNo) {
         QueryResults<Tuple> result = jpaQueryFactory
                 .select(qSolve, qQuestion)
@@ -35,5 +38,19 @@ public class SolveRepositoryImpl implements SolveRepositoryCustom {
 
         List<Tuple> UserGradeInfo = result.getResults();
         return UserGradeInfo;
+    }
+
+    public List<Tuple> getSolvedQuestionByQuestionId(int questionNo) {
+        QueryResults<Tuple> result = jpaQueryFactory
+                .select(qSolve, qUsers)
+                .from(qSolve)
+                .join(qUsers)
+                .on(qSolve.userno.eq(qUsers.userno))
+                .where(qSolve.questionno.eq(questionNo))
+                .orderBy(qSolve.solveddate.desc())
+                .fetchResults();
+
+        List<Tuple> SolvedQuestionList = result.getResults();
+        return SolvedQuestionList;
     }
 }

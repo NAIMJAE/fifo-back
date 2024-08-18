@@ -26,6 +26,7 @@ public class SolveDTO {
     private String languagename;
     private String title;
     private int level;
+    private String nick;
 
 
 }

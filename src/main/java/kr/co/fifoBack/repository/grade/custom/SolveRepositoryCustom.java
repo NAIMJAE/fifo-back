@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface SolveRepositoryCustom {
     List<Tuple> getUserGradeInfo(int userno);
+
+    List<Tuple> getSolvedQuestionByQuestionId(int questionNo);
 }
