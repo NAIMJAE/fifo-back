@@ -1,5 +1,6 @@
 package kr.co.fifoBack.controller;
 
+import kr.co.fifoBack.dto.PageRequestDTO;
 import kr.co.fifoBack.dto.grade.CodeExecutionRequestDTO;
 import kr.co.fifoBack.dto.grade.CodeExecutionResponseDTO;
 import kr.co.fifoBack.dto.grade.SolveDTO;
@@ -55,6 +56,11 @@ public class GradeController {
     @GetMapping("/solve/other/{questionNo}")
     public List<SolveDTO> otherSolveList(@PathVariable("questionNo") int questionNo){
         return gradeService.selectAllSolve(questionNo);
+    }
+
+    @PostMapping("/question/search")
+    public List<?> searchQuestions(@RequestBody PageRequestDTO pageRequestDTO){
+        return null;
     }
 
     @PostMapping("/question/execute")
