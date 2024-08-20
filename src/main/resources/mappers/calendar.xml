@@ -15,6 +15,7 @@
             <if test="calendarDTO.state != null">state = #{calendarDTO.state},</if>
             <if test="calendarDTO.isallday != null">isallday = #{calendarDTO.isallday},</if>
             <if test="calendarDTO.isreadonly != null">isreadonly = #{calendarDTO.isreadonly},</if>
+            <if test="calendarDTO.bgcolor != null">bgcolor = #{calendarDTO.bgcolor},</if>
         </set>
         WHERE id = #{calendarDTO.id}
     </update>
