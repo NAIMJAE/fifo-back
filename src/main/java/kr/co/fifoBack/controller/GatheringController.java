@@ -46,7 +46,7 @@ public class GatheringController {
 
     // 모임 글 수정
     @PutMapping("/gathering")
-    public ResponseEntity<?> updateGathering(@RequestBody GatheringDTO gatheringDTO) {
+    public ResponseEntity<?> updateGathering(GatheringDTO gatheringDTO) {
         log.info("gatheringDTO : " + gatheringDTO);
         return gatheringService.updateGathering(gatheringDTO);
     }
