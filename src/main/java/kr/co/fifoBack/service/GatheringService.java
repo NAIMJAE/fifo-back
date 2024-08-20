@@ -378,19 +378,26 @@ public class GatheringService {
     public ResponseEntity<?> updateRecruit(int recruitno, String state) {
         Optional<Recruit> optRecruit = recruitRepository.findById(recruitno);
         if(optRecruit.isPresent()) {
-            optRecruit.get().setRecruitstate(state);
-            recruitRepository.save(optRecruit.get());
             Optional<Gathering> optGathering = gatheringRepository.findById(optRecruit.get().getGathno());
 
             if (optGathering.isPresent()) {
-                if (state.equals("신청 수락")) {
+                if (optGathering.get().getGathnowmember() >= optGathering.get().getGathtotalmember()) {
+                    return ResponseEntity.status(HttpStatus.OK).body(0);
+                }else if (state.equals("신청 수락")) {
+                    optRecruit.get().setRecruitstate(state);
+                    recruitRepository.save(optRecruit.get());
                     optGathering.get().setGathnowmember(optGathering.get().getGathnowmember()+1);
                     gatheringRepository.save(optGathering.get());
+                    return ResponseEntity.status(HttpStatus.OK).body(1);
+                }else {
+                    return ResponseEntity.status(HttpStatus.OK).body(0);
                 }
+            }else {
+                return ResponseEntity.status(HttpStatus.OK).body(0);
             }
-            return ResponseEntity.status(HttpStatus.OK).body(1);
+        }else {
+            return ResponseEntity.status(HttpStatus.OK).body(0);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(0);
     }
 
     // 모임 신청 모달 정보 불러오기

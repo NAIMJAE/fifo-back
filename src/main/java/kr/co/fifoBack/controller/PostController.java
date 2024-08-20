@@ -51,7 +51,7 @@ public class PostController {
 
     // 게시글 수정
     @PutMapping("/post")
-    public ResponseEntity<?> commentModify(PostDTO postDTO) {
+    public ResponseEntity<?> postModify(PostDTO postDTO) {
         log.info("postDTO : " + postDTO);
         return postService.modifyPost(postDTO);
     }
