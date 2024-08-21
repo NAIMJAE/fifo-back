@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.fifoBack.dto.gathering.GatheringDTO;
 import kr.co.fifoBack.dto.gathering.page.GathPageRequestDTO;
 import kr.co.fifoBack.entity.QUsers;
+import kr.co.fifoBack.entity.gathering.Gathering;
 import kr.co.fifoBack.entity.gathering.QGathering;
 import kr.co.fifoBack.repository.gathering.custom.GatheringRepositoryCustom;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,14 @@ public class GatheringRepositoryImpl implements GatheringRepositoryCustom {
                 .join(qUser).on(qGathering.userno.eq(qUser.userno))
                 .where(qGathering.gathno.eq(gathno))
                 .fetchOne();
+    }
+
+    @Override
+    public List<Gathering> findGatheringsByUserno(int userno) {
+        return jpaQueryFactory
+                .selectFrom(qGathering)
+                .where(qGathering.userno.eq(userno).and(qGathering.gathstate.eq("모집중")))
+                .fetch();
     }
 
     // 모임글 목록 전체 조회
