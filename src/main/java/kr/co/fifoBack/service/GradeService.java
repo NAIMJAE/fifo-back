@@ -1,6 +1,8 @@
 package kr.co.fifoBack.service;
 
 import com.querydsl.core.Tuple;
+import kr.co.fifoBack.dto.PageRequestDTO;
+import kr.co.fifoBack.dto.PageResponseDTO;
 import kr.co.fifoBack.dto.grade.CodeExecutionRequestDTO;
 import kr.co.fifoBack.dto.grade.SolveDTO;
 import kr.co.fifoBack.entity.Users;
@@ -17,6 +19,8 @@ import kr.co.fifoBack.repository.user.SkillRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -63,8 +67,43 @@ public class GradeService {
     public ResponseEntity<?> selectAllQuestionsByLanguage(String language){
 
         List<Question> questions = questionRepository.findAllByLanguagename(language);
+        PageRequestDTO pageRequestDTO = new PageRequestDTO();
+        PageResponseDTO pageQuestionList = PageResponseDTO.builder()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(questions)
+                .total(questions.size())
+                .build();
+        return ResponseEntity.ok().body(pageQuestionList);
+    }
 
-        return ResponseEntity.ok().body(questions);
+    /* 문제 리스트 검색 */
+    public ResponseEntity<?> searchQuestionsByKeyword(PageRequestDTO pageRequestDTO){
+        Pageable pageable = pageRequestDTO.getPageable("questionno");
+
+        String type = pageRequestDTO.getType();
+        String keyword = pageRequestDTO.getKeyword();
+        log.info(type);
+        log.info(keyword);
+        Page<Question> searchResultList = null;
+        if(type.equals("level")){
+            int level = Integer.parseInt(keyword);
+            searchResultList = questionRepository.findByLevel(level, pageable);
+        }else if(type.equals("title")){
+            searchResultList = questionRepository.findByTitleContaining(keyword, pageable);
+        }else if(type.equals("number")){
+            int qno = Integer.parseInt(keyword);
+            searchResultList = questionRepository.findByQuestionno(qno, pageable);
+        }else{
+            log.info(keyword);
+            return ResponseEntity.status(400).body("없음");
+        }
+        log.info(searchResultList.toString());
+        PageResponseDTO pageQuestionList = PageResponseDTO.builder()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(searchResultList.toList())
+                .total(searchResultList.getTotalPages())
+                .build();
+        return ResponseEntity.ok().body(pageQuestionList);
     }
 
     public ResponseEntity<?> selectQuestionByQuestionNo(int questionNo){

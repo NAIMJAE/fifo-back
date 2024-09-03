@@ -41,6 +41,12 @@ public class GradeController {
         return gradeService.selectAllQuestionsByLanguage(language);
     }
 
+    @PostMapping("/question/list/search")
+    public ResponseEntity<?> questionListSearch(@RequestBody PageRequestDTO pageRequestDTO){
+        log.info("검색 여기");
+        return gradeService.searchQuestionsByKeyword(pageRequestDTO);
+    }
+
     @GetMapping("/question/{questionNo}")
     public ResponseEntity<?> questionView(@PathVariable("questionNo") int questionNo){
         log.info("여기");
