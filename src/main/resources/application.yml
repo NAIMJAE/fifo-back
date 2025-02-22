@@ -6,7 +6,7 @@ spring:
 
     datasource:
         driver-class-name: org.postgresql.Driver
-        url: jdbc:postgresql://3.39.72.175:5432/fifo
+        url: jdbc:postgresql://54.180.162.143:5432/fifo
         username: ppippo
         password: Abcd1234!
 
